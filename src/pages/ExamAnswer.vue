@@ -52,7 +52,7 @@
                 :name="'q-' + currentQuestion.answerKey"
                 :checked="isOptionChecked(currentQuestion, option)"
               />
-              <span class="option-label">{{ option.label }}</span>
+              <span class="option-label">{{ analysisVisible && isOptionAnswer(currentQuestion, option) ? "✓" : option.label }}</span>
               <div class="option-content" v-html="option.content || '&nbsp;'" />
             </div>
           </div>
@@ -675,6 +675,12 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   );
 }
 
+function isOptionAnswer(question: NormalizedQuestion, option: NormalizedOption): boolean {
+  if (!question || !option || !isChoiceQuestion(question)) return false;
+  const correctSet = getCorrectAnswerSet(question);
+  return correctSet.has(option.label.toUpperCase());
+}
+
 function toSerializableAnswers() {
   const result: Record<string, string | string[]> = {};
   Object.keys(userAnswers).forEach((key) => {
@@ -824,8 +830,8 @@ function toSerializableAnswers() {
 /* 将 is-active 与 is-answer 统一为绿色主题容器（对齐解析页） */
 .option-item.is-active,
 .option-item.is-answer {
-  background: rgba(229, 229, 229, 1);;
-  border-color: rgba(229, 229, 229, 1);;
+  background: rgba(7, 193, 96, 1);
+  border-color: rgba(7, 193, 96, 1);
   color: rgba(56, 56, 56, 1);
 }
 .option-item.is-active .option-content,
@@ -880,12 +886,27 @@ function toSerializableAnswers() {
 }
 
 /* 左侧字母标识：选中/正确答案都显示白底绿勾，隐藏字母 */
-.option-item.is-active .option-label,
 .option-item.is-answer .option-label {
   position: relative;
-  background: rgba(128, 128, 128, 1);
-  border-color: rgba(128, 128, 128, 1);
-  color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 1) !important;
+  border-color: rgba(7, 193, 96, 1) !important;
+  color: rgba(7, 193, 96, 1) !important;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+.option-item.is-answer .option-label::after {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(7, 193, 96, 1);
+  font-size: 14px;
 }
 
 /* 隐藏原生输入的视觉（与分析页一致），点击交互仍由父容器处理 */
