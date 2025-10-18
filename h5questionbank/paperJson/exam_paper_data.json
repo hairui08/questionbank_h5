@@ -1,0 +1,1647 @@
+{
+    "Id": "02366045-f488-4cbc-b404-c484a9297bd7",
+    "Title": "测试APP题型各个展示",
+    "TestNum": "25",
+    "AnswerTime": "120",
+    "AutomaticSaveTime": "1",
+    "Status": 1,
+    "Type1": "444c734b-d762-4ad6-9d2b-a5069814a74d",
+    "Type2": "8995bc6a-bfe0-4cfd-92f8-0143963c6696",
+    "Type1Name": "中级会计实务",
+    "Type2Name": "2025年中级会计实务真题",
+    "UseTime": "7200",
+    "PapersLevel": 0,
+    "PapersType": "0",
+    "PapersClass": "7A87C141-D3DF-4466-90FE-2F9546C9D515",
+    "StrategyList": [
+        {
+            "Id": "11603328-bccc-40f4-a100-f2b46a388d26",
+            "PapersId": "02366045-f488-4cbc-b404-c484a9297bd7",
+            "TestType": 0,
+            "NewTestType": 1,
+            "TestTypeName": "单选题",
+            "TestTypeTitle": null,
+            "TestCount": "8",
+            "ScoreSum": "12",
+            "Sort": "0",
+            "TestTypeDescribe": "",
+            "ChoiceQuestion": 0,
+            "QuestionRandom": 0,
+            "OptionRandom": 0,
+            "PapersTestList": [
+                {
+                    "TestStoreId": "9aaa4912-8c53-49ea-a8c7-c8274050005f",
+                    "TestScore": "1.5",
+                    "Content": "丙公司为上市公司，2021年1月1日，丙公司以银行存款6 000万元购入一项无形资产。2022年末和2023年末，丙公司预计该项无形资产的可收回金额分别为4 000万元和3 556万元。该项无形资产的预计使用年限为10年，采用直线法按月摊销，预计净残值为零。丙公司于每年末对无形资产计提减值准备；计提减值准备后，原预计使用年限、摊销方法、净残值均不发生变化。假定不考虑其他因素，丙公司该项无形资产于2024年应摊销的金额为（ ）万元。",
+                    "Answer": "B",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "52af51f0-fc0d-402a-a3b9-92599616dd8c",
+                    "TestTypeName": "单选题",
+                    "TestType": null,
+                    "NewTestType": "1",
+                    "AnalyticQuestions": "2022年12月31日无形资产账面净值＝6 000－6 000÷10×2＝4 800（万元），可收回金额为4 000万元，应计提减值金额＝4 800－4 000＝800（万元），减值后的账面价值为4 000万元；2023年12月31日计提减值准备前的账面价值＝4 000－4 000÷8＝3 500（万元），可收回金额为3 556万元，虽然账面价值低于可收回金额，但因无形资产的减值准备一经计提不能转回，所以账面价值仍为3 500万元；2024年应摊销金额＝3 500÷7＝500（万元）。<br class=\"markdown_return\">【提示】计提减值后，视为一项新的无形资产，采用新的摊销方法、预计净残值和尚可使用年限计提摊销。",
+                    "Title": "丙公司为上市公司，2021年1月1日，丙公司以银行存款6000万元购入一项无形资产。2022年末和2023年末，丙公司预计该项无形资产的可收回金额分别为4000万元和3556万元。该项无形资产的预计使用年限为10年，采用直线法按月摊销，预计净残值为零。丙公司于每年末对无形资产计提减值准备；计提减值准备后，原预计使用年限、摊销方法、净残值均不发生变化。假定不考虑其他因素，丙公司该项无形资产于2024年应摊销的金额为（）万元。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "0",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "723211D3-C97F-42B0-B651-5627D50FF255",
+                    "AnswerList": [
+                        {
+                            "Id": "57bdb1eb-0ec7-4eb2-b3af-c9bbe107c61a",
+                            "TestStoreId": "9aaa4912-8c53-49ea-a8c7-c8274050005f",
+                            "Content": "508",
+                            "Sort": 0,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "52af51f0-fc0d-402a-a3b9-92599616dd8c",
+                            "TestStoreId": "9aaa4912-8c53-49ea-a8c7-c8274050005f",
+                            "Content": "500",
+                            "Sort": 1,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "fde0e066-0f37-4e7f-8cb2-a39fca8b2e87",
+                            "TestStoreId": "9aaa4912-8c53-49ea-a8c7-c8274050005f",
+                            "Content": "600",
+                            "Sort": 2,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "f58fe557-806a-4d8e-85b1-756e74bd1fc3",
+                            "TestStoreId": "9aaa4912-8c53-49ea-a8c7-c8274050005f",
+                            "Content": "3 000",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "a4671ab3-cc65-44f7-8fba-406e0414ce57",
+                    "TestScore": "1.5",
+                    "Content": "下列各项中，体现实质重于形式会计信息质量要求的是（ ）。<img src=\"https://lingjiang-mis1system-staging-data.oss-cn-beijing.aliyuncs.com/images/questionbank/2025/09/26/a3ba7f973ac34d8ba76ce71a2d3ec96b.png\" alt=\"\" style=\"max-width:100%;\">",
+                    "Answer": "C",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "670f2523-3fa7-4964-8677-f99aea65b67a",
+                    "TestTypeName": "单选题",
+                    "TestType": null,
+                    "NewTestType": "1",
+                    "AnalyticQuestions": "分期付款购买固定资产实质上具有融资性质的，形式为购买，实质体现了一种融资行为，因此该选项是实质重于形式要求的体现。",
+                    "Title": "下列各项中，体现实质重于形式会计信息质量要求的是（）。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "1",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "723211D3-C97F-42B0-B651-5627D50FF255",
+                    "AnswerList": [
+                        {
+                            "Id": "73a0deed-10ac-498e-a143-ceb9cee6b908",
+                            "TestStoreId": "a4671ab3-cc65-44f7-8fba-406e0414ce57",
+                            "Content": "将出售固定资<img src=\"https://lingjiang-mis1system-staging-data.oss-cn-beijing.aliyuncs.com/images/questionbank/2025/09/26/f2cac978387043cea1ab7d61cf5075fd.png\" alt=\"\" style=\"max-width:100%;\">产产生的净损失计入资产处置损益",
+                            "Sort": 0,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "d501cab5-2fc2-4391-9eb1-9900df09b4a3",
+                            "TestStoreId": "a4671ab3-cc65-44f7-8fba-406e0414ce57",
+                            "Content": "对不存在标的资产的亏损合同确认预计负债<img src=\"https://lingjiang-mis1system-staging-data.oss-cn-beijing.aliyuncs.com/images/questionbank/2025/09/26/ed434089b3fd4b43b0cd8293806f57bf.png\" alt=\"\" style=\"max-width:100%;\">",
+                            "Sort": 1,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "670f2523-3fa7-4964-8677-f99aea65b67a",
+                            "TestStoreId": "a4671ab3-cc65-44f7-8fba-406e0414ce57",
+                            "Content": "具有融资性质<img src=\"https://lingjiang-mis1system-staging-data.oss-cn-beijing.aliyuncs.com/images/questionbank/2025/09/26/24102a92ac5a40b5a7fa2877b0d8707a.png\" alt=\"\" style=\"max-width:100%;\">的分期付款购入固定资产",
+                            "Sort": 2,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "7da4e824-127a-4baa-91a1-287312f50c09",
+                            "TestStoreId": "a4671ab3-cc65-44f7-8fba-406e0414ce57",
+                            "Content": "<img src=\"https://lingjiang-mis1system-staging-data.oss-cn-beijing.aliyuncs.com/images/questionbank/2025/09/26/e182365d2d2c4f618bc9ddb5b3355eea.png\" alt=\"\" style=\"max-width:100%;\">对无形资产计提减值准备",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "db390b7f-5a1a-4037-8160-5728f4e9987c",
+                    "TestScore": "1.5",
+                    "Content": "A公司2024年1月取得B公司75％的有表决权股份，并准备长期持有，取得该项投资后，A公司能够控制B公司。2024年5月4日，B公司宣告发放2023年现金股利400万元。2024年B公司实现净利润5 000万元。不考虑其他因素，则A公司2024年应确认投资收益为（ ）万元。",
+                    "Answer": "B",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "d777bc83-466f-4c6e-93cd-416ccb132995",
+                    "TestTypeName": "单选题",
+                    "TestType": null,
+                    "NewTestType": "1",
+                    "AnalyticQuestions": "A公司持有B公司75%的股份，达到控制，后续计量采用成本法核算。2024年A公司因宣告现金股利应确认的投资收益＝400×75%＝300（万元）。<br class=\"markdown_return\">借：应收股利300<br class=\"markdown_return\">贷：投资收益300<br class=\"markdown_return\">发放时：<br class=\"markdown_return\">借：银行存款300<br class=\"markdown_return\">贷：应收股利300<br class=\"markdown_return\">【提示】①通常持股比例大于50%，个别报表中采用成本法核算；持股比例小于50%大于20%，采用权益法核算。<br class=\"markdown_return\">②成本法下，只有被投资单位宣告发放现金股利，投资方才做处理（确认投资收益），被投资方实现净利润或亏损、其他综合收益以及其他权益等发生变动，均不调整长期股权投资的账面价值。",
+                    "Title": "A公司2024年1月取得B公司75％的有表决权股份，并准备长期持有，取得该项投资后，A公司能够控制B公司。2024年5月4日，B公司宣告发放2023年现金股利400万元。2024年B公司实现净利润5000万元。不考虑其他因素，则A公司2024年应确认投资收益为（）万元。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "2",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "723211D3-C97F-42B0-B651-5627D50FF255",
+                    "AnswerList": [
+                        {
+                            "Id": "5cf92bc1-aff6-44f0-b281-e29a690e99af",
+                            "TestStoreId": "db390b7f-5a1a-4037-8160-5728f4e9987c",
+                            "Content": "0",
+                            "Sort": 0,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "d777bc83-466f-4c6e-93cd-416ccb132995",
+                            "TestStoreId": "db390b7f-5a1a-4037-8160-5728f4e9987c",
+                            "Content": "300",
+                            "Sort": 1,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "39a35415-cff2-49b3-bf2f-42d28d4ac7a7",
+                            "TestStoreId": "db390b7f-5a1a-4037-8160-5728f4e9987c",
+                            "Content": "750",
+                            "Sort": 2,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "48fcaa3b-e157-4dbd-bac6-9fb1edd16926",
+                            "TestStoreId": "db390b7f-5a1a-4037-8160-5728f4e9987c",
+                            "Content": "4 050",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "5a306e71-2f27-4f99-80dc-acdac14f241d",
+                    "TestScore": "1.5",
+                    "Content": "下列交易或事项中，应作为会计政策变更处理的是（ ）。",
+                    "Answer": "A",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "8aa4b413-c86f-4990-b394-9a0487a85a8b",
+                    "TestTypeName": "单选题",
+                    "TestType": null,
+                    "NewTestType": "1",
+                    "AnalyticQuestions": "选B，属于会计估计变更；选项C，属于本期发生的交易或事项与以前相比具有本质区别而采用新的政策，属于当期的正常事项，不属于政策变更；选项D，低值易耗品的摊销是对不重要的交易事项采用新的会计政策，也不属于会计政策变更。<br class=\"markdown_return\">常见的会计政策变更有：（1）未使用、不需用的固定资产从原规定不计提折旧改为计提折旧；（2）坏账核算从直接转销法改为备抵法；（3）所得税核算方法从应付税款法改为资产负债表债务法；（4）存货、固定资产、无形资产、在建工程、短期投资、长期投资、委托贷款、应收款项从不计提准备改为计提准备；（5）投资性房地产由成本模式改为公允价值计量模式；（6）存货发出方法的变更。",
+                    "Title": "下列交易或事项中，应作为会计政策变更处理的是（）。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "3",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "723211D3-C97F-42B0-B651-5627D50FF255",
+                    "AnswerList": [
+                        {
+                            "Id": "8aa4b413-c86f-4990-b394-9a0487a85a8b",
+                            "TestStoreId": "5a306e71-2f27-4f99-80dc-acdac14f241d",
+                            "Content": "投资性房地产由成本模式改为公允价值计量模式",
+                            "Sort": 0,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "d5268e04-be1c-4940-bd83-9e3437888c68",
+                            "TestStoreId": "5a306e71-2f27-4f99-80dc-acdac14f241d",
+                            "Content": "预计负债初始计量的最佳估计数的确定",
+                            "Sort": 1,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "98bde4d1-4302-4dfd-a89f-31fcff530c19",
+                            "TestStoreId": "5a306e71-2f27-4f99-80dc-acdac14f241d",
+                            "Content": "因持股比例变化导致长期股权投资从原按权益法核算改为按成本法核算",
+                            "Sort": 2,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "4272b978-b0f8-4b90-9902-4bed84897e7b",
+                            "TestStoreId": "5a306e71-2f27-4f99-80dc-acdac14f241d",
+                            "Content": "低值易耗品摊销方法由一次摊销法变更为分次摊销法",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "df4310ca-2f9f-41a6-ae2d-8f19dacefdaa",
+                    "TestScore": "1.5",
+                    "Content": "2024年1月1日，甲公司制定并开始实施利润分享计划。计划规定，如果2024年度公司净利润能超过2 500万元，对于超出部分，管理层可以享有8%的额外回报。假定截至2024年年末，公司全年实现净利润2 800万元，不考虑其他因素，甲公司管理层可以分享的利润为（ ）万元。",
+                    "Answer": "A",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "b0d77aaf-2853-451d-b77e-eacac2d103b2",
+                    "TestTypeName": "单选题",
+                    "TestType": null,
+                    "NewTestType": "1",
+                    "AnalyticQuestions": "甲公司管理层可以分享的利润＝（2 800－2 500）×8%＝24（万元）。<br class=\"markdown_return\">会计分录为：<br class=\"markdown_return\">借：管理费用24<br class=\"markdown_return\">贷：应付职工薪酬——利润分享计划24",
+                    "Title": "2024年1月1日，甲公司制定并开始实施利润分享计划。计划规定，如果2024年度公司净利润能超过2500万元，对于超出部分，管理层可以享有8%的额外回报。假定截至2024年年末，公司全年实现净利润2800万元，不考虑其他因素，甲公司管理层可以分享的利润为（）万元。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "4",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "723211D3-C97F-42B0-B651-5627D50FF255",
+                    "AnswerList": [
+                        {
+                            "Id": "b0d77aaf-2853-451d-b77e-eacac2d103b2",
+                            "TestStoreId": "df4310ca-2f9f-41a6-ae2d-8f19dacefdaa",
+                            "Content": "24",
+                            "Sort": 0,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "3b627c0a-1beb-42c3-908d-24abdac5274c",
+                            "TestStoreId": "df4310ca-2f9f-41a6-ae2d-8f19dacefdaa",
+                            "Content": "200",
+                            "Sort": 1,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "5278b03c-f183-46a5-88e1-32580e5d2a88",
+                            "TestStoreId": "df4310ca-2f9f-41a6-ae2d-8f19dacefdaa",
+                            "Content": "224",
+                            "Sort": 2,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "6572ad37-f05f-4417-b597-6f752af463bd",
+                            "TestStoreId": "df4310ca-2f9f-41a6-ae2d-8f19dacefdaa",
+                            "Content": "424",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "02d304f6-bc98-4123-b749-da7cdd8c83c0",
+                    "TestScore": "1.5",
+                    "Content": "甲公司对A设备进行改良，该设备原价为2 000万元，已提折旧600万元，已提减值准备300万元，改良中发生各项资本化支出共计500万元。改良时被替换部分的账面原价为150万元。则改良后固定资产的入账价值为（ ）万元。",
+                    "Answer": "C",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "8ee5aba4-7b63-42bf-a1cb-d7786470e84e",
+                    "TestTypeName": "单选题",
+                    "TestType": null,
+                    "NewTestType": "1",
+                    "AnalyticQuestions": "按现行规定，固定资产的更新改造等后续支出，符合固定资产确认条件的，应当计入固定资产成本，如有被替换的部分，应扣除其账面价值；所以改良后的固定资产的入账价值=（固定资产账面原值－累计折旧－减值准备）－（被替换部分的账面原值－被替换部分的累计折旧－被替换部分的减值准备）＋更新改造的支出＝（2 000－600－300）－（150－600×150/2 000－300×150/2 000）＋500＝1 517.5（万元）。其中600×150/2 000这部分是被替换部分的折旧，300×150/2 000是被替换部分的减值。",
+                    "Title": "甲公司对A设备进行改良，该设备原价为2000万元，已提折旧600万元，已提减值准备300万元，改良中发生各项资本化支出共计500万元。改良时被替换部分的账面原价为150万元。则改良后固定资产的入账价值为（）万元。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "5",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "723211D3-C97F-42B0-B651-5627D50FF255",
+                    "AnswerList": [
+                        {
+                            "Id": "6fbc41f0-2142-4255-9cb4-0698b3a52ba1",
+                            "TestStoreId": "02d304f6-bc98-4123-b749-da7cdd8c83c0",
+                            "Content": "1 100",
+                            "Sort": 0,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "5820ddb2-2409-478e-89c7-a6fbec342d9a",
+                            "TestStoreId": "02d304f6-bc98-4123-b749-da7cdd8c83c0",
+                            "Content": "1 450",
+                            "Sort": 1,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "8ee5aba4-7b63-42bf-a1cb-d7786470e84e",
+                            "TestStoreId": "02d304f6-bc98-4123-b749-da7cdd8c83c0",
+                            "Content": "1 517.5",
+                            "Sort": 2,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "b5371668-e643-42cd-81df-c5c01feebc85",
+                            "TestStoreId": "02d304f6-bc98-4123-b749-da7cdd8c83c0",
+                            "Content": "2 000",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "61358a6e-c811-473f-96d2-6c5e7dec1dd4",
+                    "TestScore": "1.5",
+                    "Content": "企业将采用公允价值模式计量的投资性房地产转化为自用房地产时，转换日公允价值大于原账面价值的差额，将影响的财务报表项目是（ ）。",
+                    "Answer": "C",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "3614ee32-acfd-44bf-8278-c5021880b8d4",
+                    "TestTypeName": "单选题",
+                    "TestType": null,
+                    "NewTestType": "1",
+                    "AnalyticQuestions": "将以公允价值模式进行后续计量的投资性房地产转换为自用房地产时，转换日公允价值与原账面价值的差额，均记入“公允价值变动损益”科目，列示于利润表“公允价值变动收益”项目。",
+                    "Title": "企业将采用公允价值模式计量的投资性房地产转化为自用房地产时，转换日公允价值大于原账面价值的差额，将影响的财务报表项目是（）。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "6",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "723211D3-C97F-42B0-B651-5627D50FF255",
+                    "AnswerList": [
+                        {
+                            "Id": "92cd0f3c-7602-4a2c-b86f-f70516879a58",
+                            "TestStoreId": "61358a6e-c811-473f-96d2-6c5e7dec1dd4",
+                            "Content": "其他综合收益",
+                            "Sort": 0,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "15bc6f69-fb32-407a-9769-2546c9128b4a",
+                            "TestStoreId": "61358a6e-c811-473f-96d2-6c5e7dec1dd4",
+                            "Content": "其他收益",
+                            "Sort": 1,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "3614ee32-acfd-44bf-8278-c5021880b8d4",
+                            "TestStoreId": "61358a6e-c811-473f-96d2-6c5e7dec1dd4",
+                            "Content": "公允价值变动收益",
+                            "Sort": 2,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "64733717-2995-402e-83aa-6c80948a561b",
+                            "TestStoreId": "61358a6e-c811-473f-96d2-6c5e7dec1dd4",
+                            "Content": "资本公积",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "77eb8cbf-3883-4f74-bce2-2445135f3a74",
+                    "TestScore": "1.5",
+                    "Content": "A公司属于家电销售企业，2025年3月2日，A公司与B公司签订一份合同，约定于2025年3月底之前向B公司销售一批电视机、空调和冰箱，售价总额为500万元。如果单独销售，则该批电视机、空调和冰箱的价格分别为100万元、300万元、200万元。根据以往惯例，A公司经常以组合的方式出售空调和冰箱，组合价为400万元；而电视机经常以100万元的价格出售。不考虑其他因素，A公司该批空调分摊的交易价格为（ ）万元。",
+                    "Answer": "B",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "2a1d0a69-27d6-4578-8e9e-b0e41127bfb8",
+                    "TestTypeName": "单选题",
+                    "TestType": null,
+                    "NewTestType": "1",
+                    "AnalyticQuestions": "由于电视机的单独销售价格与其单独售价一致，因此A公司应将合同中的折扣100（100＋300＋200－500）万元全部分摊给空调和冰箱，所以电视机的售价＝100（万元），空调分摊的交易价格＝300－100×300/（300＋200）＝240（万元），冰箱分摊的交易价格＝200－100×200/（300＋200）＝160（万元）。",
+                    "Title": "A公司属于家电销售企业，2025年3月2日，A公司与B公司签订一份合同，约定于2025年3月底之前向B公司销售一批电视机、空调和冰箱，售价总额为500万元。如果单独销售，则该批电视机、空调和冰箱的价格分别为100万元、300万元、200万元。根据以往惯例，A公司经常以组合的方式出售空调和冰箱，组合价为400万元；而电视机经常以100万元的价格出售。不考虑其他因素，A公司该批空调分摊的交易价格为（）万元。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "7",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "723211D3-C97F-42B0-B651-5627D50FF255",
+                    "AnswerList": [
+                        {
+                            "Id": "45b846f5-07a8-42fb-a46d-78375a841d53",
+                            "TestStoreId": "77eb8cbf-3883-4f74-bce2-2445135f3a74",
+                            "Content": "300",
+                            "Sort": 0,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "2a1d0a69-27d6-4578-8e9e-b0e41127bfb8",
+                            "TestStoreId": "77eb8cbf-3883-4f74-bce2-2445135f3a74",
+                            "Content": "240",
+                            "Sort": 1,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "585bc18c-9ffd-4d5b-a6cf-e01eaa5ad671",
+                            "TestStoreId": "77eb8cbf-3883-4f74-bce2-2445135f3a74",
+                            "Content": "200",
+                            "Sort": 2,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "1ac26a59-325f-4e53-b190-517146be7f75",
+                            "TestStoreId": "77eb8cbf-3883-4f74-bce2-2445135f3a74",
+                            "Content": "500",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                }
+            ]
+        },
+        {
+            "Id": "29dd514f-d8c5-497e-abe6-45387645f5ca",
+            "PapersId": "02366045-f488-4cbc-b404-c484a9297bd7",
+            "TestType": 0,
+            "NewTestType": 2,
+            "TestTypeName": "多选题",
+            "TestTypeTitle": null,
+            "TestCount": "5",
+            "ScoreSum": "10",
+            "Sort": "1",
+            "TestTypeDescribe": "",
+            "ChoiceQuestion": 0,
+            "QuestionRandom": 0,
+            "OptionRandom": 0,
+            "PapersTestList": [
+                {
+                    "TestStoreId": "35a0f1de-cf60-41cc-94b2-f1758cba03bf",
+                    "TestScore": "2",
+                    "Content": "下列项目中，应在合并现金流量表中反映的有（ ）。",
+                    "Answer": "ABC",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "473a96ee-4ace-4106-a411-18a370d4f591,9af749fc-4f8b-4b89-b0bb-5e3169e0b073,29c3b0e5-d698-43da-be51-b0641b9a8831",
+                    "TestTypeName": "多选题",
+                    "TestType": null,
+                    "NewTestType": "2",
+                    "AnalyticQuestions": "子公司与少数股东之间的现金流量，均应在合并现金流量表中单独反映；子公司与母公司之间的现金流量，应当予以抵销。",
+                    "Title": "下列项目中，应在合并现金流量表中反映的有（）。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "0",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "BE662612-867F-42F6-A2D7-0946B2E80520",
+                    "AnswerList": [
+                        {
+                            "Id": "473a96ee-4ace-4106-a411-18a370d4f591",
+                            "TestStoreId": "35a0f1de-cf60-41cc-94b2-f1758cba03bf",
+                            "Content": "少数股东向子公司支付购货款",
+                            "Sort": 0,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "9af749fc-4f8b-4b89-b0bb-5e3169e0b073",
+                            "TestStoreId": "35a0f1de-cf60-41cc-94b2-f1758cba03bf",
+                            "Content": "子公司向少数股东分配现金股利",
+                            "Sort": 1,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "29c3b0e5-d698-43da-be51-b0641b9a8831",
+                            "TestStoreId": "35a0f1de-cf60-41cc-94b2-f1758cba03bf",
+                            "Content": "少数股东从子公司抽回投资",
+                            "Sort": 2,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "28cbbe6a-78d8-4ef3-81dd-4ef922af3599",
+                            "TestStoreId": "35a0f1de-cf60-41cc-94b2-f1758cba03bf",
+                            "Content": "子公司向母公司分配现金股利",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "7afe726d-3d97-4c66-b402-01723019a95f",
+                    "TestScore": "2",
+                    "Content": "甲公司2023年5月5日购入乙公司普通股股票一批，成本为2 300万元，将其划分为其他权益工具投资。2023年末甲公司持有的乙公司股票的公允价值为2 900万元；2024年末，该批股票的公允价值为2 600万元。甲公司适用企业所得税税率为25%。若不考虑其他因素，则如下相关会计指标的认定中正确的有（ ）。",
+                    "Answer": "AC",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "5a4b85d9-6573-4b5a-a376-dddc6bdbb8a6,6693bda6-a3f6-4fe8-a819-23bf7c2013c0",
+                    "TestTypeName": "多选题",
+                    "TestType": null,
+                    "NewTestType": "2",
+                    "AnalyticQuestions": "其他权益工具投资的公允价值变动计入其他综合收益，由此产生的暂时性差异确认的递延所得税也计入其他综合收益，不影响递延所得税费用。2023年因其他权益工具投资增值600万元，账面价值大于计税基础，造成新增应纳税暂时性差异600万元（2 900－2 300），确认递延所得税负债的金额＝600×25%＝150（万元），相关分录如下：<br class=\"markdown_return\">借：其他权益工具投资——公允价值变动600<br class=\"markdown_return\">贷：其他综合收益600<br class=\"markdown_return\">借：其他综合收益150<br class=\"markdown_return\">贷：递延所得税负债150",
+                    "Title": "甲公司2023年5月5日购入乙公司普通股股票一批，成本为2300万元，将其划分为其他权益工具投资。2023年末甲公司持有的乙公司股票的公允价值为2900万元；2024年末，该批股票的公允价值为2600万元。甲公司适用企业所得税税率为25%。若不考虑其他因素，则如下相关会计指标的认定中正确的有（）。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "1",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "BE662612-867F-42F6-A2D7-0946B2E80520",
+                    "AnswerList": [
+                        {
+                            "Id": "5a4b85d9-6573-4b5a-a376-dddc6bdbb8a6",
+                            "TestStoreId": "7afe726d-3d97-4c66-b402-01723019a95f",
+                            "Content": "2023年确认“递延所得税负债”150万元",
+                            "Sort": 0,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "2678c591-093c-4fa2-84bd-77e90672cac1",
+                            "TestStoreId": "7afe726d-3d97-4c66-b402-01723019a95f",
+                            "Content": "2023年形成递延所得税费用150万元",
+                            "Sort": 1,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "6693bda6-a3f6-4fe8-a819-23bf7c2013c0",
+                            "TestStoreId": "7afe726d-3d97-4c66-b402-01723019a95f",
+                            "Content": "2024年冲减“递延所得税负债”75万元",
+                            "Sort": 2,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "b6b1ca90-c786-4e9a-a863-178d872c64f6",
+                            "TestStoreId": "7afe726d-3d97-4c66-b402-01723019a95f",
+                            "Content": "2024年“其他综合收益”减少75万元",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "fa684518-4379-4bfc-ba3e-42c98319e5e5",
+                    "TestScore": "2",
+                    "Content": "关于股份支付的计量，下列说法中正确的有（ ）。",
+                    "Answer": "AC",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "a665e163-1e91-46e5-811a-9bc4e8f07c8e,bf78147a-5d1d-46d5-8479-1c0a0ee5bf71",
+                    "TestTypeName": "多选题",
+                    "TestType": null,
+                    "NewTestType": "2",
+                    "AnalyticQuestions": "以现金结算的股份支付，应按资产负债表日权益工具的公允价值重新计量；以权益结算的股份支付，应按授予日权益工具的公允价值计量，不确认其后续公允价值变动。",
+                    "Title": "关于股份支付的计量，下列说法中正确的有（）。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "2",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "BE662612-867F-42F6-A2D7-0946B2E80520",
+                    "AnswerList": [
+                        {
+                            "Id": "a665e163-1e91-46e5-811a-9bc4e8f07c8e",
+                            "TestStoreId": "fa684518-4379-4bfc-ba3e-42c98319e5e5",
+                            "Content": "以现金结算的股份支付，应按资产负债表日权益工具的公允价值重新计量",
+                            "Sort": 0,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "691416d9-497f-49e2-8bbe-13415048fc36",
+                            "TestStoreId": "fa684518-4379-4bfc-ba3e-42c98319e5e5",
+                            "Content": "以现金结算的股份支付，应按授予日权益工具的公允价值计量，不确认其后续公允价值变动",
+                            "Sort": 1,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "bf78147a-5d1d-46d5-8479-1c0a0ee5bf71",
+                            "TestStoreId": "fa684518-4379-4bfc-ba3e-42c98319e5e5",
+                            "Content": "以权益结算的股份支付，应按授予日权益工具的公允价值计量，不确认其后续公允价值变动",
+                            "Sort": 2,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "a7a297ef-ed26-49e2-b572-8647cf4869d4",
+                            "TestStoreId": "fa684518-4379-4bfc-ba3e-42c98319e5e5",
+                            "Content": "无论是以权益结算的股份支付，还是以现金结算的股份支付，均应按资产负债表日权益工具的公允价值重新计量",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "badee616-42b0-4386-8419-6ad67475e290",
+                    "TestScore": "2",
+                    "Content": "下列各项表述中，不正确的有（ ）。",
+                    "Answer": "CD",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "3c74aab4-56f1-40a1-bb80-0a55f041b9e2,6712f4b4-734d-4014-86a4-a1296968c362",
+                    "TestTypeName": "多选题",
+                    "TestType": null,
+                    "NewTestType": "2",
+                    "AnalyticQuestions": "本题考核内部研发无形资产的核算。选项B，资本化期间发生的支出计入无形资产成本；选项C，企业自用的无形资产如果用于产品生产，那么无形资产的摊销额应计入制造费用，最终计入产品的成本；选项D，研究阶段发生的支出全部费用化，开发阶段的支出符合资本化条件的予以资本化，不符合资本化条件的要费用化。",
+                    "Title": "下列各项表述中，不正确的有（）。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "3",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "BE662612-867F-42F6-A2D7-0946B2E80520",
+                    "AnswerList": [
+                        {
+                            "Id": "9b43650c-e59c-4a96-b339-e114e3117710",
+                            "TestStoreId": "badee616-42b0-4386-8419-6ad67475e290",
+                            "Content": "无法区分研究阶段和开发阶段的支出，应全部计入当期损益",
+                            "Sort": 0,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "1b24bde7-cfa1-403d-816a-976d17218c61",
+                            "TestStoreId": "badee616-42b0-4386-8419-6ad67475e290",
+                            "Content": "内部开发无形资产的成本仅包括在满足资本化条件的时点至无形资产达到预定用途前发生的支出总和",
+                            "Sort": 1,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "3c74aab4-56f1-40a1-bb80-0a55f041b9e2",
+                            "TestStoreId": "badee616-42b0-4386-8419-6ad67475e290",
+                            "Content": "企业自用的、使用寿命有限的无形资产的摊销金额，应当全部计入当期损益",
+                            "Sort": 2,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "6712f4b4-734d-4014-86a4-a1296968c362",
+                            "TestStoreId": "badee616-42b0-4386-8419-6ad67475e290",
+                            "Content": "内部研发无形资产发生的研发支出均应资本化",
+                            "Sort": 3,
+                            "IsAnswer": true
+                        }
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "ab5ebdc0-e3ed-438f-826d-c1dda23d2fd9",
+                    "TestScore": "2",
+                    "Content": "母公司在编制合并财务报表前，对子公司所采用会计政策与其不一致的情形进行的下列会计处理中，正确的有（ ）。",
+                    "Answer": "BC",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": "25d15edf-56c9-4ae9-8cee-ee66cfa95d66,647bee81-76a5-4146-a69d-d5d339b9f872",
+                    "TestTypeName": "多选题",
+                    "TestType": null,
+                    "NewTestType": "2",
+                    "AnalyticQuestions": "编制财务报表前，应当尽可能的统一母公司和子公司的会计政策，统一要求子公司所采用的会计政策与母公司保持一致。",
+                    "Title": "母公司在编制合并财务报表前，对子公司所采用会计政策与其不一致的情形进行的下列会计处理中，正确的有（）。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "4",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "BE662612-867F-42F6-A2D7-0946B2E80520",
+                    "AnswerList": [
+                        {
+                            "Id": "3c36b84a-2fa5-4980-b2e1-e9464b3c767c",
+                            "TestStoreId": "ab5ebdc0-e3ed-438f-826d-c1dda23d2fd9",
+                            "Content": "按照子公司的会计政策另行编报母公司的财务报表",
+                            "Sort": 0,
+                            "IsAnswer": false
+                        },
+                        {
+                            "Id": "25d15edf-56c9-4ae9-8cee-ee66cfa95d66",
+                            "TestStoreId": "ab5ebdc0-e3ed-438f-826d-c1dda23d2fd9",
+                            "Content": "要求子公司按照母公司的会计政策另行编报子公司的财务报表",
+                            "Sort": 1,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "647bee81-76a5-4146-a69d-d5d339b9f872",
+                            "TestStoreId": "ab5ebdc0-e3ed-438f-826d-c1dda23d2fd9",
+                            "Content": "按照母公司自身的会计政策对子公司财务报表进行必要的调整",
+                            "Sort": 2,
+                            "IsAnswer": true
+                        },
+                        {
+                            "Id": "963753e4-25eb-4f0c-b67f-1e78c8f5e087",
+                            "TestStoreId": "ab5ebdc0-e3ed-438f-826d-c1dda23d2fd9",
+                            "Content": "按照子公司的会计政策对母公司自身财务报表进行必要的调整",
+                            "Sort": 3,
+                            "IsAnswer": false
+                        }
+                    ],
+                    "ChildrenTestList": null
+                }
+            ]
+        },
+        {
+            "Id": "49a05fa7-676a-49f0-9177-53e2ee586b5f",
+            "PapersId": "02366045-f488-4cbc-b404-c484a9297bd7",
+            "TestType": 0,
+            "NewTestType": 3,
+            "TestTypeName": "判断题",
+            "TestTypeTitle": null,
+            "TestCount": "5",
+            "ScoreSum": "5",
+            "Sort": "2",
+            "TestTypeDescribe": "",
+            "ChoiceQuestion": 0,
+            "QuestionRandom": 0,
+            "OptionRandom": 0,
+            "PapersTestList": [
+                {
+                    "TestStoreId": "28b77ab1-beb1-4360-8215-ef8cc6f1d136",
+                    "TestScore": "1",
+                    "Content": "对股份支付协议的条款和条件进行修改时，如果修改增加了所授予的权益工具的公允价值，企业应按照权益工具公允价值的增加相应地确认取得服务的增加。（ ）",
+                    "Answer": "正确",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "判断题",
+                    "TestType": null,
+                    "NewTestType": "3",
+                    "AnalyticQuestions": "",
+                    "Title": "对股份支付协议的条款和条件进行修改时，如果修改增加了所授予的权益工具的公允价值，企业应按照权益工具公允价值的增加相应地确认取得服务的增加。（）",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "0",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "0740DAF1-D474-4C2D-8FAE-C047BA389C91",
+                    "AnswerList": [
+
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "512b8eb4-4c86-4f75-b83d-895aced7dbde",
+                    "TestScore": "1",
+                    "Content": "资本化期间内，外币专门借款本金和利息的汇兑差额应予以费用化。（ ）",
+                    "Answer": "错误",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "判断题",
+                    "TestType": null,
+                    "NewTestType": "3",
+                    "AnalyticQuestions": "在资本化期间内，外币专门借款本金及利息的汇兑差额应资本化。",
+                    "Title": "资本化期间内，外币专门借款本金和利息的汇兑差额应予以费用化。（）",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "1",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "0740DAF1-D474-4C2D-8FAE-C047BA389C91",
+                    "AnswerList": [
+
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "c160d172-8bf6-4255-ac4f-993cd74ee45c",
+                    "TestScore": "1",
+                    "Content": "企业取得与综合性项目相关的政府补助，且难以区分为与资产相关的部分和与收益相关的部分的，应整体归类为与资产相关的政府补助。（ ）",
+                    "Answer": "错误",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "判断题",
+                    "TestType": null,
+                    "NewTestType": "3",
+                    "AnalyticQuestions": "此时，应整体归类为与收益相关的政府补助进行处理。本题主要考查政府补助的分类。政府补助准则规定，企业不论通过何种形式取得的政府补助，在会计处理上应当划分为与资产相关的政府补助和与收益相关的政府补助。综合性项目政府补助，包含与资产相关的政府补助和与收益相关的政府补助，企业需要将其进行分解，并分别进行会计处理。难以区分的，应当将其整体归类为与收益相关的政府补助进行处理。",
+                    "Title": "企业取得与综合性项目相关的政府补助，且难以区分为与资产相关的部分和与收益相关的部分的，应整体归类为与资产相关的政府补助。（）",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "2",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "0740DAF1-D474-4C2D-8FAE-C047BA389C91",
+                    "AnswerList": [
+
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "0b56fb4c-7859-4ece-bf2a-a22933b16001",
+                    "TestScore": "1",
+                    "Content": "委托加工中收回应税消费品，连续生产加工高档应税消费品对外出售，收回后消费税应计入成本（ ）。",
+                    "Answer": "错误",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "判断题",
+                    "TestType": null,
+                    "NewTestType": "3",
+                    "AnalyticQuestions": "委托加工中收回应税消费品，连续生产加工高档应税消费品对外出售，收回后消费税应计入应交税费——应交消费税。",
+                    "Title": "委托加工中收回应税消费品，连续生产加工高档应税消费品对外出售，收回后消费税应计入成本（）。",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "3",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "0740DAF1-D474-4C2D-8FAE-C047BA389C91",
+                    "AnswerList": [
+
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "90bfafbd-3c87-449b-a8bd-fff5498cbb10",
+                    "TestScore": "1",
+                    "Content": "债务重组采用将债务转为权益工具方式进行的，债务人所清偿债务账面价值与权益工具确认金额之间的差额，应记入“其他收益”科目。（ ）",
+                    "Answer": "错误",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "判断题",
+                    "TestType": null,
+                    "NewTestType": "3",
+                    "AnalyticQuestions": "债务重组采用将债务转为权益工具方式进行的，债务人所清偿债务账面价值与权益工具确认金额之间的差额，应记入“投资收益”科目。",
+                    "Title": "债务重组采用将债务转为权益工具方式进行的，债务人所清偿债务账面价值与权益工具确认金额之间的差额，应记入“其他收益”科目。（）",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "4",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "0740DAF1-D474-4C2D-8FAE-C047BA389C91",
+                    "AnswerList": [
+
+                    ],
+                    "ChildrenTestList": null
+                }
+            ]
+        },
+        {
+            "Id": "3643f907-e3a0-44d5-b863-185adab75f58",
+            "PapersId": "02366045-f488-4cbc-b404-c484a9297bd7",
+            "TestType": 0,
+            "NewTestType": 4,
+            "TestTypeName": "简答题",
+            "TestTypeTitle": null,
+            "TestCount": "2",
+            "ScoreSum": "4",
+            "Sort": "3",
+            "TestTypeDescribe": "",
+            "ChoiceQuestion": 0,
+            "QuestionRandom": 0,
+            "OptionRandom": 0,
+            "PapersTestList": [
+                {
+                    "TestStoreId": "a704408c-23ae-4327-ab94-ce20bad38696",
+                    "TestScore": "2",
+                    "Content": "<p>测试简答题222<img src=\"https://lingjiang-mis1system-staging-data.oss-cn-beijing.aliyuncs.com/images/questionbank/2025/09/26/3d3ac64579144cb1b6b2531dae4cafa4.png\" alt=\"\" style=\"max-width: 100%;\"></p>",
+                    "Answer": "<img src=\"https://lingjiang-mis1system-staging-data.oss-cn-beijing.aliyuncs.com/images/questionbank/2025/09/26/aab0743b0c494e2ea272753378e5a2c7.png\" alt=\"\" style=\"max-width:100%;\"><u>答案</u>简答题<u>2</u>22<p><br></p>",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "简答题",
+                    "TestType": null,
+                    "NewTestType": "4",
+                    "AnalyticQuestions": "<p>解析简<img src=\"https://lingjiang-mis1system-staging-data.oss-cn-beijing.aliyuncs.com/images/questionbank/2025/09/26/5686d8cd553a4f99ae16b01c9865306e.png\" alt=\"\" style=\"max-width: 100%;\">答题222</p>",
+                    "Title": "测试简答题222",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "0",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "F8F95299-2AE2-46B2-B923-B86079B43242",
+                    "AnswerList": [
+
+                    ],
+                    "ChildrenTestList": null
+                },
+                {
+                    "TestStoreId": "a1cf2ff6-477d-4fb0-ab26-9eadf10519b8",
+                    "TestScore": "2",
+                    "Content": "<p>测试简答题11111</p>",
+                    "Answer": "<p>简答题答案111</p>",
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "简答题",
+                    "TestType": null,
+                    "NewTestType": "4",
+                    "AnalyticQuestions": "<p>简答题解析11</p>",
+                    "Title": "测试简答题11111",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "1",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "F8F95299-2AE2-46B2-B923-B86079B43242",
+                    "AnswerList": [
+
+                    ],
+                    "ChildrenTestList": null
+                }
+            ]
+        },
+        {
+            "Id": "aae6407b-1ff1-4638-95ad-c17e26afbb99",
+            "PapersId": "02366045-f488-4cbc-b404-c484a9297bd7",
+            "TestType": 0,
+            "NewTestType": 5,
+            "TestTypeName": "计算分析题",
+            "TestTypeTitle": null,
+            "TestCount": "2",
+            "ScoreSum": "20",
+            "Sort": "4",
+            "TestTypeDescribe": "",
+            "ChoiceQuestion": 0,
+            "QuestionRandom": 0,
+            "OptionRandom": 0,
+            "PapersTestList": [
+                {
+                    "TestStoreId": "b39845dc-c4c2-4c92-84be-7fcb00d99b47",
+                    "TestScore": "5",
+                    "Content": "<p>测试组合题全题型</p>",
+                    "Answer": null,
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "组合题",
+                    "TestType": null,
+                    "NewTestType": "5",
+                    "AnalyticQuestions": null,
+                    "Title": "<p>测试组合题全题型</p>",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "0",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                    "AnswerList": null,
+                    "ChildrenTestList": [
+                        {
+                            "TestStoreId": "ca3bd68a-197e-4ab8-80d1-bd236a2ae2d3",
+                            "TestScore": "1",
+                            "Content": "<p>展示单选题样式</p>",
+                            "Answer": "A",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": "922bc1b4-6fe7-4b00-bc85-3b370b713c18",
+                            "TestTypeName": "单选题",
+                            "TestType": null,
+                            "NewTestType": "1",
+                            "AnalyticQuestions": "<p>单选解析内容</p>",
+                            "Title": "<p>展示单选题样式</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "b39845dc-c4c2-4c92-84be-7fcb00d99b47",
+                            "Sort": "0",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                            "AnswerList": [
+                                {
+                                    "Id": "922bc1b4-6fe7-4b00-bc85-3b370b713c18",
+                                    "TestStoreId": "ca3bd68a-197e-4ab8-80d1-bd236a2ae2d3",
+                                    "Content": "<p>单选第一题子题选项</p>",
+                                    "Sort": 0,
+                                    "IsAnswer": true
+                                },
+                                {
+                                    "Id": "31b8c166-29fc-4d2a-b815-7d57ae19d258",
+                                    "TestStoreId": "ca3bd68a-197e-4ab8-80d1-bd236a2ae2d3",
+                                    "Content": "<p>单选第二子题选项</p><p>题</p>",
+                                    "Sort": 1,
+                                    "IsAnswer": false
+                                },
+                                {
+                                    "Id": "2b8ba1c7-e92f-4adf-9b35-5a6b302f55c9",
+                                    "TestStoreId": "ca3bd68a-197e-4ab8-80d1-bd236a2ae2d3",
+                                    "Content": "<p>单选第三题子题选项</p>",
+                                    "Sort": 2,
+                                    "IsAnswer": false
+                                },
+                                {
+                                    "Id": "676e9c76-ebc3-4ba9-9716-f179337847af",
+                                    "TestStoreId": "ca3bd68a-197e-4ab8-80d1-bd236a2ae2d3",
+                                    "Content": "<p>单选第四题子题选项</p>",
+                                    "Sort": 3,
+                                    "IsAnswer": false
+                                }
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "d67ea26e-e6a8-4c5b-8642-fe39ad709c62",
+                            "TestScore": "2",
+                            "Content": "<p>展示多选题样式</p>",
+                            "Answer": "A,B",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": "7054de99-c43a-44b7-b22c-6583c1a161e8,0390856e-36f8-453d-b7d6-bd3d1fa3eeaf",
+                            "TestTypeName": "多选题",
+                            "TestType": null,
+                            "NewTestType": "2",
+                            "AnalyticQuestions": "<p>多选题解析</p>",
+                            "Title": "<p>展示多选题样式</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "b39845dc-c4c2-4c92-84be-7fcb00d99b47",
+                            "Sort": "1",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                            "AnswerList": [
+                                {
+                                    "Id": "7054de99-c43a-44b7-b22c-6583c1a161e8",
+                                    "TestStoreId": "d67ea26e-e6a8-4c5b-8642-fe39ad709c62",
+                                    "Content": "<p>多选选第一题子题选项</p>",
+                                    "Sort": 0,
+                                    "IsAnswer": true
+                                },
+                                {
+                                    "Id": "0390856e-36f8-453d-b7d6-bd3d1fa3eeaf",
+                                    "TestStoreId": "d67ea26e-e6a8-4c5b-8642-fe39ad709c62",
+                                    "Content": "<p>多选选第二题子题选项</p>",
+                                    "Sort": 1,
+                                    "IsAnswer": true
+                                },
+                                {
+                                    "Id": "02483ba6-37b4-4fab-a31f-95812756cb61",
+                                    "TestStoreId": "d67ea26e-e6a8-4c5b-8642-fe39ad709c62",
+                                    "Content": "<p>多选选第三题子题选项</p>",
+                                    "Sort": 2,
+                                    "IsAnswer": false
+                                },
+                                {
+                                    "Id": "2818804b-ab9f-4b69-917b-b29760b13245",
+                                    "TestStoreId": "d67ea26e-e6a8-4c5b-8642-fe39ad709c62",
+                                    "Content": "<p>多选选第四题子题选项</p>",
+                                    "Sort": 3,
+                                    "IsAnswer": false
+                                }
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "4413f142-6285-4349-b42f-ef5314e24412",
+                            "TestScore": "2",
+                            "Content": "<p>展示问答题样式</p>",
+                            "Answer": "<p>问答题答案</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p>问答题解析</p>",
+                            "Title": "<p>展示问答题样式</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "b39845dc-c4c2-4c92-84be-7fcb00d99b47",
+                            "Sort": "2",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        }
+                    ]
+                },
+                {
+                    "TestStoreId": "54d8247c-a8b0-4bf2-a4d9-601788145ca2",
+                    "TestScore": "15",
+                    "Content": "<p>甲公司为增值税一般纳税人，适用的增值税税率为13%，2024年发生的部分交易或事项如下：</p><p>资料一：2024年1月1日，甲公司与乙公司签订合同，约定甲公司于3年后向乙公司交付一批A产品，如果乙公司在2024年1月1日付款，则需要支付800万元；如果乙公司在3年后付款，则需要支付900万元。乙公司选择在2024年1月1日付款，实际利率为4%。乙公司在实际收到X产品时取得其控制权。假设该事项不考虑增值税因素。</p><p>资料二：2024年2月1日，甲公司与丙公司签订合同，向其销售1 000件Y产品，总售价为600万元，总成本为400万元。当日，甲公司将Y产品交付丙公司，同时收到丙公司支付的款项。甲公司承诺该批产品自售出起1年内如果发生非意外事件造成的故障或质量问题，甲公司负责免费维修；同时，还承诺免费提供3年延保服务，市场上单独购买3年延保服务需要支付25万元。根据相关法律规定，Y产品的法定质保期为1年。甲公司根据以往经验估计Y产品在法定保修期内很可能发生的保修费用为8万元。</p><p>资料三：2024年11月1日，甲公司与丁公司签订合同，向其销售Z产品10 000件，单位销售价格为1万元，单位成本为0.7万元，产品已经发出，款项已收存银行。根据销售合同约定，在2025年2月1日之前丁公司有权退还产品。当日，甲公司根据以往经验估计该批Z产品的退货率为10%。2024年11月30日，甲公司对退货率进行了重新评估，将退货率调整为6%。</p><p>本题不考虑其他因素。</p>",
+                    "Answer": null,
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "组合题",
+                    "TestType": null,
+                    "NewTestType": "5",
+                    "AnalyticQuestions": null,
+                    "Title": "<p>甲公司为增值税一般纳税人，适用的增值税税率为13%，2024年发生的部分交易或事项如下：</p><p>资料一：2024年1月1日，甲公司与乙公司签订合同，约定甲公司于3年后向乙公司交付一批A产品，如果乙公司在2024年1月1日付款，则需要支付800万元；如果乙公司在3年后付款，则需要支付900万元。乙公司选择在2024年1月1日付款，实际利率为4%。乙公司在实际收到X产品时取得其控制权。假设该事项不考虑增值税因素。</p><p>资料二：2024年2月1日，甲公司与丙公司签订合同，向其销售1 000件Y产品，总售价为600万元，总成本为400万元。当日，甲公司将Y产品交付丙公司，同时收到丙公司支付的款项。甲公司承诺该批产品自售出起1年内如果发生非意外事件造成的故障或质量问题，甲公司负责免费维修；同时，还承诺免费提供3年延保服务，市场上单独购买3年延保服务需要支付25万元。根据相关法律规定，Y产品的法定质保期为1年。甲公司根据以往经验估计Y产品在法定保修期内很可能发生的保修费用为8万元。</p><p>资料三：2024年11月1日，甲公司与丁公司签订合同，向其销售Z产品10 000件，单位销售价格为1万元，单位成本为0.7万元，产品已经发出，款项已收存银行。根据销售合同约定，在2025年2月1日之前丁公司有权退还产品。当日，甲公司根据以往经验估计该批Z产品的退货率为10%。2024年11月30日，甲公司对退货率进行了重新评估，将退货率调整为6%。</p><p>本题不考虑其他因素。</p>",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "1",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                    "AnswerList": null,
+                    "ChildrenTestList": [
+                        {
+                            "TestStoreId": "50b4a859-16c5-4e86-b4e2-44d81cb28121",
+                            "TestScore": "2",
+                            "Content": "<p>根据资料一，编制甲公司2024年1月1日收到乙公司支付款项的会计分录。</p>",
+                            "Answer": "<p>2024年1月1日：</p><p>借：银行存款800</p><p>&nbsp; &nbsp; &nbsp; &nbsp;未确认融资费用100</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：合同负债900（2分）</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>根据资料一，编制甲公司2024年1月1日收到乙公司支付款项的会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "54d8247c-a8b0-4bf2-a4d9-601788145ca2",
+                            "Sort": "0",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "4740d3f4-bbe4-4ebe-b4e9-873e247360b7",
+                            "TestScore": "7",
+                            "Content": "<p>根据资料二，判断甲公司销售Y产品的合同中包含几项履约义务，计算各单项履约义务应分摊的交易价格，并编制与该业务相关的会计分录。</p>",
+                            "Answer": "<p>该项合同中包含两项单项履约义务，一是Y产品的销售及法定质保，二是延保服务。（1分）</p><p>Y产品的销售及法定质保应分摊的交易价格＝600×600/（600＋25）＝576（万元）（1分）</p><p>延保服务应分摊的交易价格＝600×25/（600＋25）＝24（万元）（1分）</p><p>借：银行存款678</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：主营业务收入576</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 合同负债24</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 应交税费——应交增值税（销项税额）（600×13%）78（2分）</p><p>借：主营业务成本400</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：库存商品400（1分）</p><p>借：主营业务成本8</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：预计负债8（1分）</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>根据资料二，判断甲公司销售Y产品的合同中包含几项履约义务，计算各单项履约义务应分摊的交易价格，并编制与该业务相关的会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "54d8247c-a8b0-4bf2-a4d9-601788145ca2",
+                            "Sort": "1",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "6fd0fe67-b7c4-405e-a798-d1db0d900ba6",
+                            "TestScore": "4",
+                            "Content": "<p>根据资料三，编制甲公司2024年11月1日销售Z产品的会计分录。</p>",
+                            "Answer": "<p>借：银行存款11 300</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：主营业务收入9 000（10 000×1×90%）</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 预计负债1000（10 000×1×10%）</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 应交税费——应交增值税（销项税额）1 300（10 000×1×13%）（2分）</p><p>借：主营业务成本6 300（10 000×0.7×90%）</p><p>&nbsp; &nbsp; &nbsp; &nbsp;应收退货成本700（10 000×0.7×10%）</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：库存商品7 000（10 000×0.7）（2分）</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>根据资料三，编制甲公司2024年11月1日销售Z产品的会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "54d8247c-a8b0-4bf2-a4d9-601788145ca2",
+                            "Sort": "2",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "af5b43f7-8393-4bc4-b729-b4580df72284",
+                            "TestScore": "2",
+                            "Content": "<p>根据资料三，编制甲公司2024年11月30日对Z产品退货率重新评估的调整分录。</p>",
+                            "Answer": "<p>借：预计负债400[10 000×1×（10%－6%）]</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：主营业务收入400（1分）</p><p>借：主营业务成本280[10 000×0.7×（10%－6%）]</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：应收退货成本280（1分）</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>根据资料三，编制甲公司2024年11月30日对Z产品退货率重新评估的调整分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "54d8247c-a8b0-4bf2-a4d9-601788145ca2",
+                            "Sort": "3",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Id": "bcd5e244-8fc2-4adf-a4e0-58f2aa3b4d5b",
+            "PapersId": "02366045-f488-4cbc-b404-c484a9297bd7",
+            "TestType": 0,
+            "NewTestType": 5,
+            "TestTypeName": "综合题",
+            "TestTypeTitle": null,
+            "TestCount": "3",
+            "ScoreSum": "39",
+            "Sort": "5",
+            "TestTypeDescribe": "",
+            "ChoiceQuestion": 0,
+            "QuestionRandom": 0,
+            "OptionRandom": 0,
+            "PapersTestList": [
+                {
+                    "TestStoreId": "07262a80-3d53-464b-91ff-809aef2cf612",
+                    "TestScore": "12",
+                    "Content": "<p>1.2023年1月1日，甲公司自证券市场购入乙公司同日发行的面值总额为2000万元的债券，购入时实际支付价款2078.98万元，另支付交易费用10万元。该债券系分期付息、到期还本债券，期限为5年，票面年利率为5%，实际年利率为4%，每年12月31日支付当年利息。甲公司将该债券分类为以公允价值计量且其变动计入其他综合收益的金融资产，至2023年12月31日，甲公司确认的预期信用损失准备为20万元，其公允价值为2080万元。甲公司于2024年1月1日变更了债券管理的业务模式，将其重分类为以摊余成本计量的金融资产，至2024年12月31日，甲公司确认的预期信用损失准备余额为50万元。</p><p>假定本题投资收益根据金融资产账面余额乘以实际利率计算确定，不考虑其他因素。</p><p>要求：</p>",
+                    "Answer": null,
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "组合题",
+                    "TestType": null,
+                    "NewTestType": "5",
+                    "AnalyticQuestions": null,
+                    "Title": "<p>1.2023年1月1日，甲公司自证券市场购入乙公司同日发行的面值总额为2000万元的债券，购入时实际支付价款2078.98万元，另支付交易费用10万元。该债券系分期付息、到期还本债券，期限为5年，票面年利率为5%，实际年利率为4%，每年12月31日支付当年利息。甲公司将该债券分类为以公允价值计量且其变动计入其他综合收益的金融资产，至2023年12月31日，甲公司确认的预期信用损失准备为20万元，其公允价值为2080万元。甲公司于2024年1月1日变更了债券管理的业务模式，将其重分类为以摊余成本计量的金融资产，至2024年12月31日，甲公司确认的预期信用损失准备余额为50万元。</p><p>假定本题投资收益根据金融资产账面余额乘以实际利率计算确定，不考虑其他因素。</p><p>要求：</p>",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "0",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                    "AnswerList": null,
+                    "ChildrenTestList": [
+                        {
+                            "TestStoreId": "cd8de154-e4fb-46f7-9f4d-950877e7905a",
+                            "TestScore": "2",
+                            "Content": "<p>编制甲公司2023年1月1日购入乙公司债券的会计分录。</p>",
+                            "Answer": "<p>借：其他债权投资—成本2000</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;—利息调整88.98</p><p>&nbsp;&nbsp;&nbsp;&nbsp;贷：银行存款2088.98</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>编制甲公司2023年1月1日购入乙公司债券的会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "07262a80-3d53-464b-91ff-809aef2cf612",
+                            "Sort": "0",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "ba5f260e-db56-4cde-8954-c5fee4f93209",
+                            "TestScore": "2",
+                            "Content": "<p>计算甲公司2023年应确认的投资收益，并编制相关会计分录。</p>",
+                            "Answer": "<p>2023年应确认投资收益=2088.98×4%=83.56（万元）。</p><p>借：其他债权投资-应计利息100（2000×5%）</p><p>&nbsp;&nbsp;&nbsp;&nbsp;贷：投资收益83.56</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;其他债权投资—利息调整16.44</p><p>借：银行存款100</p><p>&nbsp;&nbsp;&nbsp;&nbsp;贷：其他债权投资-应计利息100</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>计算甲公司2023年应确认的投资收益，并编制相关会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "07262a80-3d53-464b-91ff-809aef2cf612",
+                            "Sort": "1",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "8dfb6ff5-9d9a-4f36-bd84-04c88fd9c259",
+                            "TestScore": "2",
+                            "Content": "<p>编制甲公司2023年12月31日公允价值变动及确认预期信用损失的会计分录。</p>",
+                            "Answer": "<p>公允价值变动前该金融资产的账面余额=2088.98+83.56-100=2072.54（万元），应确认的公允价值变动金额=2080-2072.54=7.46（万元）。</p><p>借：其他债权投资—公允价值变动7.46</p><p>&nbsp;&nbsp;&nbsp;&nbsp;贷：其他综合收益—其他债权投资公允价值变动7.46</p><p>借：信用减值损失20</p><p>&nbsp;&nbsp;&nbsp;&nbsp;贷：其他综合收益—信用减值准备20</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>编制甲公司2023年12月31日公允价值变动及确认预期信用损失的会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "07262a80-3d53-464b-91ff-809aef2cf612",
+                            "Sort": "2",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "b9c58dbc-6505-4c13-a016-408df451ed18",
+                            "TestScore": "2",
+                            "Content": "<p>编制甲公司2024年1月1日重分类时的会计分录。</p>",
+                            "Answer": "<p>借：债权投资—成本2000</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;—利息调整72.54</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;其他综合收益—其他债权投资公允价值变动7.46</p><p>&nbsp;&nbsp;&nbsp;&nbsp;贷：其他债权投资—成本2000</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;—利息调整72.54（88.98-16.44）</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;—公允价值变动7.46</p><p>借：其他综合收益—信用减值准备20</p><p>&nbsp;&nbsp;&nbsp;&nbsp;贷：债权投资减值准备20</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>编制甲公司2024年1月1日重分类时的会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "07262a80-3d53-464b-91ff-809aef2cf612",
+                            "Sort": "3",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "7be17fdf-addc-43d7-8b92-4507aab5650b",
+                            "TestScore": "2",
+                            "Content": "<p>计算甲公司2024年应确认的投资收益，并编制相关会计分录。</p>",
+                            "Answer": "<p>2024年应确认投资收益=2072.54×4%=82.90（万元）。</p><p>借：债权投资-应计利息100（2000×5%）</p><p>&nbsp;&nbsp;&nbsp;&nbsp;贷：投资收益82.90</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;债权投资—利息调整17.10</p><p>借：银行存款100</p><p>&nbsp;&nbsp;&nbsp;&nbsp;贷：债权投资-应计利息100</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>计算甲公司2024年应确认的投资收益，并编制相关会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "07262a80-3d53-464b-91ff-809aef2cf612",
+                            "Sort": "4",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "251448ae-3653-4f38-b69c-a0350ed93354",
+                            "TestScore": "2",
+                            "Content": "<p>编制甲公司2024年12月31日确认预期信用损失的会计分录。</p>",
+                            "Answer": "<p>借：信用减值损失30</p><p>&nbsp;&nbsp;&nbsp;&nbsp;贷：债权投资减值准备30（50-20）</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>编制甲公司2024年12月31日确认预期信用损失的会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "07262a80-3d53-464b-91ff-809aef2cf612",
+                            "Sort": "5",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        }
+                    ]
+                },
+                {
+                    "TestStoreId": "b7353758-400c-4647-9889-b93b107a83ff",
+                    "TestScore": "10",
+                    "Content": "<p>2025年3月1日，公司L购入公司M全部股权，支付价款1 600万元。购入该股权之前，公司L的管理层已经做出决议，一旦购入公司M，将在一年内将其出售给公司N，公司M当前状况下即可立即出售。预计公司L还将为出售该子公司支付12万元的出售费用。公司L与公司N计划于2025年3月31日签署股权转让合同。</p><p>情形一：公司L与公司N初步议定股权转让价格为1 620万元。</p><p>情形二：公司L尚未与公司N议定转让价格，购买日股权公允价值与支付价款一致。</p>",
+                    "Answer": null,
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "组合题",
+                    "TestType": null,
+                    "NewTestType": "5",
+                    "AnalyticQuestions": null,
+                    "Title": "<p>2025年3月1日，公司L购入公司M全部股权，支付价款1 600万元。购入该股权之前，公司L的管理层已经做出决议，一旦购入公司M，将在一年内将其出售给公司N，公司M当前状况下即可立即出售。预计公司L还将为出售该子公司支付12万元的出售费用。公司L与公司N计划于2025年3月31日签署股权转让合同。</p><p>情形一：公司L与公司N初步议定股权转让价格为1 620万元。</p><p>情形二：公司L尚未与公司N议定转让价格，购买日股权公允价值与支付价款一致。</p>",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "1",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                    "AnswerList": null,
+                    "ChildrenTestList": [
+                        {
+                            "TestStoreId": "41c4910c-7858-487c-ba2b-fac27250a425",
+                            "TestScore": "10",
+                            "Content": "<p>说明情形一、二下的会计处理?</p>",
+                            "Answer": "<p>情形一：公司M是专为转售而取得的子公司，划分为持有待售类别情况下的初始计量金额应当为1 600万元，当日公允价值减去出售费用后的净额为1 608万元，按照二者孰低计量。</p><p>公司L 2025年3月1日的账务处理如下：</p><p>借：持有待售资产——长期股权投资&nbsp; 16 000 000</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：银行存款&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 16 000 000</p><p>情形二：公司M是专为转售而取得的子公司，划分为持有待售类别情况下的初始计量金额为1 600万元，当日公允价值减去出售费用后的净额为1 588万元，按照二者孰低计量。</p><p>公司L 2025年3月1日的账务处理如下：</p><p>借：持有待售资产——长期股权投资15 880 000</p><p>&nbsp; &nbsp; &nbsp; &nbsp;资产减值损失&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 120 000</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：银行存款&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;16 000 000</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>说明情形一、二下的会计处理?</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "b7353758-400c-4647-9889-b93b107a83ff",
+                            "Sort": "0",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "82BF7E1E-0ED3-40DD-8618-AF8A0FFE7CB1",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        }
+                    ]
+                },
+                {
+                    "TestStoreId": "ef812a35-2b64-40aa-ab03-b88375034eea",
+                    "TestScore": "17",
+                    "Content": "<p>甲公司系增值税一般纳税人。2023年1月1日，甲公司存货余额为零，采用实际成本法核算。2023年，甲公司发生的与存货有关的交易和事项如下：</p><p>资料一：2023年2月1日，甲公司购入2&nbsp;000件A商品，取得的增值税专用发票上注明的价款为95万元，增值税税额为12.35万元。甲公司支付运费并取得增值税专用发票上注明价款为5万元，增值税税额为0.45万元。当日，A商品已验收入库，相关款项均以银行存款支付。</p><p>资料二：2023年4月5日，甲公司与乙公司签订委托代销合同，委托乙公司对外销售A商品500件。合同约定甲公司按不含增值税销售价款的一定比例给乙公司支付代销手续费。当日，A商品已发出。2023年4月30日，甲公司收到乙公司开出的代销清单，乙公司已对外销售A商品400件。甲公司与乙公司结算相应货款并向乙公司开出增值税专用发票，价款为22万元，增值税税额为2.86万元，款项已存入银行。</p><p>资料三：2023年6月10日，甲公司向丙公司销售200件A商品，约定丙公司以其生产的B设备作为非现金对价支付。当日甲公司将200件A商品控制权转移给丙公司，并将收到的B设备作为固定资产核算，双方均已办理完相关产权交付手续。200件A商品的市场价格和计税价格均为11万元，B设备公允价值为11万元。双方按公允价值开出增值税专用发票，增值税税额均为1.43万元。</p><p>资料四：2023年8月20日，甲公司与丁公司签订债务重组协议，甲公司以600件A商品抵偿所欠丁公司40万元应付账款。2023年8月25日，甲公司将A商品控制权转移给丁公司，并开具增值税专用发票，价款为33万元，增值税税额为4.29万元，债务重组协议履行完毕。</p><p>资料五：2023年12月31日，甲公司库存A商品成本为40万元，预计售价为38万元，销售费用2万元。</p><p>假定不考虑除增值税以外的税费及其他因素。</p>",
+                    "Answer": null,
+                    "MyAnswer": null,
+                    "MyGrade": 0,
+                    "MarkingContent": null,
+                    "AnswerId": null,
+                    "TestTypeName": "组合题",
+                    "TestType": null,
+                    "NewTestType": "5",
+                    "AnalyticQuestions": null,
+                    "Title": "<p>甲公司系增值税一般纳税人。2023年1月1日，甲公司存货余额为零，采用实际成本法核算。2023年，甲公司发生的与存货有关的交易和事项如下：</p><p>资料一：2023年2月1日，甲公司购入2&nbsp;000件A商品，取得的增值税专用发票上注明的价款为95万元，增值税税额为12.35万元。甲公司支付运费并取得增值税专用发票上注明价款为5万元，增值税税额为0.45万元。当日，A商品已验收入库，相关款项均以银行存款支付。</p><p>资料二：2023年4月5日，甲公司与乙公司签订委托代销合同，委托乙公司对外销售A商品500件。合同约定甲公司按不含增值税销售价款的一定比例给乙公司支付代销手续费。当日，A商品已发出。2023年4月30日，甲公司收到乙公司开出的代销清单，乙公司已对外销售A商品400件。甲公司与乙公司结算相应货款并向乙公司开出增值税专用发票，价款为22万元，增值税税额为2.86万元，款项已存入银行。</p><p>资料三：2023年6月10日，甲公司向丙公司销售200件A商品，约定丙公司以其生产的B设备作为非现金对价支付。当日甲公司将200件A商品控制权转移给丙公司，并将收到的B设备作为固定资产核算，双方均已办理完相关产权交付手续。200件A商品的市场价格和计税价格均为11万元，B设备公允价值为11万元。双方按公允价值开出增值税专用发票，增值税税额均为1.43万元。</p><p>资料四：2023年8月20日，甲公司与丁公司签订债务重组协议，甲公司以600件A商品抵偿所欠丁公司40万元应付账款。2023年8月25日，甲公司将A商品控制权转移给丁公司，并开具增值税专用发票，价款为33万元，增值税税额为4.29万元，债务重组协议履行完毕。</p><p>资料五：2023年12月31日，甲公司库存A商品成本为40万元，预计售价为38万元，销售费用2万元。</p><p>假定不考虑除增值税以外的税费及其他因素。</p>",
+                    "IsCollect": null,
+                    "IsError": null,
+                    "ParentId": null,
+                    "Sort": "2",
+                    "QuestionClass": null,
+                    "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                    "AnswerList": null,
+                    "ChildrenTestList": [
+                        {
+                            "TestStoreId": "5b2d670d-308d-4265-a6f8-71ceb7968582",
+                            "TestScore": "3",
+                            "Content": "<p>分别计算2023年2月1日甲公司取得A商品的初始入账价值及单位成本，并编制相关会计分录。</p>",
+                            "Answer": "<p>2023年2月1日，甲公司取得A商品的初始入账价值＝95＋5＝100（万元）</p><p>单位成本＝100/2000＝0.05（万元）</p><p>借：库存商品&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 100</p><p>&nbsp; &nbsp; &nbsp; &nbsp;应交税费——应交增值税（进项税额）12.8</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：银行存款&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 112.8</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>分别计算2023年2月1日甲公司取得A商品的初始入账价值及单位成本，并编制相关会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "ef812a35-2b64-40aa-ab03-b88375034eea",
+                            "Sort": "0",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "c8b806e4-af81-4b37-9fb0-62d8ee82a8a8",
+                            "TestScore": "2.5",
+                            "Content": "<p>编制甲公司2023年4月5日发出委托代销商品的会计分录。</p>",
+                            "Answer": "<p>借：发出商品（500×0.05）25</p><p>&nbsp; &nbsp; &nbsp; &nbsp; 贷：库存商品&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 25</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>编制甲公司2023年4月5日发出委托代销商品的会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "ef812a35-2b64-40aa-ab03-b88375034eea",
+                            "Sort": "1",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "f186a065-db02-42e4-a2cf-f2baa2bd34cf",
+                            "TestScore": "3",
+                            "Content": "<p>编制甲公司2023年4月30日收到代销清单时确认收入并结转销售成本的会计分录。</p>",
+                            "Answer": "<p>借：银行存款&nbsp; 24.86</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：主营业务收入&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 22</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;应交税费——应交增值税（销项税额）2.86</p><p>借：主营业务成本 20</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：发出商品（400×0.05）20</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>编制甲公司2023年4月30日收到代销清单时确认收入并结转销售成本的会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "ef812a35-2b64-40aa-ab03-b88375034eea",
+                            "Sort": "2",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "127b05f7-d4e2-4932-9baf-ebe145522693",
+                            "TestScore": "3",
+                            "Content": "<p>编制甲公司2023年6月10日销售A商品时确认收入并结转销售成本的会计分录。</p>",
+                            "Answer": "<p>借：固定资产&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 11</p><p>&nbsp; &nbsp; &nbsp; &nbsp;应交税费——应交增值税（进项税额）1.43</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：主营业务收入&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;11</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 应交税费——应交增值税（销项税额）&nbsp; 1.43</p><p>借：主营业务成本10</p><p>&nbsp; &nbsp; &nbsp; &nbsp; 贷：库存商品（200×0.05）10</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>编制甲公司2023年6月10日销售A商品时确认收入并结转销售成本的会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "ef812a35-2b64-40aa-ab03-b88375034eea",
+                            "Sort": "3",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "eb2a8d9f-bb59-4136-bf79-61a731b7fcd0",
+                            "TestScore": "3",
+                            "Content": "<p>计算甲公司2023年8月25日应确认的债务重组损益，并编制相关会计分录。</p>",
+                            "Answer": "<p>2023年8月25日甲公司确认的债务重组损益＝40－600×0.05－4.29＝5.71（万元）</p><p>借：应付账款&nbsp; 40</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：库存商品&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;（600×0.05）30</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 应交税费——应交增值税（销项税额）4.29</p><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 其他收益&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 5.71</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>计算甲公司2023年8月25日应确认的债务重组损益，并编制相关会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "ef812a35-2b64-40aa-ab03-b88375034eea",
+                            "Sort": "4",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        },
+                        {
+                            "TestStoreId": "a5452814-0d8e-4d67-9338-7c9b3c3b0a2f",
+                            "TestScore": "2.5",
+                            "Content": "<p>计算甲公司2023年12月31日应计提的存货跌价准备金额，并编制相关会计分录。</p>",
+                            "Answer": "<p>2023年12月31日，甲公司A商品成本为40万元，可变现净值＝38－2＝36（万元），应计提存货跌价准备＝40－36＝4（万元）。</p><p>借：资产减值损失4</p><p>&nbsp; &nbsp; &nbsp; &nbsp;贷：存货跌价准备4</p>",
+                            "MyAnswer": null,
+                            "MyGrade": 0,
+                            "MarkingContent": null,
+                            "AnswerId": null,
+                            "TestTypeName": "简答题",
+                            "TestType": null,
+                            "NewTestType": "4",
+                            "AnalyticQuestions": "<p><br></p>",
+                            "Title": "<p>计算甲公司2023年12月31日应计提的存货跌价准备金额，并编制相关会计分录。</p>",
+                            "IsCollect": null,
+                            "IsError": null,
+                            "ParentId": "ef812a35-2b64-40aa-ab03-b88375034eea",
+                            "Sort": "5",
+                            "QuestionClass": null,
+                            "SubjectTestTypeId": "C0662E51-C40F-4457-854C-CCE8920221CE",
+                            "AnswerList": [
+
+                            ],
+                            "ChildrenTestList": null
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "ShowDoTime": true,
+    "ShowScore": false
+}

@@ -1,0 +1,31 @@
+{
+    "compilerOptions":  {
+                            "target":  "ESNext",
+                            "module":  "ESNext",
+                            "moduleResolution":  "Node",
+                            "lib":  [
+                                        "ESNext",
+                                        "DOM"
+                                    ],
+                            "esModuleInterop":  true,
+                            "allowSyntheticDefaultImports":  true,
+                            "resolveJsonModule":  true,
+                            "strict":  true,
+                            "skipLibCheck":  true,
+                            "forceConsistentCasingInFileNames":  true,
+                            "baseUrl":  ".",
+                            "paths":  {
+                                          "@/*":  [
+                                                      "src/*"
+                                                  ]
+                                      },
+                            "types":  [
+                                          "vue",
+                                          "vite/client"
+                                      ]
+                        },
+    "include":  [
+                    "src/**/*",
+                    "paperJson/**/*.json"
+                ]
+}

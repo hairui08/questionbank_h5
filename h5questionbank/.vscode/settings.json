@@ -1,0 +1,5 @@
+﻿{
+  "vetur.useWorkspaceDependencies": true,
+  "vetur.experimental.templateInterpolationService": true
+}
+
