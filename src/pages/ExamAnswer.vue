@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="paperReady" class="exam-page" :style="pageStyle">
     <div class="exam-header">
       <div class="header-row">
@@ -23,7 +23,9 @@
       </div>
       <div class="header-row">
         <span class="test-type">{{ currentQuestionTypeName }}</span>
-        <span class="test-progress">{{ currentQuestionNumber }}/{{ totalQuestionCount }}</span>
+        <span class="test-progress">
+          <span class="progress-current">{{ currentQuestionNumber }}</span>/<span class="progress-total">{{ totalQuestionCount }}</span>
+        </span>
       </div>
     </div>
 
@@ -284,20 +286,29 @@
           <span>答题卡</span>
           <button class="icon-button" type="button" @click="answerCardOpen = false">关闭</button>
         </div>
-        <div class="answer-card-grid">
-          <button
-            v-for="(question, index) in topLevelQuestions"
-            :key="question.answerKey"
-            class="card-item"
-            :class="{
-              done: isQuestionAnswered(question),
-              active: currentQuestion?.answerKey === question.answerKey
-            }"
-            type="button"
-            @click="goToQuestion(index)"
+        <div class="answer-card-groups">
+          <section
+            v-for="group in answerCardGroups"
+            :key="group.typeName"
+            class="answer-card-group"
           >
-            {{ question.number }}
-          </button>
+            <div class="card-group-title">{{ group.typeName }}</div>
+            <div class="answer-card-grid">
+              <button
+                v-for="item in group.items"
+                :key="item.question.answerKey"
+                class="card-item"
+                :class="{
+                  done: isQuestionAnswered(item.question),
+                  active: currentQuestion?.answerKey === item.question.answerKey
+                }"
+                type="button"
+                @click="goToQuestion(item.index)"
+              >
+                {{ item.question.number }}
+              </button>
+            </div>
+          </section>
         </div>
       </div>
     </transition>
@@ -362,6 +373,31 @@ const currentQuestionTypeName = computed(() => currentQuestion.value?.testTypeNa
 const lastQuestionIndex = computed(() => Math.max(0, topLevelQuestions.length - 1));
 
 const paperReady = computed(() => topLevelQuestions.length > 0);
+const answerCardGroups = computed(() => {
+  const groups: Array<{
+    typeName: string;
+    items: Array<{ question: NormalizedQuestion; index: number }>;
+  }> = [];
+  const groupIndexMap = new Map<string, number>();
+
+  topLevelQuestions.forEach((question, index) => {
+    const typeName = question.testTypeName || "其他";
+    let groupIndex = groupIndexMap.get(typeName);
+
+    if (groupIndex === undefined) {
+      groupIndex = groups.length;
+      groupIndexMap.set(typeName, groupIndex);
+      groups.push({
+        typeName,
+        items: [],
+      });
+    }
+
+    groups[groupIndex].items.push({ question, index });
+  });
+
+  return groups;
+});
 
 const countdownSeconds = ref(Math.max(0, Math.floor(answerTimeMinutes * 60)));
 const countdownText = computed(() => formatSeconds(countdownSeconds.value));
@@ -762,7 +798,15 @@ function toSerializableAnswers() {
 }
 
 .test-progress {
-  color: #666666;
+  color: rgba(56, 56, 56, 1);
+}
+
+.test-progress .progress-current {
+  color: rgba(237, 77, 68, 1);
+}
+
+.test-progress .progress-total {
+  color: rgba(56, 56, 56, 1);
 }
 
 .question-wrapper {
@@ -828,14 +872,19 @@ function toSerializableAnswers() {
 }
 
 /* 将 is-active 与 is-answer 统一为绿色主题容器（对齐解析页） */
-.option-item.is-active,
-.option-item.is-answer {
-  background: rgba(7, 193, 96, 1);
-  border-color: rgba(7, 193, 96, 1);
+.option-item.is-active
+{
+  background: rgba(229, 229, 229, 1);
+  border-color: rgba(229, 229, 229, 1);
   color: rgba(56, 56, 56, 1);
 }
-.option-item.is-active .option-content,
-.option-item.is-answer .option-content {
+
+.option-item.is-active .option-label{
+  color: rgba(255, 255, 255, 1);
+  background: rgba(128, 128, 128, 1)
+}
+
+.option-item.is-active .option-content{
   color: rgba(56, 56, 56, 1);
 }
 
@@ -850,8 +899,8 @@ function toSerializableAnswers() {
 }
 
 .option-item.is-correct {
-  background: #e6fffb;
-  border-color: #13c2c2;
+  background: rgba(7, 193, 96, 1);
+  border-color: rgba(7, 193, 96, 1);
 }
 
 .option-item.is-wrong {
@@ -885,6 +934,12 @@ function toSerializableAnswers() {
   border-radius: 6px;
 }
 
+.option-item.is-answer {
+  background: rgba(7, 193, 96, 1);
+  border-color: rgba(7, 193, 96, 1);
+  color: rgba(56, 56, 56, 1);
+}
+
 /* 左侧字母标识：选中/正确答案都显示白底绿勾，隐藏字母 */
 .option-item.is-answer .option-label {
   position: relative;
@@ -893,6 +948,10 @@ function toSerializableAnswers() {
   color: rgba(7, 193, 96, 1) !important;
   font-family: Arial, sans-serif;
   font-weight: bold;
+}
+
+.option-item.is-answer .option-content {
+  color: rgba(255, 255, 255, 1);
 }
 
 .option-item.is-answer .option-label::after {
@@ -1001,6 +1060,9 @@ function toSerializableAnswers() {
   font-weight: 500;
   font-size: 15px;
   color: rgba(56, 56, 56, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 /* 同行展示 正确答案 / 我的答案 */
 .analysis-row.answers {
@@ -1059,6 +1121,19 @@ function toSerializableAnswers() {
   font-size: 15px;
   color: rgba(56, 56, 56, 1);
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.analysis-title::before,
+.analysis-subtitle::before {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 10px;
+  border: 1px solid rgba(166, 166, 166, 1);
+  background: rgba(166, 166, 166, 1);
 }
 
 .analysis-rich {
@@ -1091,6 +1166,7 @@ function toSerializableAnswers() {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 65px;
   gap: 8px;
   padding: 12px 8px;
   color: #9aa0a6;
@@ -1125,7 +1201,7 @@ function toSerializableAnswers() {
   width: 22px;
   height: 22px;
   display: block;
-  color: currentColor;
+  color: rgba(0, 0, 0, 1);
   stroke: currentColor;
   fill: currentColor !important; /* 修复省略号圆点不可见 */
 }
@@ -1217,6 +1293,24 @@ function toSerializableAnswers() {
   justify-content: space-between;
   align-items: center;
   font-weight: 600;
+}
+
+.answer-card-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.answer-card-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-group-title {
+  font-weight: 600;
+  color: #1f1f1f;
+  font-size: 14px;
 }
 
 .answer-card-grid {

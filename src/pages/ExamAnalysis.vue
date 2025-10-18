@@ -22,7 +22,9 @@
       </div>
       <div class="header-row">
         <span class="test-type">{{ currentQuestionTypeName }}</span>
-        <span class="test-progress">{{ currentQuestionNumber }}/{{ totalQuestionCount }}</span>
+        <span class="test-progress">
+          <span class="progress-current">{{ currentQuestionNumber }}</span>/<span class="progress-total">{{ totalQuestionCount }}</span>
+        </span>
       </div>
     </div>
 
@@ -193,6 +195,38 @@
       </transition>
     </div>
 
+    <div class="bottom-actions">
+      <button class="bottom-action" type="button" @click="answerCardOpen = true">
+        <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <circle cx="9" cy="8" r="1.6" fill="currentColor" />
+          <circle cx="15" cy="8" r="1.6" fill="currentColor" />
+          <circle cx="9" cy="12" r="1.6" fill="currentColor" />
+          <circle cx="15" cy="12" r="1.6" fill="currentColor" />
+          <circle cx="9" cy="16" r="1.6" fill="currentColor" />
+          <circle cx="15" cy="16" r="1.6" fill="currentColor" />
+        </svg>
+        <span class="action-label">答题卡</span>
+      </button>
+      <button
+        class="bottom-action"
+        type="button"
+        :class="{ active: currentCollectState }"
+        @click="toggleCollect"
+      >
+        <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17.8 6.6 19.8l1-6.1-4.4-4.3 6.1-.9L12 3Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="action-label">{{ currentCollectState ? "已收藏" : "收藏" }}</span>
+      </button>
+    </div>
+
     <transition name="slide-top">
       <div v-if="settingsOpen" class="settings-panel" @click.stop>
         <div class="settings-row">
@@ -220,20 +254,29 @@
           <span>答题卡</span>
           <button class="icon-button" type="button" @click="answerCardOpen = false">关闭</button>
         </div>
-        <div class="answer-card-grid">
-          <button
-            v-for="(question, index) in topLevelQuestions"
-            :key="question.answerKey"
-            class="card-item"
-            :class="{
-              done: isQuestionAnswered(question),
-              active: currentQuestion?.answerKey === question.answerKey
-            }"
-            type="button"
-            @click="goToQuestion(index)"
+        <div class="answer-card-groups">
+          <section
+            v-for="group in answerCardGroups"
+            :key="group.typeName"
+            class="answer-card-group"
           >
-            {{ question.number }}
-          </button>
+            <div class="card-group-title">{{ group.typeName }}</div>
+            <div class="answer-card-grid">
+              <button
+                v-for="item in group.items"
+                :key="item.question.answerKey"
+                class="card-item"
+                :class="{
+                  done: isQuestionAnswered(item.question),
+                  active: currentQuestion?.answerKey === item.question.answerKey
+                }"
+                type="button"
+                @click="goToQuestion(item.index)"
+              >
+                {{ item.question.number }}
+              </button>
+            </div>
+          </section>
         </div>
       </div>
     </transition>
@@ -287,6 +330,7 @@ const currentIndex = ref(0);
 
 const pageStyle = computed(() => ({
   "--font-scale": String(fontScale.value),
+  "--bottom-actions-height": "112px",
 }));
 
 const currentQuestion = computed<NormalizedQuestion | null>(() => topLevelQuestions[currentIndex.value] ?? null);
@@ -294,6 +338,31 @@ const currentQuestionNumber = computed(() => currentQuestion.value?.number ?? 0)
 const currentQuestionTypeName = computed(() => currentQuestion.value?.testTypeName ?? "");
 const lastQuestionIndex = computed(() => Math.max(0, topLevelQuestions.length - 1));
 const paperReady = computed(() => topLevelQuestions.length > 0);
+const answerCardGroups = computed(() => {
+  const groups: Array<{
+    typeName: string;
+    items: Array<{ question: NormalizedQuestion; index: number }>;
+  }> = [];
+  const groupIndexMap = new Map<string, number>();
+
+  topLevelQuestions.forEach((question, index) => {
+    const typeName = question.testTypeName || "其他";
+    let groupIndex = groupIndexMap.get(typeName);
+
+    if (groupIndex === undefined) {
+      groupIndex = groups.length;
+      groupIndexMap.set(typeName, groupIndex);
+      groups.push({
+        typeName,
+        items: [],
+      });
+    }
+
+    groups[groupIndex].items.push({ question, index });
+  });
+
+  return groups;
+});
 
 const collectedState = reactive<Record<string, boolean>>({});
 topLevelQuestions.forEach((question) => {
@@ -525,6 +594,7 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   color: #1f1f1f;
   display: flex;
   flex-direction: column;
+  padding-bottom: calc(var(--bottom-actions-height, 0px) + 24px);
 }
 
 .exam-header {
@@ -588,7 +658,15 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
 }
 
 .test-progress {
-  color: #666666;
+  color: rgba(56, 56, 56, 1);
+}
+
+.test-progress .progress-current {
+  color: rgba(237, 77, 68, 1);
+}
+
+.test-progress .progress-total {
+  color: rgba(56, 56, 56, 1);
 }
 
 .question-wrapper {
@@ -834,6 +912,9 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   font-weight: 500;
   font-size: 15px;
   color: rgba(56, 56, 56, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 /* 同行展示 正确答案 / 我的答案 */
 .analysis-row.answers {
@@ -892,6 +973,19 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   font-size: 15px;
   color: rgba(56, 56, 56, 1);
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.analysis-title::before,
+.analysis-subtitle::before {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 10px;
+  border: 1px solid rgba(166, 166, 166, 1);
+  background: rgba(166, 166, 166, 1);
 }
 
 .analysis-rich {
@@ -908,6 +1002,47 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
 .analysis-empty {
   color: #b0b7c3;
   font-size: 0.9em;
+}
+
+.bottom-actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  border-top: 1px solid #eeeeee;
+  z-index: 10;
+}
+
+.bottom-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 65px;
+  gap: 8px;
+  margin: 12px 45px;
+  color: #9aa0a6;
+  background: transparent;
+  border: none;
+}
+
+.bottom-action .action-icon {
+  width: 28px;
+  height: 28px;
+  stroke: currentColor;
+  fill: none;
+}
+
+.bottom-action .action-label {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.bottom-action.active {
+  color: rgba(255, 82, 62, 1);
 }
 
 .action-button {
@@ -1021,6 +1156,24 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   font-weight: 600;
 }
 
+.answer-card-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.answer-card-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-group-title {
+  font-weight: 600;
+  color: #1f1f1f;
+  font-size: 14px;
+}
+
 .answer-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
@@ -1124,7 +1277,7 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   width: 22px;
   height: 22px;
   display: block;
-  color: currentColor;
+  color: rgba(0, 0, 0, 1);
   stroke: currentColor;
   fill: currentColor !important;
 }
@@ -1165,4 +1318,3 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
 }
 
 </style>
-
