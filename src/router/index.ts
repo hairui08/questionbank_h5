@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import ExamAnswer from "../pages/ExamAnswer.vue";
 import ExamAnalysis from "../pages/ExamAnalysis.vue";
+import ExamChapter from "@/pages/ExamChapter.vue";
 
 const HomePlaceholder = {
   name: "HomePlaceholder",
@@ -20,6 +21,11 @@ const router = createRouter({
       path: "/answer",
       name: "answer",
       component: ExamAnswer,
+    },
+    {
+      path: "/chapter",
+      name: "chapter",
+      component: ExamChapter,
     },
     {
       path: "/analysis",

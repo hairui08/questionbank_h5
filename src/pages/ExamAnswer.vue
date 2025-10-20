@@ -77,8 +77,10 @@
               class="combination-item"
             >
               <div class="combination-header">
-                <span class="combination-index">{{ child.childOrderLabel || child.number }}</span>
-                <span class="combination-type">{{ getQuestionTypeLabel(child) }}</span>
+                <div class="combination-title">
+                  <span class="combination-index">{{ child.childOrderLabel || child.number }}</span>
+                  <span class="combination-type">{{ getQuestionTypeLabel(child) }}</span>
+                </div>
               </div>
               <div class="combination-text" v-if="hasRichText(child.content)" v-html="child.content" />
               <div class="combination-text" v-else-if="hasRichText(child.title)" v-html="child.title" />
@@ -112,14 +114,59 @@
                   v-html="getEssayAnswerHtml(child)"
                 />
               </template>
+
+              <transition name="fade-slide">
+                <div v-if="analysisVisible" class="combination-analysis">
+                  <template v-if="isChoiceQuestion(child)">
+                    <div class="analysis-answers">
+                      <div class="analysis-title">答案</div>
+                      <div class="analysis-row answers">
+                        <span class="analysis-label">正确答案</span>
+                        <span class="analysis-value correct">
+                          {{ getAnswerFieldDisplay(child.answer) }}
+                        </span>
+                        <span class="analysis-label">我的答案</span>
+                        <span class="analysis-value my" :class="{ empty: !isQuestionAnswered(child) }">
+                          {{ getChoiceAnswerDisplay(child) }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="analysis-rich-panel">
+                      <div class="analysis-subtitle">试题解析</div>
+                      <div class="analysis-rich">
+                        <span v-if="hasRichText(child.analytic)" v-html="child.analytic" />
+                        <span v-else class="analysis-empty">暂无解析</span>
+                      </div>
+                    </div>
+                  </template>
+
+                  <template v-else-if="isEssayQuestion(child)">
+                    <div class="analysis-block">
+                      <div class="analysis-subtitle">我的答案</div>
+                      <div v-if="hasEssayAnswer(child)" class="analysis-rich" v-html="getEssayAnswerHtml(child)" />
+                      <div v-else class="analysis-empty">未作答</div>
+                      <div class="analysis-subtitle">试题答案</div>
+                      <div v-if="hasRichText(child.answer)" class="analysis-rich" v-html="child.answer" />
+                      <div v-else class="analysis-empty">暂无标准答案</div>
+                      <div class="analysis-subtitle">答案解析</div>
+                      <div v-if="hasRichText(child.analytic)" class="analysis-rich" v-html="child.analytic" />
+                      <div v-else class="analysis-empty">暂无解析</div>
+                    </div>
+                  </template>
+                </div>
+              </transition>
             </div>
           </div>
         </template>
       </div>
 
       <transition name="fade-slide">
-        <div v-if="analysisVisible && currentQuestion" class="analysis-panel">
-           <template v-if="isChoiceQuestion(currentQuestion)">
+        <div
+          v-if="analysisVisible && currentQuestion && !isCombinationQuestion(currentQuestion)"
+          class="analysis-panel"
+        >
+          <template v-if="isChoiceQuestion(currentQuestion)">
             <!-- 新的答案解析布局（单/多/判断） -->
             <div class="analysis-answers">
               <div class="analysis-title">答案</div>
@@ -206,20 +253,7 @@
     </div>
 
     <div class="bottom-actions">
-      <button
-            class="bottom-action"
-            type="button"
-            :class="{ active: analysisVisible }"
-            @click="toggleAnalysis"
-          >
-            <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <!-- 文档 + 对勾 -->
-              <path d="M7 3h8l5 5v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
-              <path d="M15 3v5h5" fill="none" stroke="currentColor" stroke-width="1.8"/>
-              <path d="M8 14l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span class="action-label">查看解析</span>
-          </button>
+
       <button class="bottom-action" type="button" @click="answerCardOpen = true">
             <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
               <!-- 答题卡（2×3圆点） -->
@@ -762,7 +796,8 @@ function toSerializableAnswers() {
 .exam-header .header-row:first-child {
   height: 54px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 12px 16px;
+  padding: 12px 10px;
+  border-bottom: 0.5px solid rgba(229, 229, 229, 1);
 }
 .exam-header .header-row:last-child {
   height: 34px;
@@ -776,7 +811,6 @@ function toSerializableAnswers() {
 }
 
 .paper-title {
-  font-weight: 600;
   font-size: 1.05em;
 }
 
@@ -789,12 +823,17 @@ function toSerializableAnswers() {
 .countdown {
   color: #ff4d4f;
   font-weight: 600;
-  min-width: 90px;
   text-align: right;
 }
 
 .test-type {
-  font-weight: 500;
+  width: fit-content;
+  padding: 4px 6px;
+  font-size: 12px;
+  font-weight: 400;
+  border-radius: 3px;
+  color: rgba(255, 255, 255, 1);
+  background: rgba(251, 176, 58, 1);
 }
 
 .test-progress {
@@ -1028,6 +1067,12 @@ function toSerializableAnswers() {
   color: #4b5d7b;
 }
 
+.combination-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .combination-index {
   font-weight: 600;
 }
@@ -1037,6 +1082,13 @@ function toSerializableAnswers() {
   color: #1677ff;
   padding: 2px 8px;
   border-radius: 12px;
+}
+
+.combination-analysis {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .analysis-panel {
@@ -1176,7 +1228,6 @@ function toSerializableAnswers() {
 .bottom-action .action-icon {
   width: 28px;
   height: 28px;
-  stroke: currentColor;
   fill: none;
 }
 .bottom-action .action-label {
@@ -1209,7 +1260,7 @@ function toSerializableAnswers() {
   /* 字体大小设置面板 */
   .settings-panel {
     position: fixed;
-    top: 0;
+    top: 54px;
     left: 0;
     right: 0;
     background: #fff;
@@ -1253,6 +1304,7 @@ function toSerializableAnswers() {
   inset: 0;
   background: rgba(0,0,0,0.18);
   z-index: 999;
+  top: 54px;
 }
 
 .sheet-mask {

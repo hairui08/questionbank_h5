@@ -1,6 +1,6 @@
-﻿<template>
+<template>
   <div v-if="paperReady" class="exam-page" :style="pageStyle">
-     <div class="exam-header">
+    <div class="exam-header">
       <div class="header-row">
         <div class="header-left">
           <button class="icon-button" type="button" @click="handleBack" aria-label="返回">
@@ -45,14 +45,15 @@
               :key="option.id ?? (currentQuestion.answerKey + '-' + option.label)"
               class="option-item interactive"
               :class="resolveOptionClasses(currentQuestion, option)"
+              @click="handleOptionClick(currentQuestion, option)"
             >
               <input
                 class="option-input"
                 :type="currentQuestion.newTestType === 2 ? 'checkbox' : 'radio'"
                 :name="'q-' + currentQuestion.answerKey"
-                disabled
+                :checked="isOptionChecked(currentQuestion, option)"
               />
-              <span class="option-label">{{ option.label }}</span>
+              <span class="option-label">{{ analysisVisible && isOptionAnswer(currentQuestion, option) ? "✓" : option.label }}</span>
               <div class="option-content" v-html="option.content || '&nbsp;'" />
             </div>
           </div>
@@ -60,7 +61,9 @@
 
         <template v-else-if="isEssayQuestion(currentQuestion)">
           <div
-            class="rich-answer readonly"
+            class="rich-answer"
+            contenteditable="true"
+            @input="handleEssayInput(currentQuestion, $event)"
             v-html="getEssayAnswerHtml(currentQuestion)"
           />
         </template>
@@ -86,14 +89,15 @@
                   <div
                     v-for="option in getRenderedOptions(child)"
                     :key="option.id ?? (child.answerKey + '-' + option.label)"
-                    class="option-item"
-                    :class="resolveOptionClasses(child, option)"
+                    class="option-item interactive"
+                  :class="resolveOptionClasses(child, option)"
+                  @click="handleOptionClick(child, option)"
                   >
                     <input
                       class="option-input"
                       :type="child.newTestType === 2 ? 'checkbox' : 'radio'"
                       :name="'q-' + child.answerKey"
-                      disabled
+                      :checked="isOptionChecked(child, option)"
                     />
                     <span class="option-label">{{ option.label }}</span>
                     <div class="option-content" v-html="option.content || '&nbsp;'" />
@@ -102,7 +106,12 @@
               </template>
 
               <template v-else-if="isEssayQuestion(child)">
-                <div class="rich-answer child readonly" v-html="getEssayAnswerHtml(child)" />
+                <div
+                  class="rich-answer child"
+                  contenteditable="true"
+                  @input="handleEssayInput(child, $event)"
+                  v-html="getEssayAnswerHtml(child)"
+                />
               </template>
 
               <transition name="fade-slide">
@@ -198,40 +207,102 @@
             </div>
           </template>
 
+          <template v-else-if="isCombinationQuestion(currentQuestion)">
+            <div
+              v-for="child in currentQuestion.children"
+              :key="child.answerKey"
+              class="analysis-block"
+            >
+              <div class="analysis-subtitle">
+                子题 {{ child.childOrderLabel || child.number }} · {{ getQuestionTypeLabel(child) }}
+              </div>
+
+              <template v-if="isChoiceQuestion(child)">
+                <div class="analysis-row">
+                  <span class="analysis-label">正确答案：</span>
+                  <span class="analysis-value">{{ getAnswerFieldDisplay(child.answer) }}</span>
+                </div>
+                <div class="analysis-row">
+                  <span class="analysis-label">我的答案：</span>
+                  <span class="analysis-value">{{ getChoiceAnswerDisplay(child) }}</span>
+                </div>
+                <div class="analysis-row">
+                  <span class="analysis-label">答案解析：</span>
+                  <span class="analysis-value">
+                    <span v-if="hasRichText(child.analytic)" v-html="child.analytic" />
+                    <span v-else class="analysis-empty">暂无解析</span>
+                  </span>
+                </div>
+              </template>
+
+              <template v-else-if="isEssayQuestion(child)">
+                <div v-if="hasEssayAnswer(child)" class="analysis-rich" v-html="getEssayAnswerHtml(child)" />
+                <div v-else class="analysis-empty">未作答</div>
+                <div class="analysis-subtitle">试题答案</div>
+                <div v-if="hasRichText(child.answer)" class="analysis-rich" v-html="child.answer" />
+                <div v-else class="analysis-empty">暂无标准答案</div>
+                <div class="analysis-subtitle">答案解析</div>
+                <div v-if="hasRichText(child.analytic)" class="analysis-rich" v-html="child.analytic" />
+                <div v-else class="analysis-empty">暂无解析</div>
+              </template>
+            </div>
+          </template>
         </div>
       </transition>
     </div>
 
     <div class="bottom-actions">
-      <button class="bottom-action" type="button" @click="answerCardOpen = true">
-        <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8" />
-          <circle cx="9" cy="8" r="1.6" fill="currentColor" />
-          <circle cx="15" cy="8" r="1.6" fill="currentColor" />
-          <circle cx="9" cy="12" r="1.6" fill="currentColor" />
-          <circle cx="15" cy="12" r="1.6" fill="currentColor" />
-          <circle cx="9" cy="16" r="1.6" fill="currentColor" />
-          <circle cx="15" cy="16" r="1.6" fill="currentColor" />
-        </svg>
-        <span class="action-label">答题卡</span>
-      </button>
       <button
-        class="bottom-action"
-        type="button"
-        :class="{ active: currentCollectState }"
-        @click="toggleCollect"
-      >
-        <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17.8 6.6 19.8l1-6.1-4.4-4.3 6.1-.9L12 3Z"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <span class="action-label">{{ currentCollectState ? "已收藏" : "收藏" }}</span>
-      </button>
+            class="bottom-action"
+            type="button"
+            :class="{ active: analysisVisible }"
+            @click="toggleAnalysis"
+          >
+            <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <!-- 文档 + 对勾 -->
+              <path d="M7 3h8l5 5v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M15 3v5h5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M8 14l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="action-label">查看解析</span>
+          </button>
+      <button class="bottom-action" type="button" @click="answerCardOpen = true">
+            <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <!-- 答题卡（2×3圆点） -->
+              <rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="9" cy="8" r="1.6" fill="currentColor"/>
+              <circle cx="15" cy="8" r="1.6" fill="currentColor"/>
+              <circle cx="9" cy="12" r="1.6" fill="currentColor"/>
+              <circle cx="15" cy="12" r="1.6" fill="currentColor"/>
+              <circle cx="9" cy="16" r="1.6" fill="currentColor"/>
+              <circle cx="15" cy="16" r="1.6" fill="currentColor"/>
+            </svg>
+            <span class="action-label">答题卡</span>
+          </button>
+      <button
+            class="bottom-action"
+            type="button"
+            :class="{ active: currentCollectState }"
+            @click="toggleCollect"
+          >
+            <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <!-- 五角星收藏 -->
+              <path
+                d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17.8 6.6 19.8l1-6.1-4.4-4.3 6.1-.9L12 3Z"
+                fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"
+              />
+            </svg>
+            <span class="action-label">{{ currentCollectState ? "已收藏" : "收藏" }}</span>
+          </button>
+      <button class="bottom-action" type="button" @click="submitConfirmOpen = true">
+            <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <!-- 上箭头交卷（方框内箭头向上） -->
+              <rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M12 16V8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M8.5 11.5 12 8l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="action-label">交卷</span>
+          </button>
     </div>
 
     <transition name="slide-top">
@@ -313,6 +384,7 @@ import {
   normalizeExamPaper,
   normalizedPaper,
   parseAnswerTokens,
+  flattenQuestions,
 } from "../composables/useExamPaper";
 import type { NormalizedOption, NormalizedQuestion } from "../composables/useExamPaper";
 
@@ -327,12 +399,13 @@ const paper = normalizedPaper ?? normalizeExamPaper();
 const topLevelQuestions = paper.questions;
 const totalQuestionCount = paper.testNum;
 const paperTitle = paper.title;
+const answerTimeMinutes = paper.answerTimeMinutes;
 
 const fontScale = ref(fontOptions[1].scale);
 const settingsOpen = ref(false);
 const answerCardOpen = ref(false);
 const submitConfirmOpen = ref(false);
-const analysisVisible = ref(true);
+const analysisVisible = ref(false);
 const currentIndex = ref(0);
 
 const pageStyle = computed(() => ({
@@ -344,6 +417,7 @@ const currentQuestion = computed<NormalizedQuestion | null>(() => topLevelQuesti
 const currentQuestionNumber = computed(() => currentQuestion.value?.number ?? 0);
 const currentQuestionTypeName = computed(() => currentQuestion.value?.testTypeName ?? "");
 const lastQuestionIndex = computed(() => Math.max(0, topLevelQuestions.length - 1));
+
 const paperReady = computed(() => topLevelQuestions.length > 0);
 const answerCardGroups = computed(() => {
   const groups: Array<{
@@ -371,9 +445,19 @@ const answerCardGroups = computed(() => {
   return groups;
 });
 
+const countdownSeconds = ref(Math.max(0, Math.floor(answerTimeMinutes * 60)));
+
+const flatQuestions = flattenQuestions(topLevelQuestions);
+const userAnswers = reactive<Record<string, string | string[]>>({});
 const collectedState = reactive<Record<string, boolean>>({});
-topLevelQuestions.forEach((question) => {
-  collectedState[question.answerKey] = question.isCollect;
+
+flatQuestions.forEach((question) => {
+  if (!(question.answerKey in userAnswers)) {
+    userAnswers[question.answerKey] = getInitialAnswer(question);
+  }
+  if (question.depth === 0 && !(question.answerKey in collectedState)) {
+    collectedState[question.answerKey] = question.isCollect;
+  }
 });
 
 const currentCollectState = computed(() => {
@@ -383,7 +467,7 @@ const currentCollectState = computed(() => {
 });
 
 watch(currentIndex, () => {
-  analysisVisible.value = true;
+  analysisVisible.value = false;
 });
 
 watch(fontScale, (scale) => {
@@ -395,7 +479,7 @@ watch(fontScale, (scale) => {
   }
 });
 
-
+const timerHandles: { countdown?: number } = {};
 
 onMounted(() => {
   if (typeof window !== "undefined" && window.localStorage) {
@@ -412,9 +496,22 @@ onMounted(() => {
       console.warn("无法读取字体大小设置", error);
     }
   }
+
+  if (!timerHandles.countdown) {
+    timerHandles.countdown = window.setInterval(() => {
+      if (countdownSeconds.value > 0) {
+        countdownSeconds.value = Math.max(0, countdownSeconds.value - 1);
+      }
+    }, 1000);
+  }
 });
 
-onBeforeUnmount(() => {});
+onBeforeUnmount(() => {
+  if (timerHandles.countdown) {
+    window.clearInterval(timerHandles.countdown);
+    delete timerHandles.countdown;
+  }
+});
 
 function toggleSettings() {
   settingsOpen.value = !settingsOpen.value;
@@ -456,7 +553,7 @@ function toggleAnalysis() {
 
 function handleSubmitConfirm() {
   submitConfirmOpen.value = false;
-  console.log("解析页面交卷确认", currentQuestion.value?.answerKey ?? "");
+  console.log("提交答案", toSerializableAnswers());
 }
 
 function handleBack() {
@@ -490,32 +587,54 @@ function onTouchEnd(event: TouchEvent) {
   }
 }
 
-function resolveOptionClasses(question: NormalizedQuestion, option: NormalizedOption) {
-  const correctSet = getCorrectAnswerSet(question);
-  return {
-    "is-answer": correctSet.has(option.label.toUpperCase()),
-  };
+function handleOptionClick(question: NormalizedQuestion, option: NormalizedOption) {
+  if (!isChoiceQuestion(question)) return;
+  const key = question.answerKey;
+  if (question.newTestType === 2) {
+    const existing = Array.isArray(userAnswers[key]) ? [...(userAnswers[key] as string[])] : [];
+    const label = option.label.toUpperCase();
+    const idx = existing.indexOf(label);
+    if (idx >= 0) {
+      existing.splice(idx, 1);
+    } else {
+      existing.push(label);
+      existing.sort();
+    }
+    userAnswers[key] = existing;
+  } else {
+    userAnswers[key] = option.label.toUpperCase();
+  }
 }
 
-function hasRichText(value: string | null | undefined) {
-  return typeof value === "string" && value.trim().length > 0;
+function handleEssayInput(question: NormalizedQuestion, event: Event) {
+  const target = event.target as HTMLElement | null;
+  if (!target) return;
+  userAnswers[question.answerKey] = target.innerHTML;
 }
 
 function getEssayAnswerHtml(question: NormalizedQuestion) {
+  const stored = userAnswers[question.answerKey];
+  if (typeof stored === "string" && stored.trim().length > 0) {
+    return stored;
+  }
   if (typeof question.myAnswerOriginal === "string" && question.myAnswerOriginal.trim().length > 0) {
     return question.myAnswerOriginal;
   }
-  return "<span class=\"analysis-empty\">未作答</span>";
+  return "";
 }
 
 function hasEssayAnswer(question: NormalizedQuestion) {
-  return typeof question.myAnswerOriginal === "string" && question.myAnswerOriginal.trim().length > 0;
+  return getEssayAnswerHtml(question).trim().length > 0;
 }
 
 function getChoiceAnswerDisplay(question: NormalizedQuestion) {
   if (!isChoiceQuestion(question)) return "";
-  const tokens = parseAnswerTokens(question.myAnswerOriginal);
-  return tokens.length ? tokens.join("，") : "未作答";
+  const value = userAnswers[question.answerKey];
+  const list = Array.isArray(value) ? value : [String(value ?? "").trim()];
+  const filtered = list
+    .map((item) => item.trim().toUpperCase())
+    .filter(Boolean);
+  return filtered.length ? filtered.join("，") : "未作答";
 }
 
 function getAnswerFieldDisplay(value: string) {
@@ -523,22 +642,68 @@ function getAnswerFieldDisplay(value: string) {
   return text.length > 0 ? text : "暂无";
 }
 
+function resolveOptionClasses(question: NormalizedQuestion, option: NormalizedOption) {
+  const userSet = getUserAnswerSet(question);
+  const selected = userSet.has(option.label.toUpperCase());
+  const correctSet = getCorrectAnswerSet(question);
+  const analysis = analysisVisible.value;
+
+  return {
+    interactive: true,
+    "is-active": !analysis && selected,
+    "is-selected": analysis && selected,
+    "is-answer": analysis && correctSet.has(option.label.toUpperCase()),
+    "is-correct": analysis && selected && correctSet.has(option.label.toUpperCase()),
+    "is-wrong": analysis && selected && !correctSet.has(option.label.toUpperCase()),
+  };
+}
+
+function hasRichText(value: string | null | undefined) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
 function isQuestionAnswered(question: NormalizedQuestion): boolean {
   if (isCombinationQuestion(question) && question.children.length > 0) {
     return question.children.every(isQuestionAnswered);
   }
-  if (isChoiceQuestion(question)) {
-    return parseAnswerTokens(question.myAnswerOriginal).length > 0;
+  if (question.newTestType === 2) {
+    const value = userAnswers[question.answerKey];
+    return Array.isArray(value) && value.length > 0;
   }
   if (question.newTestType === 4) {
-    return typeof question.myAnswerOriginal === "string" && question.myAnswerOriginal.trim().length > 0;
+    return hasEssayAnswer(question);
+  }
+  if (isChoiceQuestion(question)) {
+    const value = userAnswers[question.answerKey];
+    return typeof value === "string" && value.trim().length > 0;
   }
   return false;
 }
 
+function getInitialAnswer(question: NormalizedQuestion) {
+  if (question.newTestType === 2) {
+    return parseAnswerTokens(question.myAnswerOriginal);
+  }
+  if (question.newTestType === 4) {
+    return typeof question.myAnswerOriginal === "string" ? question.myAnswerOriginal : "";
+  }
+  return typeof question.myAnswerOriginal === "string"
+    ? question.myAnswerOriginal.toUpperCase()
+    : "";
+}
+
 function getUserAnswerSet(question: NormalizedQuestion) {
-  const tokens = parseAnswerTokens(question.myAnswerOriginal);
-  return new Set(tokens.map((item) => item.toUpperCase()));
+  if (question.newTestType === 2) {
+    const value = userAnswers[question.answerKey];
+    const array = Array.isArray(value) ? value : parseAnswerTokens(question.myAnswerOriginal);
+    return new Set(array.map((item) => item.toUpperCase()));
+  }
+  if (isChoiceQuestion(question)) {
+    const value = userAnswers[question.answerKey];
+    const token = typeof value === "string" ? value.toUpperCase() : "";
+    return token ? new Set([token]) : new Set<string>();
+  }
+  return new Set<string>();
 }
 
 function getRenderedOptions(question: NormalizedQuestion): NormalizedOption[] {
@@ -570,7 +735,6 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   if (!isChoiceQuestion(question)) return new Set<string>();
   const tokens = parseAnswerTokens(question.answer).map((t) => t.toUpperCase());
 
-  // 判断题：将多种表达归一到 A/B 以便样式判断
   if (question.newTestType === 3) {
     const set = new Set<string>();
     if (tokens.some((t) => ["A", "T", "TRUE", "1", "正确", "对", "是"].includes(t))) {
@@ -591,11 +755,26 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
       .map((option) => option.label.toUpperCase()),
   );
 }
+
+function isOptionAnswer(question: NormalizedQuestion, option: NormalizedOption): boolean {
+  if (!question || !option || !isChoiceQuestion(question)) return false;
+  const correctSet = getCorrectAnswerSet(question);
+  return correctSet.has(option.label.toUpperCase());
+}
+
+function toSerializableAnswers() {
+  const result: Record<string, string | string[]> = {};
+  Object.keys(userAnswers).forEach((key) => {
+    const value = userAnswers[key];
+    result[key] = Array.isArray(value) ? [...value] : value;
+  });
+  return result;
+}
 </script>
 <style scoped>
 .exam-page {
   --font-scale: 1;
-  font-size: calc(16px * var(--font-scale));
+  font-size: calc(16px * var(--font-scale, 1));
   min-height: 100vh;
   background: #f7f8fa;
   color: #1f1f1f;
@@ -625,7 +804,6 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
 }
 
 /* 仅针对 exam-header 内的两行设置固定高度 */
-/* 仅针对 exam-header 内的两行设置固定高度 */
 .exam-header .header-row:first-child {
   height: 54px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -653,6 +831,12 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   gap: 12px;
 }
 
+.countdown {
+  color: #ff4d4f;
+  font-weight: 600;
+  text-align: right;
+}
+
 .test-type {
   width: fit-content;
   padding: 4px 6px;
@@ -662,6 +846,7 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   color: rgba(255, 255, 255, 1);
   background: rgba(251, 176, 58, 1);
 }
+
 .test-progress {
   color: rgba(56, 56, 56, 1);
 }
@@ -698,6 +883,7 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   font-size: 15px;
   color: rgba(56, 56, 56, 1);
 }
+
 .question-text :deep(p),
 .combination-text :deep(p) {
   margin: 0 0 8px;
@@ -706,7 +892,6 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   line-height: 1.5;
 }
 
-/* 选项列表容器 */
 .option-list {
   display: flex;
   flex-direction: column;
@@ -717,16 +902,6 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   margin-top: 8px;
 }
 
-/* 隐藏原生输入的视觉 */
-.option-input {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  pointer-events: none;
-}
-
-/* 统一选项基础样式（保持原有未选中为白底深字） */
 .option-item {
   display: flex;
   align-items: flex-start;
@@ -738,47 +913,52 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   color: rgba(56, 56, 56, 1);
 }
 
-/* 选中：绿色底、白色文字 */
-.option-item.is-selected {
-  background: rgba(7, 193, 96, 1);
-  border-color: rgba(7, 193, 96, 1);
-  color: rgba(255, 255, 255, 1);
+.option-item.interactive {
+  cursor: pointer;
 }
 
-/* is-answer：绿色底、白色文字；左侧标识变成白底绿色对号 */
+.option-item.interactive:active {
+  transform: scale(0.99);
+}
+
+/* 将 is-active 与 is-answer 统一为绿色主题容器（对齐解析页） */
+.option-item.is-active
+{
+  background: rgba(229, 229, 229, 1);
+  border-color: rgba(229, 229, 229, 1);
+  color: rgba(56, 56, 56, 1);
+}
+
+.option-item.is-active .option-label{
+  color: rgba(255, 255, 255, 1);
+  background: rgba(128, 128, 128, 1)
+}
+
+.option-item.is-active .option-content{
+  color: rgba(56, 56, 56, 1);
+}
+
+/* 分析态保留 */
+.option-item.is-selected {
+  border-color: #1677ff;
+  background: #f0f5ff;
+}
+
 .option-item.is-answer {
-  background: rgba(7, 193, 96, 1);
-  border-color: rgba(7, 193, 96, 1);
-  color: rgba(255, 255, 255, 1);
-}
-.option-item.is-answer .option-content {
-  color: rgba(255, 255, 255, 1);
-}
-.option-item.is-answer .option-label {
-  position: relative;
-  background: rgba(255, 255, 255, 1);
-  border-color: rgba(255, 255, 255, 1);
-  color: rgba(7, 193, 96, 1);
-  font-size: 0; /* 隐藏原有 A/B/C/D 文本 */
-}
-.option-item.is-answer .option-label::before {
-  content: "✓";
-  color: rgba(7, 193, 96, 1);
-  font-size: 12px;
-  line-height: 20px;
-  display: block;
-  text-align: center;
-}
-.option-item.is-correct {
-  background: #e6fffb;
   border-color: #13c2c2;
 }
+
+.option-item.is-correct {
+  background: rgba(7, 193, 96, 1);
+  border-color: rgba(7, 193, 96, 1);
+}
+
 .option-item.is-wrong {
   background: #fff2f0;
   border-color: #ff7875;
 }
 
-/* 左侧字母标识：固定尺寸，不因内容变形 */
+/* 左侧字母标识：固定尺寸，不因内容变形（对齐 ExamAnalysis.vue） */
 .option-label {
   box-sizing: border-box;
   flex: 0 0 auto;
@@ -799,43 +979,56 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   padding: 0;
 }
 
-/* 多选方形 */
+/* 多选方形（newTestType === 2） */
 .option-list[data-type="2"] .option-label {
   border-radius: 6px;
 }
 
-/* 选中时标识：白字，背景与边框跟随绿色，保证统一视觉 */
-.option-item.is-selected .option-label {
+.option-item.is-answer {
   background: rgba(7, 193, 96, 1);
-  color: rgba(255, 255, 255, 1);
   border-color: rgba(7, 193, 96, 1);
+  color: rgba(56, 56, 56, 1);
 }
 
-/* 选项内容在选中时也为白字 */
-.option-item.is-selected .option-content {
+/* 左侧字母标识：选中/正确答案都显示白底绿勾，隐藏字母 */
+.option-item.is-answer .option-label {
+  position: relative;
+  background: rgba(255, 255, 255, 1) !important;
+  border-color: rgba(7, 193, 96, 1) !important;
+  color: rgba(7, 193, 96, 1) !important;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+.option-item.is-answer .option-content {
   color: rgba(255, 255, 255, 1);
 }
-.option-list[data-type="2"] .option-item.is-selected .option-label::before {
+
+.option-item.is-answer .option-label::after {
   content: "✓";
-  color: #07c160;
-  font-size: 16px;
-  line-height: 1;
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: rgba(7, 193, 96, 1);
+  font-size: 14px;
 }
 
-.option-content {
-  font-size: 14px;
-  color: rgba(56, 56, 56, 1);
+/* 隐藏原生输入的视觉（与分析页一致），点击交互仍由父容器处理 */
+.option-input {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
 }
-/* 选项内容段落 */
+
 .option-content :deep(p) {
   margin: 0;
-  font-size: 14px;
-  color: rgba(56, 56, 56, 1);
 }
 
 .rich-answer {
@@ -848,13 +1041,13 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   overflow-y: auto;
 }
 
-.rich-answer.child {
-  min-height: 100px;
+.rich-answer[contenteditable='true'] {
+  outline: none;
+  background: #ffffff;
 }
 
-.rich-answer.readonly {
-  border: 1px solid #c6cad6;
-  background: #ffffff;
+.rich-answer.child {
+  min-height: 100px;
 }
 
 .rich-answer :deep(p) {
@@ -1024,113 +1217,94 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
 
 .bottom-actions {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 0; right: 0; bottom: 0;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
-  background: #ffffff;
-  border-top: 1px solid #eeeeee;
+  background: #fff;
+  border-top: 1px solid #eee;
   z-index: 10;
 }
-
 .bottom-action {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 65px;
   gap: 8px;
-  margin: 12px 45px;
+  padding: 12px 8px;
   color: #9aa0a6;
   background: transparent;
   border: none;
 }
-
 .bottom-action .action-icon {
   width: 28px;
   height: 28px;
   fill: none;
 }
-
 .bottom-action .action-label {
   font-size: 12px;
   line-height: 1;
 }
-
 .bottom-action.active {
   color: rgba(255, 82, 62, 1);
 }
 
-.action-button {
-  flex: 1;
-  border-radius: 24px;
-  border: 1px solid #d9d9d9;
-  background: #ffffff;
-  padding: 10px 12px;
-  font-size: 0.95em;
-  color: #333333;
-}
-
-.action-button.primary {
-  background: #1677ff;
-  border-color: #1677ff;
-  color: #ffffff;
-}
-
-.collect-icon {
-  margin-right: 4px;
-  font-size: 1.1em;
-}
-
 .icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
   border: none;
   background: none;
   color: #1677ff;
-  font-size: 0.95em;
 }
 
-.settings-panel {
-  position: fixed;
-  top: 54px;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border-bottom: 1px solid #eee;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-  padding: 12px 16px;
-  z-index: 1000;
+.header-icon {
+  width: 22px;
+  height: 22px;
+  display: block;
+  color: rgba(0, 0, 0, 1);
+  stroke: currentColor;
+  fill: currentColor !important; /* 修复省略号圆点不可见 */
 }
 
-.settings-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.settings-label {
-  font-size: 14px;
-  color: #666;
-}
-
-.settings-options {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.settings-option {
-  min-width: 40px;
+  /* 字体大小设置面板 */
+  .settings-panel {
+    position: fixed;
+    top: 54px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    padding: 12px 16px;
+    z-index: 1000;
+  }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .settings-label {
+    font-size: 14px;
+    color: #666;
+  }
+  .settings-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .settings-option {
+    min-width: 40px;
     height: 28px;
     padding: 0 12px;
     border: 1px solid #ddd;
     border-radius: 14px;
     background: #f7f8fa;
     color: #666;
-}
-
-.settings-option.active {
+  }
+  .settings-option.active {
   border-color: rgba(255, 82, 62, 1);
   background: #eef4ff;
   color: rgba(255, 82, 62, 1);
@@ -1141,7 +1315,7 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   inset: 0;
   background: rgba(0,0,0,0.18);
   z-index: 999;
-  top:54px;
+  top: 54px;
 }
 
 .sheet-mask {
@@ -1149,6 +1323,16 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   inset: 0;
   background: rgba(0, 0, 0, 0.35);
   z-index: 10;
+}
+
+/* 交卷弹框 */
+.dialog-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: grid;
+  place-items: center;
+  z-index: 1100;
 }
 
 .answer-card-sheet {
@@ -1225,7 +1409,6 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   overflow: hidden;
 }
-
 .dialog-title {
   padding: 14px 16px;
   border-bottom: 1px solid #eee;
@@ -1233,30 +1416,41 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   color: #333;
   text-align: center;
 }
-
 .dialog-content {
- padding: 16px;
+  padding: 16px;
   color: #333;
   text-align: center;
   line-height: 1.6;
 }
-
 .dialog-actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
   padding: 12px 16px;
 }
-
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.25s ease;
+.action-button {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 18px;
+  border: 1px solid #ddd;
+  background: #f5f5f7;
+  color: #333;
+}
+.action-button.primary {
+  background: rgba(255, 82, 62, 1);
+  border-color: rgba(255, 82, 62, 1);
+  color: #fff;
 }
 
+/* 过渡动画 */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: transform .25s ease, opacity .25s ease;
+}
 .fade-slide-enter-from,
 .fade-slide-leave-to {
-  opacity: 0;
   transform: translateY(8px);
+  opacity: 0;
 }
 
 .slide-top-enter-active,
@@ -1289,50 +1483,4 @@ function getCorrectAnswerSet(question: NormalizedQuestion) {
   color: #9aa5b5;
   font-size: 1em;
 }
-
-/* 同步 ExamAnswer.vue 的图标样式，确保圆点/箭头可见与随颜色变化 */
-.header-icon {
-  width: 22px;
-  height: 22px;
-  display: block;
-  color: rgba(0, 0, 0, 1);
-  stroke: currentColor;
-  fill: currentColor !important;
-}
-
-/* 选中：绿色底白字（覆盖所有状态组合） */
-.option-item.is-selected,
-.option-item.is-selected.is-answer,
-.option-item.is-selected.is-correct,
-.option-item.is-selected.is-wrong {
-  background: rgba(7, 193, 96, 1) !important;
-  border-color: rgba(7, 193, 96, 1) !important;
-  color: rgba(255, 255, 255, 1) !important;
-}
-
-.option-item.is-selected .option-label {
-  background: rgba(7, 193, 96, 1) !important;
-  border-color: rgba(7, 193, 96, 1) !important;
-  color: rgba(255, 255, 255, 1) !important;
-}
-
-.option-item.is-selected .option-content {
-  color: rgba(255, 255, 255, 1) !important;
-}
-
-/* 兜底：如果页面只设置了 input:checked 但没有 is-selected 类，也按选中样式处理 */
-.option-item:has(.option-input:checked) {
-  background: rgba(7, 193, 96, 1) !important;
-  border-color: rgba(7, 193, 96, 1) !important;
-  color: rgba(255, 255, 255, 1) !important;
-}
-.option-item:has(.option-input:checked) .option-label {
-  background: rgba(7, 193, 96, 1) !important;
-  border-color: rgba(7, 193, 96, 1) !important;
-  color: rgba(255, 255, 255, 1) !important;
-}
-.option-item:has(.option-input:checked) .option-content {
-  color: rgba(255, 255, 255, 1) !important;
-}
-
 </style>
