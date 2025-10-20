@@ -1142,7 +1142,6 @@ body{
 .chapter-toggle::after {
   content: "";
   position: absolute;
-  background: #8c94a2;
   border-radius: 1px;
   transition: opacity 0.2s ease;
 }

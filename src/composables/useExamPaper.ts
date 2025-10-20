@@ -21,6 +21,7 @@ export interface NormalizedQuestion {
   number: number;
   depth: number;
   childOrderLabel?: string;
+  categoryPath?: string[];
   testTypeName: string;
   title: string;
   content: string;
@@ -85,6 +86,7 @@ interface NormalizeContext {
   childIndex: number;
   strategyName: string;
   fallbackType: number;
+  categoryPath: string[];
 }
 
 export function normalizeExamPaper(rawInput: RawPaper = rawPaper as unknown as RawPaper): NormalizedPaper {
@@ -105,15 +107,19 @@ export function normalizeExamPaper(rawInput: RawPaper = rawPaper as unknown as R
     tests.sort((a: RawQuestion, b: RawQuestion) => toNumber(a?.Sort) - toNumber(b?.Sort));
 
     tests.forEach((test, index) => {
-      const question = createNormalizedQuestion(test, {
-        number: counter,
-        depth: 0,
-        parentKey: null,
-        parentNumber: counter,
-        childIndex: index,
-        strategyName: String(strategy?.TestTypeName ?? "").trim(),
-        fallbackType: toNumber(test?.NewTestType, toNumber(strategy?.NewTestType)),
-      });
+    const question = createNormalizedQuestion(test, {
+      number: counter,
+      depth: 0,
+      parentKey: null,
+      parentNumber: counter,
+      childIndex: index,
+      strategyName: String(strategy?.TestTypeName ?? "").trim(),
+      fallbackType: toNumber(test?.NewTestType, toNumber(strategy?.NewTestType)),
+      categoryPath: (() => {
+        const name = String(strategy?.TestTypeName ?? "").trim();
+        return name ? [name] : [];
+      })(),
+    });
       questions.push(question);
       counter += 1;
     });
@@ -144,6 +150,11 @@ function createNormalizedQuestion(raw: RawQuestion | null | undefined, ctx: Norm
   const id = String(raw?.TestStoreId ?? `${ctx.parentKey ?? "q"}-${ctx.childIndex}`);
   const answerKey = ctx.parentKey ? `${ctx.parentKey}::${id}` : id;
   const newTestType = toNumber(raw?.NewTestType, ctx.fallbackType);
+  const categoryPath = ctx.categoryPath.length
+    ? ctx.categoryPath.slice()
+    : ctx.strategyName
+      ? [ctx.strategyName]
+      : [];
 
   const question: NormalizedQuestion = {
     id,
@@ -151,6 +162,7 @@ function createNormalizedQuestion(raw: RawQuestion | null | undefined, ctx: Norm
     number: ctx.number,
     depth: ctx.depth,
     childOrderLabel: ctx.parentKey ? `${ctx.parentNumber}-${ctx.childIndex + 1}` : undefined,
+    categoryPath,
     testTypeName:
       (typeof raw?.TestTypeName === "string" && raw.TestTypeName.trim().length > 0
         ? raw.TestTypeName.trim()
@@ -182,6 +194,7 @@ function createNormalizedQuestion(raw: RawQuestion | null | undefined, ctx: Norm
           childIndex: index,
           strategyName: question.testTypeName,
           fallbackType: toNumber(child?.NewTestType, newTestType),
+          categoryPath,
         }),
       );
   }

@@ -36,12 +36,12 @@
 
     <section class="summary-card">
       <div class="ring-wrapper">
-        <div class="ring">
-          <div class="ring-inner">
-            <span class="ring-value">{{ overview.wrongCount }}</span>
-            <span class="ring-label">错题数</span>
-          </div>
+       <div class="ring">
+        <div class="ring-inner">
+          <span class="ring-value">{{ overview.wrongCount }}</span>
+          <span class="ring-label">错题数</span>
         </div>
+      </div>
         <div class="overview-meta">
           <span class="meta-label">累计移除：</span>
           <span class="meta-value">{{ overview.removedCount }}</span>
@@ -75,14 +75,45 @@
         class="chapter-card"
       >
         <div class="chapter-main">
-          <button type="button" class="chapter-toggle" aria-label="展开章节">
-            <span>+</span>
+          <button
+            type="button"
+            class="chapter-toggle"
+            :aria-label="isChapterExpanded(chapter.id) ? '收起章节' : '展开章节'"
+            @click="toggleChapter(chapter.id)"
+          >
+            <span class="chapter-toggle-icon" :class="{ expanded: isChapterExpanded(chapter.id) }" />
           </button>
           <div class="chapter-title">
             <span class="chapter-order">{{ chapter.order }}</span>
             <span class="chapter-name">{{ chapter.title }}</span>
           </div>
         </div>
+        <transition name="chapter-slide">
+          <div
+            v-if="isChapterExpanded(chapter.id) && chapter.sections?.length"
+            class="chapter-sections"
+            role="region"
+            :aria-label="`${chapter.title}小节列表`"
+          >
+            <ul class="chapter-section-list">
+              <li
+                v-for="section in chapter.sections"
+                :key="section.id"
+                class="chapter-section-item"
+              >
+                <div class="chapter-section-bullet" />
+                <div class="chapter-section-content">
+                  <div class="chapter-section-title">{{ section.title }}</div>
+                  <div class="chapter-section-meta">错题 {{ section.wrongCount }}</div>
+                </div>
+                <div class="chapter-section-actions">
+                  <button type="button" class="mini-button" @click="handlePeriodAction('analysis', section.id)">查看</button>
+                  <button type="button" class="mini-button primary" @click="handlePeriodAction('redo', section.id)">重做</button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </transition>
         <div class="chapter-footer">
           <div class="chapter-meta">
             <span class="meta-label">错题：</span>
@@ -149,7 +180,7 @@
           </label>
         </div>
       </div>
-    </transition>
+  </transition>
   </div>
 </template>
 
@@ -167,11 +198,18 @@ interface FilterChip {
   label: string;
 }
 
+interface ChapterSection {
+  id: string;
+  title: string;
+  wrongCount: number;
+}
+
 interface Chapter {
   id: string;
   order: string;
   title: string;
   wrongCount: number;
+  sections?: ChapterSection[];
 }
 
 interface Period {
@@ -196,38 +234,75 @@ const categories: Category[] = [
 ];
 
 const filters: FilterChip[] = [
-  { id: "recent", label: "最近错题" },
-  { id: "type", label: "题型归类" },
-  { id: "chapter", label: "章节归类" },
-  { id: "real", label: "真题归类" },
-];
+    { id: "recent", label: "最近错题" },
+    { id: "type", label: "题型分类" },
+    { id: "chapter", label: "章节分类" },
+    { id: "real", label: "真题分类" },
+  ];
 
 const periods: Period[] = [
-  { id: "7d", label: "最近7天", wrongCount: 4 },
-  { id: "30d", label: "最近30天", wrongCount: 4 },
-];
+    { id: "7d", label: "最近7天", wrongCount: 4 },
+    { id: "30d", label: "最近30天", wrongCount: 4 },
+  ];
 
 const typePeriods: Period[] = [
-  { id: "single", label: "单选题", wrongCount: 5 },
-  { id: "multi", label: "多选题", wrongCount: 4 },
-  { id: "judge", label: "判断题", wrongCount: 3 },
-];
+    { id: "single", label: "单选题", wrongCount: 5 },
+    { id: "multi", label: "多选题", wrongCount: 4 },
+    { id: "judge", label: "判断题", wrongCount: 3 },
+  ];
 
 const chapters: Chapter[] = [
-  { id: "ch1", order: "第一章", title: "社会工作的内涵、原则及主要领域", wrongCount: 4 },
-  { id: "ch2", order: "第二章", title: "社会工作价值观与专业伦理", wrongCount: 1 },
-  { id: "ch3", order: "第三章", title: "人类行为与社会环境", wrongCount: 5 },
-  { id: "ch4", order: "第四章", title: "个案工作方法", wrongCount: 1 },
+  {
+    id: "ch1",
+    order: "第一章",
+    title: "社会工作的内涵、原则及主要领域",
+    wrongCount: 4,
+    sections: [
+      { id: "ch1-sec1", title: "第一节 社会工作的内涵", wrongCount: 2 },
+      { id: "ch1-sec2", title: "第二节 社会工作的基本原则", wrongCount: 1 },
+      { id: "ch1-sec3", title: "第三节 社会工作的主要领域", wrongCount: 1 },
+    ],
+  },
+  {
+    id: "ch2",
+    order: "第二章",
+    title: "社会工作价值观与专业伦理",
+    wrongCount: 1,
+    sections: [
+      { id: "ch2-sec1", title: "第一节 社会工作价值观", wrongCount: 1 },
+      { id: "ch2-sec2", title: "第二节 社会工作伦理原则", wrongCount: 0 },
+    ],
+  },
+  {
+    id: "ch3",
+    order: "第三章",
+    title: "人类行为与社会环境",
+    wrongCount: 5,
+    sections: [
+      { id: "ch3-sec1", title: "第一节 人类行为基础", wrongCount: 3 },
+      { id: "ch3-sec2", title: "第二节 社会环境概述", wrongCount: 2 },
+    ],
+  },
+  {
+    id: "ch4",
+    order: "第四章",
+    title: "个案工作方法",
+    wrongCount: 1,
+    sections: [
+      { id: "ch4-sec1", title: "第一节 个案工作的过程", wrongCount: 1 },
+      { id: "ch4-sec2", title: "第二节 个案工作技巧", wrongCount: 0 },
+    ],
+  },
 ];
 
 const autoRemoveOptions: AutoRemoveOption[] = [
-  { id: "never", label: "不移除" },
-  { id: "1", label: "1次" },
-  { id: "2", label: "2次" },
-  { id: "3", label: "3次" },
-  { id: "4", label: "4次" },
-  { id: "5", label: "5次" },
-];
+    { id: "never", label: "不移除" },
+    { id: "1", label: "1次" },
+    { id: "2", label: "2次" },
+    { id: "3", label: "3次" },
+    { id: "4", label: "4次" },
+    { id: "5", label: "5次" },
+  ];
 
 const overview = reactive({
   wrongCount: 4,
@@ -240,10 +315,12 @@ const showAutoRemoveDialog = ref(false);
 const selectedAutoRemoveId = ref(autoRemoveOptions[0]?.id ?? "never");
 const dontRemindNext = ref(false);
 const pendingContinuePeriodId = ref<string | null>(null);
+const expandedChapterIds = ref<Set<string>>(new Set());
 
 const isTypeFilter = computed(() => activeFilterId.value === "type");
 const isChapterFilter = computed(() => activeFilterId.value === "chapter");
 const displayPeriods = computed(() => (isTypeFilter.value ? typePeriods : periods));
+const isChapterExpanded = (id: string) => expandedChapterIds.value.has(id);
 
 function goBack() {
   if (window.history.length > 1) {
@@ -259,6 +336,19 @@ function selectCategory(id: string) {
 
 function selectFilter(id: string) {
   activeFilterId.value = id;
+  if (id !== "chapter") {
+    expandedChapterIds.value = new Set();
+  }
+}
+
+function toggleChapter(id: string) {
+  const next = new Set(expandedChapterIds.value);
+  if (next.has(id)) {
+    next.delete(id);
+  } else {
+    next.add(id);
+  }
+  expandedChapterIds.value = next;
 }
 
 function openAutoRemoveDialog() {
@@ -611,10 +701,39 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  line-height: 1;
-  font-weight: 500;
   cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.chapter-toggle:active {
+  background: #ff6d5c;
+  color: #fff;
+}
+
+.chapter-toggle-icon {
+  position: relative;
+  width: 16px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 999px;
+  transition: transform 0.2s ease;
+}
+
+.chapter-toggle-icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 16px;
+  background: currentColor;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s ease;
+}
+
+.chapter-toggle-icon.expanded::after {
+  opacity: 0;
 }
 
 .chapter-title {
@@ -637,12 +756,100 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
   color: #262626;
 }
 
+
+.chapter-sections {
+  margin: 8px 0 0 48px;
+  padding: 12px 0 0 12px;
+  border-left: 2px solid rgba(255, 109, 92, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chapter-section-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chapter-section-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 245, 243, 0.85);
+  border: 1px solid rgba(255, 109, 92, 0.2);
+}
+
+.chapter-section-bullet {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff6d5c;
+  box-shadow: 0 0 0 4px rgba(255, 109, 92, 0.2);
+}
+
+.chapter-section-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chapter-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.chapter-section-meta {
+  font-size: 12px;
+  color: #ff6d5c;
+  font-weight: 500;
+}
+
+.chapter-section-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.mini-button {
+  min-width: 60px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid #ff6d5c;
+  background: #fff;
+  color: #ff6d5c;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.mini-button.primary {
+  background: #ff6d5c;
+  color: #fff;
+}
+
+.chapter-slide-enter-active,
+.chapter-slide-leave-active {
+  transition: all 0.2s ease;
+}
+
+.chapter-slide-enter-from,
+.chapter-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
 .chapter-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding-left: 48px;
+  padding-left: 4px;
 }
 
 .chapter-meta {
@@ -916,3 +1123,5 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 
 }
 </style>
+
+
