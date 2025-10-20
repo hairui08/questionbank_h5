@@ -375,6 +375,13 @@ import {
   flattenQuestions,
 } from "../composables/useExamPaper";
 import type { NormalizedOption, NormalizedQuestion } from "../composables/useExamPaper";
+import {
+  deleteFavorite,
+  getFavoriteKeys,
+  initFavoritesDb,
+  saveFavorite,
+  snapshotFromQuestion,
+} from "../services/sqliteFavorites";
 
 const fontOptions = [
   { label: "小", scale: 0.9 },
@@ -439,13 +446,22 @@ const countdownText = computed(() => formatSeconds(countdownSeconds.value));
 const flatQuestions = flattenQuestions(topLevelQuestions);
 const userAnswers = reactive<Record<string, string | string[]>>({});
 const collectedState = reactive<Record<string, boolean>>({});
+const favoriteKeys = ref<Set<string>>(new Set());
+let favoritesBootstrapPromise: Promise<void> | null = null;
+const serverFavoriteKeys = new Set<string>();
 
 flatQuestions.forEach((question) => {
   if (!(question.answerKey in userAnswers)) {
     userAnswers[question.answerKey] = getInitialAnswer(question);
   }
   if (question.depth === 0 && !(question.answerKey in collectedState)) {
-    collectedState[question.answerKey] = question.isCollect;
+    const initialCollect = Boolean((question as Record<string, unknown>).isCollect);
+    collectedState[question.answerKey] = initialCollect;
+    if (initialCollect) {
+      serverFavoriteKeys.add(question.answerKey);
+    }
+  } else if (question.depth === 0 && collectedState[question.answerKey]) {
+    serverFavoriteKeys.add(question.answerKey);
   }
 });
 
@@ -493,6 +509,8 @@ onMounted(() => {
       }
     }, 1000);
   }
+
+  void bootstrapFavorites();
 });
 
 onBeforeUnmount(() => {
@@ -501,6 +519,41 @@ onBeforeUnmount(() => {
     delete timerHandles.countdown;
   }
 });
+
+function bootstrapFavorites() {
+  if (!favoritesBootstrapPromise) {
+    favoritesBootstrapPromise = (async () => {
+      try {
+        await initFavoritesDb();
+        const existingKeys = await getFavoriteKeys();
+        const seeds = topLevelQuestions.filter(
+          (question) => serverFavoriteKeys.has(question.answerKey) && !existingKeys.has(question.answerKey),
+        );
+        if (seeds.length) {
+          await Promise.all(
+            seeds.map((question) => saveFavorite(snapshotFromQuestion(question, paperTitle))),
+          );
+          const refreshed = await getFavoriteKeys();
+          applyFavoriteKeys(refreshed);
+        } else {
+          applyFavoriteKeys(existingKeys);
+        }
+      } catch (error) {
+        console.warn("[favorites] init failure", error);
+        favoritesBootstrapPromise = null;
+        throw error;
+      }
+    })();
+  }
+  return favoritesBootstrapPromise;
+}
+
+function applyFavoriteKeys(keys: Set<string>) {
+  favoriteKeys.value = new Set(keys);
+  topLevelQuestions.forEach((question) => {
+    collectedState[question.answerKey] = keys.has(question.answerKey);
+  });
+}
 
 function toggleSettings() {
   settingsOpen.value = !settingsOpen.value;
@@ -529,10 +582,33 @@ function goToQuestion(index: number) {
   answerCardOpen.value = false;
 }
 
-function toggleCollect() {
+async function toggleCollect() {
   const question = currentQuestion.value;
   if (!question) return;
-  collectedState[question.answerKey] = !collectedState[question.answerKey];
+  try {
+    await bootstrapFavorites();
+  } catch (error) {
+    console.warn("[favorites] feature unavailable", error);
+    return;
+  }
+  const key = question.answerKey;
+  const nextState = !collectedState[key];
+  collectedState[key] = nextState;
+
+  const updatedKeys = new Set(favoriteKeys.value);
+  try {
+    if (nextState) {
+      await saveFavorite(snapshotFromQuestion(question, paperTitle));
+      updatedKeys.add(key);
+    } else {
+      await deleteFavorite(key);
+      updatedKeys.delete(key);
+    }
+    favoriteKeys.value = updatedKeys;
+  } catch (error) {
+    collectedState[key] = !nextState;
+    console.warn("[favorites] toggle failure", error);
+  }
 }
 
 function toggleAnalysis() {

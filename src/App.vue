@@ -16,6 +16,11 @@
         >
           {{ subject.label }}
         </button>
+        <img
+          class="subject-select-icon"
+          src="@/assets/bool/select-subject.png"
+          alt="选择科目"
+        />
       </div>
 
       <div class="stats-card">
@@ -23,11 +28,37 @@
           <span class="stat-value">{{ stats.leftDays }}</span>
           <span class="stat-label">距离考试天数</span>
         </div>
-        <div class="stats-progress" :style="{ '--progress-angle': progressAngle }">
-          <div class="progress-inner">
+        <div class="stats-progress">
+          <div class="stats-progress-gauge">
+            <svg class="stats-progress-svg" viewBox="0 0 100 50" fill="none">
+              <defs>
+                <linearGradient
+                  id="statsGaugeGradient"
+                  x1="0%"
+                  y1="100%"
+                  x2="100%"
+                  y2="0%"
+                >
+                  <stop offset="0%" stop-color="#31d0c3" />
+                  <stop offset="100%" stop-color="#33c7a6" />
+                </linearGradient>
+              </defs>
+              <path
+                class="stats-gauge-track"
+                d="M5 50 A45 45 0 0 1 95 50"
+              />
+              <path
+                class="stats-gauge-fill"
+                d="M5 50 A45 45 0 0 1 95 50"
+                :style="{
+                  'stroke-dasharray': semicircleStrokeLength,
+                  'stroke-dashoffset': progressDashOffset
+                }"
+              />
+            </svg>
             <span class="progress-value">{{ correctPercentText }}</span>
-            <span class="progress-label">正确率</span>
           </div>
+          <span class="progress-label">正确率</span>
         </div>
         <div class="stat-block">
           <span class="stat-value">{{ stats.finishedCount }}</span>
@@ -207,7 +238,7 @@ interface QuickAction {
     end: string;
     text: string;
   };
-  target?: "answer" | "analysis";
+  target?: "answer" | "analysis" | "wrong" | "collect" | "records";
 }
 
 interface ChapterNode {
@@ -238,7 +269,13 @@ const stats = {
 };
 
 const correctPercentText = computed(() => `${(stats.correctRate * 100).toFixed(1)}%`);
-const progressAngle = computed(() => `${Math.min(Math.max(stats.correctRate, 0), 1) * 360}deg`);
+const SEMICIRCLE_RADIUS = 45;
+const SEMICIRCLE_LENGTH = Math.PI * SEMICIRCLE_RADIUS;
+const semicircleStrokeLength = `${SEMICIRCLE_LENGTH.toFixed(3)} ${SEMICIRCLE_LENGTH.toFixed(3)}`;
+const progressDashOffset = computed(() => {
+  const rate = Math.min(Math.max(stats.correctRate, 0), 1);
+  return `${(SEMICIRCLE_LENGTH * (1 - rate)).toFixed(3)}`;
+});
 
 function selectSubject(subjectId: string) {
   activeSubjectId.value = subjectId;
@@ -284,21 +321,21 @@ const quickSecondaryActions: QuickAction[] = [
     label: "错题集",
     short: quickCuoTiIcon,
     accent: { start: "#ffe8e1", end: "#ffd4cb", text: "#ff6d5c" },
-    target: "analysis",
+    target: "wrong",
   },
   {
-    id: "favorite",
+    id: "collect",
     label: "收藏夹",
     short: quickShouCangIcon,
     accent: { start: "#e0f1ff", end: "#d0e5ff", text: "#2572ff" },
-    target: "analysis",
+    target: "collect",
   },
   {
     id: "record",
     label: "做题记录",
     short: quickJiLuIcon,
     accent: { start: "#e6fbef", end: "#d6f3e3", text: "#2bb77b" },
-    target: "analysis",
+    target: "records",
   },
 ];
 
@@ -542,6 +579,21 @@ function handleQuickAction(action: QuickAction) {
 
   if (action.target === "analysis") {
     goAnalysis();
+    return;
+  }
+
+  if (action.target === "wrong") {
+    goWrong();
+    return;
+  }
+
+  if (action.target === "collect") {
+    goCollect();
+    return;
+  }
+
+  if (action.target === "records") {
+    goRecord();
   }
 }
 
@@ -555,6 +607,18 @@ function goAnswer() {
 
 function goAnalysis() {
   router.push({ name: "analysis" });
+}
+
+function goWrong() {
+  router.push({ name: "wronglist" });
+}
+
+function goCollect() {
+  router.push({ name: "collectlist" });
+}
+
+function goRecord() {
+  router.push({ name: "examresult" });
 }
 </script>
 
@@ -608,9 +672,22 @@ body{
 }
 
 .subject-tabs {
+  position: relative;
   margin-top: 16px;
   display: flex;
+  align-items: center;
   gap: 16px;
+  padding-right: 56px;
+}
+
+.subject-select-icon {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  pointer-events: none;
 }
 
 .subject-tab {
@@ -639,79 +716,85 @@ body{
   background: #ff4d4f;
 }
 
-.stage-module{
-
-
-}
-
 .stats-card {
-  margin-top: 24px;
+  margin-top: 26px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 20px;
-  padding: 18px 20px;
-  border-radius: 20px;
-  background: linear-gradient(145deg, #fff7f1, #fff);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  gap: 24px;
+  padding: 24px 32px;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(31, 35, 53, 0.08);
 }
 
 .stat-block {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  min-width: 88px;
+  gap: 8px;
+  min-width: 96px;
 }
 
 .stat-value {
-  font-size: 24px;
-  font-weight: 600;
-  color: #1f1f1f;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2335;
 }
 
 .stat-label {
-  font-size: 12px;
+  font-size: 13px;
   color: #8c8c8c;
 }
 
 .stats-progress {
-  --progress-angle: 0deg;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: conic-gradient(#13c2c2 var(--progress-angle), #f2f4f9 0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.stats-progress::after {
-  content: "";
-  position: absolute;
-  inset: 14px;
-  background: #ffffff;
-  border-radius: 50%;
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.06);
-}
-
-.progress-inner {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+}
+
+.stats-progress-gauge {
+  position: relative;
+  width: 100px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stats-progress-svg {
+  width: 132px;
+  height: 72px;
+}
+
+.stats-gauge-track,
+.stats-gauge-fill {
+  fill: none;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.stats-gauge-track {
+  stroke: #f0f2f5;
+}
+
+.stats-gauge-fill {
+  stroke: url(#statsGaugeGradient);
+  transition: stroke-dashoffset 0.3s ease;
 }
 
 .progress-value {
-  font-size: 20px;
+  position: absolute;
+  top: 68%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
   font-weight: 600;
-  color: #13c2c2;
+  color: #1f2335;
 }
 
 .progress-label {
-  font-size: 12px;
+  font-size: 13px;
   color: #8c8c8c;
 }
 
@@ -795,7 +878,7 @@ body{
 }
 
 .action-label {
-  font-size: 12px;
+  font-size: 14px;
   color: #404040;
 }
 
@@ -1199,13 +1282,24 @@ body{
 
 @media (max-width: 420px) {
   .stats-card {
+    gap: 12px;
     padding: 16px;
-    gap: 14px;
   }
 
+  .stat-block,
   .stats-progress {
-    width: 96px;
-    height: 96px;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .stats-progress-gauge {
+    width: 80px;
+    height: 60px;
+  }
+
+  .stats-progress-svg {
+    width: 80px;
+    height: 60px;
   }
 
   .action-icon {

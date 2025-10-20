@@ -1,7 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import ExamAnswer from "../pages/ExamAnswer.vue";
-import ExamAnalysis from "../pages/ExamAnalysis.vue";
 import ExamChapter from "@/pages/ExamChapter.vue";
+import ExamAnalysis from "../pages/ExamAnalysis.vue";
+import WrongList from "../pages/WrongList.vue";
+import CollectList from "../pages/CollectList.vue";
+import ExamResult from "../pages/ExamResult.vue";
 
 const HomePlaceholder = {
   name: "HomePlaceholder",
@@ -31,6 +34,21 @@ const router = createRouter({
       path: "/analysis",
       name: "analysis",
       component: ExamAnalysis,
+    },
+    {
+      path: "/wronglist",
+      name: "wronglist",
+      component: WrongList,
+    },
+    {
+      path: "/collectlist",
+      name: "collectlist",
+      component: CollectList,
+    },
+    {
+      path: "/examresult",
+      name: "examresult",
+      component: ExamResult,
     },
     {
       path: "/:pathMatch(.*)*",

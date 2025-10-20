@@ -346,12 +346,40 @@
                 class="card-item"
                 :class="{
                   done: isQuestionAnswered(item.question),
-                  active: currentQuestion?.answerKey === item.question.answerKey
+                  active: currentQuestion?.answerKey === item.question.answerKey,
+                  vip: isVipQuestion(item.question)
                 }"
                 type="button"
-                @click="goToQuestion(item.index)"
+                @click="handleAnswerCardClick(item)"
               >
-                {{ item.question.number }}
+                <span class="card-number">{{ item.question.number }}</span>
+                <svg
+                  v-if="isVipQuestion(item.question)"
+                  class="card-lock-icon"
+                  viewBox="0 0 16 16"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 7V5a4 4 0 0 1 8 0v2"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <rect
+                    x="3"
+                    y="7"
+                    width="10"
+                    height="7"
+                    rx="1.5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linejoin="round"
+                  />
+                  <circle cx="8" cy="10.5" r="1" fill="currentColor" />
+                </svg>
               </button>
             </div>
           </section>
@@ -367,6 +395,16 @@
         <div class="dialog-actions">
           <button class="action-button" type="button" @click="submitConfirmOpen = false">取消</button>
           <button class="action-button primary" type="button" @click="handleSubmitConfirm">确定</button>
+        </div>
+      </div>
+    </div>
+    <div v-if="vipDialogOpen" class="dialog-mask" @click.self="vipDialogOpen = false">
+      <div class="dialog">
+        <div class="dialog-title">会员专享</div>
+        <div class="dialog-content">{{ vipDialogMessage }}</div>
+        <div class="dialog-actions">
+          <button class="action-button" type="button" @click="vipDialogOpen = false">暂不</button>
+          <button class="action-button primary" type="button" @click="handleVipPurchase">立即开通</button>
         </div>
       </div>
     </div>
@@ -387,6 +425,13 @@ import {
   flattenQuestions,
 } from "../composables/useExamPaper";
 import type { NormalizedOption, NormalizedQuestion } from "../composables/useExamPaper";
+import {
+  deleteFavorite,
+  getFavoriteKeys,
+  initFavoritesDb,
+  saveFavorite,
+  snapshotFromQuestion,
+} from "../services/sqliteFavorites";
 
 const fontOptions = [
   { label: "小", scale: 0.9 },
@@ -394,6 +439,7 @@ const fontOptions = [
   { label: "大", scale: 1.1 },
 ];
 const FONT_STORAGE_KEY = "exam-font-scale";
+const VIP_QUESTION_NUMBERS = new Set<number>([1, 6, 7, 8, 12, 13, 17, 18, 20, 24, 25]);
 
 const paper = normalizedPaper ?? normalizeExamPaper();
 const topLevelQuestions = paper.questions;
@@ -406,7 +452,13 @@ const settingsOpen = ref(false);
 const answerCardOpen = ref(false);
 const submitConfirmOpen = ref(false);
 const analysisVisible = ref(false);
+const vipDialogOpen = ref(false);
+const vipDialogQuestionNumber = ref<number | null>(null);
 const currentIndex = ref(0);
+const firstUnlockedIndex = topLevelQuestions.findIndex((question) => !isVipQuestion(question));
+if (firstUnlockedIndex > 0) {
+  currentIndex.value = firstUnlockedIndex;
+}
 
 const pageStyle = computed(() => ({
   "--font-scale": String(fontScale.value),
@@ -416,6 +468,13 @@ const pageStyle = computed(() => ({
 const currentQuestion = computed<NormalizedQuestion | null>(() => topLevelQuestions[currentIndex.value] ?? null);
 const currentQuestionNumber = computed(() => currentQuestion.value?.number ?? 0);
 const currentQuestionTypeName = computed(() => currentQuestion.value?.testTypeName ?? "");
+const vipDialogMessage = computed(() => {
+  const number = vipDialogQuestionNumber.value;
+  if (typeof number === "number") {
+    return `题号 ${number} 为 VIP 试题，开通会员后即可解锁全部内容。`;
+  }
+  return "该试题为 VIP 试题，开通会员后即可解锁全部内容。";
+});
 const lastQuestionIndex = computed(() => Math.max(0, topLevelQuestions.length - 1));
 
 const paperReady = computed(() => topLevelQuestions.length > 0);
@@ -450,13 +509,22 @@ const countdownSeconds = ref(Math.max(0, Math.floor(answerTimeMinutes * 60)));
 const flatQuestions = flattenQuestions(topLevelQuestions);
 const userAnswers = reactive<Record<string, string | string[]>>({});
 const collectedState = reactive<Record<string, boolean>>({});
+const favoriteKeys = ref<Set<string>>(new Set());
+let favoritesBootstrapPromise: Promise<void> | null = null;
+const serverFavoriteKeys = new Set<string>();
 
 flatQuestions.forEach((question) => {
   if (!(question.answerKey in userAnswers)) {
     userAnswers[question.answerKey] = getInitialAnswer(question);
   }
   if (question.depth === 0 && !(question.answerKey in collectedState)) {
-    collectedState[question.answerKey] = question.isCollect;
+    const initialCollect = Boolean((question as Record<string, unknown>).isCollect);
+    collectedState[question.answerKey] = initialCollect;
+    if (initialCollect) {
+      serverFavoriteKeys.add(question.answerKey);
+    }
+  } else if (question.depth === 0 && collectedState[question.answerKey]) {
+    serverFavoriteKeys.add(question.answerKey);
   }
 });
 
@@ -504,6 +572,8 @@ onMounted(() => {
       }
     }, 1000);
   }
+
+  void bootstrapFavorites();
 });
 
 onBeforeUnmount(() => {
@@ -512,6 +582,41 @@ onBeforeUnmount(() => {
     delete timerHandles.countdown;
   }
 });
+
+function bootstrapFavorites() {
+  if (!favoritesBootstrapPromise) {
+    favoritesBootstrapPromise = (async () => {
+      try {
+        await initFavoritesDb();
+        const existingKeys = await getFavoriteKeys();
+        const seeds = topLevelQuestions.filter(
+          (question) => serverFavoriteKeys.has(question.answerKey) && !existingKeys.has(question.answerKey),
+        );
+        if (seeds.length) {
+          await Promise.all(
+            seeds.map((question) => saveFavorite(snapshotFromQuestion(question, paperTitle))),
+          );
+          const refreshed = await getFavoriteKeys();
+          applyFavoriteKeys(refreshed);
+        } else {
+          applyFavoriteKeys(existingKeys);
+        }
+      } catch (error) {
+        console.warn("[favorites] init failure", error);
+        favoritesBootstrapPromise = null;
+        throw error;
+      }
+    })();
+  }
+  return favoritesBootstrapPromise;
+}
+
+function applyFavoriteKeys(keys: Set<string>) {
+  favoriteKeys.value = new Set(keys);
+  topLevelQuestions.forEach((question) => {
+    collectedState[question.answerKey] = keys.has(question.answerKey);
+  });
+}
 
 function toggleSettings() {
   settingsOpen.value = !settingsOpen.value;
@@ -523,27 +628,65 @@ function selectFont(option: { label: string; scale: number }) {
 }
 
 function goPrev() {
-  if (currentIndex.value > 0) {
-    currentIndex.value -= 1;
+  const targetIndex = findPlayableIndex(currentIndex.value, -1);
+  if (targetIndex !== null) {
+    currentIndex.value = targetIndex;
   }
 }
 
 function goNext() {
-  if (currentIndex.value < topLevelQuestions.length - 1) {
-    currentIndex.value += 1;
+  const targetIndex = findPlayableIndex(currentIndex.value, 1);
+  if (targetIndex !== null) {
+    currentIndex.value = targetIndex;
   }
 }
 
 function goToQuestion(index: number) {
   if (index < 0 || index >= topLevelQuestions.length) return;
+  const target = topLevelQuestions[index];
+  if (isVipQuestion(target)) {
+    showVipDialog(target);
+    return;
+  }
   currentIndex.value = index;
   answerCardOpen.value = false;
 }
 
-function toggleCollect() {
+function handleAnswerCardClick(item: { question: NormalizedQuestion; index: number }) {
+  if (isVipQuestion(item.question)) {
+    showVipDialog(item.question);
+    return;
+  }
+  goToQuestion(item.index);
+}
+
+async function toggleCollect() {
   const question = currentQuestion.value;
   if (!question) return;
-  collectedState[question.answerKey] = !collectedState[question.answerKey];
+  try {
+    await bootstrapFavorites();
+  } catch (error) {
+    console.warn("[favorites] feature unavailable", error);
+    return;
+  }
+  const key = question.answerKey;
+  const nextState = !collectedState[key];
+  collectedState[key] = nextState;
+
+  const updatedKeys = new Set(favoriteKeys.value);
+  try {
+    if (nextState) {
+      await saveFavorite(snapshotFromQuestion(question, paperTitle));
+      updatedKeys.add(key);
+    } else {
+      await deleteFavorite(key);
+      updatedKeys.delete(key);
+    }
+    favoriteKeys.value = updatedKeys;
+  } catch (error) {
+    collectedState[key] = !nextState;
+    console.warn("[favorites] toggle failure", error);
+  }
 }
 
 function toggleAnalysis() {
@@ -560,6 +703,28 @@ function handleBack() {
   if (typeof window !== "undefined" && window.history.length > 1) {
     window.history.back();
   }
+}
+
+function findPlayableIndex(fromIndex: number, step: 1 | -1) {
+  let pointer = fromIndex + step;
+  while (pointer >= 0 && pointer < topLevelQuestions.length) {
+    const candidate = topLevelQuestions[pointer];
+    if (!isVipQuestion(candidate)) {
+      return pointer;
+    }
+    pointer += step;
+  }
+  return null;
+}
+
+function showVipDialog(question?: NormalizedQuestion | null) {
+  vipDialogQuestionNumber.value = question?.number ?? null;
+  vipDialogOpen.value = true;
+}
+
+function handleVipPurchase() {
+  console.log("Navigate to VIP purchase flow");
+  vipDialogOpen.value = false;
 }
 
 const swipeMeta = reactive({
@@ -640,6 +805,14 @@ function getChoiceAnswerDisplay(question: NormalizedQuestion) {
 function getAnswerFieldDisplay(value: string) {
   const text = String(value ?? "").trim();
   return text.length > 0 ? text : "暂无";
+}
+
+function isVipQuestionNumber(value: number | null | undefined): boolean {
+  return typeof value === "number" && VIP_QUESTION_NUMBERS.has(value);
+}
+
+function isVipQuestion(question?: NormalizedQuestion | null): boolean {
+  return Boolean(question) && isVipQuestionNumber(question?.number);
 }
 
 function resolveOptionClasses(question: NormalizedQuestion, option: NormalizedOption) {
@@ -1383,6 +1556,11 @@ function toSerializableAnswers() {
 }
 
 .card-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   border-radius: 12px;
   border: 1px solid #d9d9d9;
   background: #ffffff;
@@ -1399,6 +1577,29 @@ function toSerializableAnswers() {
   border-color: #1677ff;
   background: #f0f5ff;
   color: #1677ff;
+}
+
+.card-item.vip {
+  border-color: #ffccc7;
+  background: #fff2f0;
+  color: #ff4d4f;
+}
+
+.card-number {
+  line-height: 1;
+}
+
+.card-item.vip .card-number {
+  font-weight: 600;
+}
+
+.card-lock-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.card-item.vip .card-lock-icon {
+  color: #ff4d4f;
 }
 
 .dialog {
