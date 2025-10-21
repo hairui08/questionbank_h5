@@ -75,7 +75,7 @@
             <div class="section-title">章节练习</div>
             <div class="section-subtitle">针对性巩固 知识点全覆盖</div>
           </div>
-          <button class="section-more" type="button">更多</button>
+          <button class="section-more" type="button" @click="goChapter">更多</button>
         </div>
         <div class="chapter-list">
           <article v-for="(chapter, index) in chapterExercises" :key="chapter.id" class="chapter-card-item">
@@ -121,7 +121,7 @@
 
     <nav class="home-tabbar">
       <button v-for="item in tabbarItems" :key="item.id" class="tabbar-button"
-        :class="{ active: item.id === activeTabbarId }" type="button">
+        :class="{ active: item.id === activeTabbarId }" type="button" @click="onTabbarClick(item.id)">
         <span class="tab-icon">
           <img v-if="item.isImage" :src="item.icon" :alt="item.label" class="tab-icon-image" />
           <template v-else>
@@ -136,7 +136,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineComponent, h, PropType, ref } from "vue";
+import { computed, defineComponent, h, PropType, ref, reactive } from "vue";
 import type { Component } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import iconLive from "./assets/icon_live.png";
@@ -147,7 +147,7 @@ import stageRuXueIcon from "./assets/stage/ruxue.png";
 import stageZhangJieIcon from "./assets/stage/zhangjie.png";
 import stageLiNianIcon from "./assets/stage/linian.png";
 import stageJieDuanIcon from "./assets/stage/jieduan.png";
-import stageMoNiIcon from "./assets/stage/moni.png";
+
 import quickCuoTiIcon from "./assets/application/cuoti.png";
 import quickShouCangIcon from "./assets/application/shoucang.png";
 import quickJiLuIcon from "./assets/application/jilu.png";
@@ -185,11 +185,11 @@ const subjects = [
 ];
 const activeSubjectId = ref(subjects[0].id);
 
-const stats = {
+const stats = reactive({
   leftDays: 100,
   correctRate: 0.585,
   finishedCount: 100,
-};
+});
 
 const correctPercentText = computed(() => `${(stats.correctRate * 100).toFixed(1)}%`);
 const SEMICIRCLE_RADIUS = 45;
@@ -1225,6 +1225,14 @@ body {
   font-weight: 600;
   color: inherit;
   font-size: 14px;
+}
+
+.tab-icon-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+  display: block;
 }
 
 .page-container {
