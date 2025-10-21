@@ -17,23 +17,24 @@
     </header>
 
     <section class="filter-bar">
-      <button class="dropdown" type="button">
-        <span>{{ activeSubject.label }}</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </button>
-      <button class="dropdown" type="button">
-        <span>{{ activeCategory.label }}</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </button>
+      <select v-model="activeFilterId" class="dropdown-select">
+        <option value="all">全部</option>
+        <option value="admission">入学测试</option>
+        <option value="chapter">章节练习</option>
+        <option value="past">历年真题</option>
+        <option value="daily">每日一练</option>
+      </select>
+      <input
+        v-model="searchQuery"
+        type="text"
+        class="dropdown-input"
+        placeholder="输入关键字搜索"
+      />
     </section>
 
     <main class="record-list">
       <article
-        v-for="record in records"
+        v-for="record in filteredRecords"
         :key="record.id"
         class="record-card"
       >
@@ -81,7 +82,7 @@ interface CategoryOption {
 
 interface RecordBadge {
   label: string;
-  type: "wrong" | "daily" | "chapter";
+  type: "wrong" | "daily" | "chapter" | "admission" | "past";
 }
 
 interface RecordMeta {
@@ -116,9 +117,10 @@ const subjects: SubjectOption[] = [
 
 const categories: CategoryOption[] = [
   { id: "all", label: "全部" },
-  { id: "wrong", label: "错题重做" },
-  { id: "daily", label: "每日一练" },
+  { id: "admission", label: "入学测试" },
   { id: "chapter", label: "章节练习" },
+  { id: "past", label: "历年真题" },
+  { id: "daily", label: "每日一练" },
 ];
 
 const records = reactive<PracticeRecord[]>([
@@ -185,14 +187,48 @@ const records = reactive<PracticeRecord[]>([
 ]);
 
 const activeSubjectId = ref(subjects[0].id);
-const activeCategoryId = ref(categories[0].id);
+const activeFilterId = ref(categories[0].id);
+const searchQuery = ref("");
 
 const activeSubject = computed(
   () => subjects.find((item) => item.id === activeSubjectId.value) ?? subjects[0],
 );
-const activeCategory = computed(
-  () => categories.find((item) => item.id === activeCategoryId.value) ?? categories[0],
+const activeFilter = computed(
+  () => categories.find((item) => item.id === activeFilterId.value) ?? categories[0],
 );
+
+const filteredRecords = computed(() => {
+  let filtered = records;
+
+  if (activeFilterId.value !== "all") {
+    filtered = filtered.filter((record) => {
+      switch (activeFilterId.value) {
+        case "admission":
+          return record.badge.type === "admission";
+        case "chapter":
+          return record.badge.type === "chapter";
+        case "past":
+          return record.badge.type === "past";
+        case "daily":
+          return record.badge.type === "daily";
+        default:
+          return true;
+      }
+    });
+  }
+
+  if (searchQuery.value.trim()) {
+    const q = searchQuery.value.trim().toLowerCase();
+    filtered = filtered.filter((record) => {
+      return (
+        record.title.toLowerCase().includes(q) ||
+        record.subtitle.toLowerCase().includes(q)
+      );
+    });
+  }
+
+  return filtered;
+});
 
 function goBack() {
   if (window.history.length > 1) {
@@ -349,6 +385,14 @@ function handleAction(actionId: string, recordId: string) {
   background: linear-gradient(90deg, #5584ff 0%, #6d9bff 100%);
 }
 
+.record-badge[data-type="admission"] {
+  background: linear-gradient(90deg, #9c27b0 0%, #ba68c8 100%);
+}
+
+.record-badge[data-type="past"] {
+  background: linear-gradient(90deg, #ff9800 0%, #ffb74d 100%);
+}
+
 .record-title {
   display: flex;
   flex-direction: column;
@@ -437,6 +481,26 @@ function handleAction(actionId: string, recordId: string) {
   .record-card {
     padding: 14px 16px;
   }
+}
+
+.dropdown-select,
+.dropdown-input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  font-size: 14px;
+  color: #333333;
+}
+
+.dropdown-select {
+  appearance: none;
+  background-image: none;
+}
+
+.dropdown-input::placeholder {
+  color: #8c8c8c;
 }
 </style>
 

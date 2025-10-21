@@ -8,16 +8,21 @@
       </button>
       <h1 class="header-title">错题集</h1>
       <div class="header-actions">
-        <button class="icon-button" type="button" aria-label="一键清空">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2h5v2h-1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8H4V6h5Zm2-1v1h2V5Z" fill="currentColor" />
-          </svg>
-        </button>
-        <button class="icon-button" type="button" aria-label="设置" @click="openAutoRemoveDialog">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.49.49 0 0 0 .11-.63l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.07 7.07 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 14.24 2h-4.48a.5.5 0 0 0-.5.42l-.36 2.54c-.6.24-1.16.55-1.68.94l-2.39-.96a.5.5 0 0 0-.6.22L2.31 8.48a.5.5 0 0 0 .11.63l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 0 0-.11.63l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96c.52.39 1.08.7 1.68.94l.36 2.54a.5.5 0 0 0 .5.42h4.48a.5.5 0 0 0 .5-.42l.36-2.54c.6-.24 1.16-.55 1.68-.94l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.11-.63l-2.03-1.58ZM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z" fill="currentColor" />
-          </svg>
-        </button>
+        <template v-if="!selectionMode">
+          <button class="icon-button" type="button" aria-label="多选删除" @click="enterSelectionMode">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2h5v2h-1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8H4V6h5Zm2-1v1h2V5Z" fill="currentColor" />
+            </svg>
+          </button>
+          <button class="icon-button" type="button" aria-label="设置" @click="openAutoRemoveDialog">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.49.49 0 0 0 .11-.63l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.07 7.07 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 14.24 2h-4.48a.5.5 0 0 0-.5.42l-.36 2.54c-.6.24-1.16.55-1.68.94l-2.39-.96a.5.5 0 0 0-.6.22L2.31 8.48a.5.5 0 0 0 .11.63l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 0 0-.11.63l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96c.52.39 1.08.7 1.68.94l.36 2.54a.5.5 0 0 0 .5.42h4.48a.5.5 0 0 0 .5-.42l.36-2.54c.6-.24 1.16-.55 1.68-.94l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.11-.63l-2.03-1.58ZM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z" fill="currentColor" />
+            </svg>
+          </button>
+        </template>
+        <template v-else>
+          <button class="text-link" type="button" @click="exitSelectionMode">取消</button>
+        </template>
       </div>
     </header>
 
@@ -100,15 +105,20 @@
                 v-for="section in chapter.sections"
                 :key="section.id"
                 class="chapter-section-item"
+                :class="{ selectable: selectionMode }"
+                @click="selectionMode ? toggleItemSelection(section.id) : undefined"
               >
+                <div v-if="selectionMode" class="chapter-section-selector" @click.stop="toggleItemSelection(section.id)">
+                  <span class="selector-circle" :class="{ checked: selectedIdsSet.has(section.id) }" />
+                </div>
                 <div class="chapter-section-bullet" />
                 <div class="chapter-section-content">
                   <div class="chapter-section-title">{{ section.title }}</div>
                   <div class="chapter-section-meta">错题 {{ section.wrongCount }}</div>
                 </div>
                 <div class="chapter-section-actions">
-                  <button type="button" class="mini-button" @click="handlePeriodAction('analysis', section.id)">查看</button>
-                  <button type="button" class="mini-button primary" @click="handlePeriodAction('redo', section.id)">重做</button>
+                  <button type="button" class="mini-button" @click="handlePeriodAction('analysis', section.id)" :disabled="selectionMode">查看</button>
+                  <button type="button" class="mini-button primary" @click="handlePeriodAction('redo', section.id)" :disabled="selectionMode">重做</button>
                 </div>
               </li>
             </ul>
@@ -131,7 +141,8 @@
       <section
         v-for="period in displayPeriods"
         :key="period.id"
-        :class="['period-card', { 'type-card': isTypeFilter }]"
+        :class="['period-card', { 'type-card': isTypeFilter, 'selectable': selectionMode }]"
+        @click="selectionMode ? toggleItemSelection(period.id) : undefined"
       >
         <div class="period-info">
           <div class="period-title">{{ period.label }}</div>
@@ -141,9 +152,12 @@
           </div>
         </div>
         <div class="period-actions">
-          <button type="button" class="outline-button" @click="handlePeriodAction('redo', period.id)">重做</button>
-          <button type="button" class="outline-button" @click="handlePeriodAction('continue', period.id)">继续</button>
-          <button type="button" class="primary-button" @click="handlePeriodAction('analysis', period.id)">查看解析</button>
+          <button type="button" class="outline-button" @click="handlePeriodAction('redo', period.id)" :disabled="selectionMode">重做</button>
+          <button type="button" class="outline-button" @click="handlePeriodAction('continue', period.id)" :disabled="selectionMode">继续</button>
+          <button type="button" class="primary-button" @click="handlePeriodAction('analysis', period.id)" :disabled="selectionMode">查看解析</button>
+        </div>
+        <div v-if="selectionMode" class="period-selector" @click.stop="toggleItemSelection(period.id)">
+          <span class="selector-circle" :class="{ checked: selectedIdsSet.has(period.id) }" />
         </div>
       </section>
     </template>
@@ -182,10 +196,21 @@
       </div>
   </transition>
   </div>
+  <transition name="selection-bar">
+    <div v-if="selectionMode" class="selection-bar">
+      <button class="select-toggle" type="button" @click="toggleSelectAll">
+        <span class="selector-circle" :class="{ checked: isAllSelected }" />
+        <span class="select-label">全选</span>
+      </button>
+      <button class="selection-delete" type="button" :disabled="selectedCount === 0" @click="handleDeleteSelected">
+        删除
+      </button>
+    </div>
+  </transition>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 
 interface Category {
@@ -305,8 +330,8 @@ const autoRemoveOptions: AutoRemoveOption[] = [
   ];
 
 const overview = reactive({
-  wrongCount: 4,
-  removedCount: 0,
+  wrongCount: 24,
+  removedCount: 6,
 });
 
 const activeCategoryId = ref(categories[0]?.id ?? "");
@@ -317,7 +342,88 @@ const dontRemindNext = ref(false);
 const pendingContinuePeriodId = ref<string | null>(null);
 const expandedChapterIds = ref<Set<string>>(new Set());
 
-const isTypeFilter = computed(() => activeFilterId.value === "type");
+// 选择模式状态与集合
+const selectionMode = ref(false);
+const selectedIds = ref<Set<string>>(new Set());
+
+function enterSelectionMode() {
+  selectionMode.value = true;
+  selectedIds.value = new Set();
+}
+
+function exitSelectionMode() {
+  selectionMode.value = false;
+  selectedIds.value = new Set();
+}
+
+const selectedIdsSet = computed(() => selectedIds.value);
+
+const visibleItems = computed<string[]>(() => {
+  if (isChapterFilter.value) {
+    const ids: string[] = [];
+    chapters.forEach((ch) => {
+      if (isChapterExpanded(ch.id)) {
+        ch.sections?.forEach((sec) => ids.push(sec.id));
+      }
+    });
+    return ids;
+  }
+  return displayPeriods.value.map((p) => p.id);
+});
+
+const selectedCount = computed(() => selectedIds.value.size);
+
+const isAllSelected = computed(() => {
+  const ids = visibleItems.value;
+  if (ids.length === 0) return false;
+  return ids.every((id) => selectedIds.value.has(id));
+});
+
+function toggleItemSelection(id: string) {
+  const next = new Set(selectedIds.value);
+  if (next.has(id)) {
+    next.delete(id);
+  } else {
+    next.add(id);
+  }
+  selectedIds.value = next;
+}
+
+function toggleSelectAll() {
+  if (isAllSelected.value) {
+    selectedIds.value = new Set();
+  } else {
+    selectedIds.value = new Set(visibleItems.value);
+  }
+}
+
+function handleDeleteSelected() {
+  if (selectedIds.value.size === 0) return;
+  const confirmed = window.confirm(`确定删除选中的 ${selectedIds.value.size} 项错题吗？`);
+  if (!confirmed) return;
+  console.log("[wronglist] 删除选中错题项：", Array.from(selectedIds.value));
+  exitSelectionMode();
+}
+
+// 根据过滤或章节展开变化，矫正选择集合
+function reconcileSelection() {
+  if (!selectionMode.value) return;
+  const available = new Set(visibleItems.value);
+  const next = new Set<string>();
+  selectedIds.value.forEach((id) => {
+    if (available.has(id)) next.add(id);
+  });
+  selectedIds.value = next;
+  if (next.size === 0 && visibleItems.value.length === 0) {
+    exitSelectionMode();
+  }
+}
+
+watch([activeFilterId, expandedChapterIds], () => {
+  reconcileSelection();
+});
+
+const isTypeFilter = computed(() => activeFilterId.value === "type" || activeFilterId.value === "real");
 const isChapterFilter = computed(() => activeFilterId.value === "chapter");
 const displayPeriods = computed(() => (isTypeFilter.value ? typePeriods : periods));
 const isChapterExpanded = (id: string) => expandedChapterIds.value.has(id);
@@ -499,7 +605,7 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 
 .summary-card {
   position: relative;
-  margin: 24px 24px 20px;
+  margin: 20px 24px 20px;
   padding: 32px 24px 10px;
   border-radius: 24px;
   background: radial-gradient(circle at 30% 20%, rgba(255, 109, 92, 0.16), rgba(255, 109, 92, 0.06));
@@ -708,6 +814,11 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 .chapter-toggle:active {
   background: #ff6d5c;
   color: #fff;
+}
+
+.chapter-toggle::before,
+.chapter-toggle::after {
+  content: none !important;
 }
 
 .chapter-toggle-icon {
@@ -1121,6 +1232,118 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
     flex: 1 1 30%;
   }
 
+}
+/* 选择模式通用样式 */
+.text-link {
+  border: none;
+  background: none;
+  color: #ff6d5c;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.selector-circle {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.8px solid #ff6d5c;
+  background: #fff;
+  box-shadow: inset 0 0 0 2px rgba(255, 109, 92, 0.15);
+}
+
+.selector-circle.checked {
+  background: #ff6d5c;
+  border-color: #ff6d5c;
+  box-shadow: none;
+}
+
+.period-card {
+  position: relative;
+}
+
+.period-card.selectable {
+  cursor: pointer;
+  padding-left: 48px; /* 选择模式下为选择圆点预留空间 */
+}
+
+/* 题型列表（type-card）在选择模式下同样预留空间 */
+.period-card.type-card.selectable {
+  padding-left: 48px;
+}
+
+.period-selector {
+  position: absolute;
+  left: 18px; /* 与预留的左边距配合，避免覆盖标题 */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.chapter-section-item {
+  position: relative;
+}
+
+.chapter-section-item.selectable {
+  cursor: pointer;
+}
+
+.chapter-section-selector {
+  position: absolute;
+  left: 8px;
+}
+
+/* 底部选择操作条 */
+.selection-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  background: #ffffff;
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.08);
+  z-index: 20;
+}
+
+.select-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background: none;
+  color: #262626;
+  cursor: pointer;
+}
+
+.select-label {
+  font-size: 15px;
+}
+
+.selection-delete {
+  border: none;
+  background: #ff6d5c;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 进入/退出动画（可选） */
+.selection-bar-enter-active,
+.selection-bar-leave-active {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.selection-bar-enter-from,
+.selection-bar-leave-to {
+  transform: translateY(100%);
+  opacity: 0;
 }
 </style>
 

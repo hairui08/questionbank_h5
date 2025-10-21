@@ -6,21 +6,11 @@
       </div>
 
       <div class="subject-tabs">
-        <button
-          v-for="subject in subjects"
-          :key="subject.id"
-          class="subject-tab"
-          :class="{ active: subject.id === activeSubjectId }"
-          type="button"
-          @click="selectSubject(subject.id)"
-        >
+        <button v-for="subject in subjects" :key="subject.id" class="subject-tab"
+          :class="{ active: subject.id === activeSubjectId }" type="button" @click="selectSubject(subject.id)">
           {{ subject.label }}
         </button>
-        <img
-          class="subject-select-icon"
-          src="@/assets/bool/select-subject.png"
-          alt="选择科目"
-        />
+        <img class="subject-select-icon" src="@/assets/bool/select-subject.png" alt="选择科目" />
       </div>
 
       <div class="stats-card">
@@ -32,29 +22,16 @@
           <div class="stats-progress-gauge">
             <svg class="stats-progress-svg" viewBox="0 0 100 50" fill="none">
               <defs>
-                <linearGradient
-                  id="statsGaugeGradient"
-                  x1="0%"
-                  y1="100%"
-                  x2="100%"
-                  y2="0%"
-                >
+                <linearGradient id="statsGaugeGradient" x1="0%" y1="100%" x2="100%" y2="0%">
                   <stop offset="0%" stop-color="#31d0c3" />
                   <stop offset="100%" stop-color="#33c7a6" />
                 </linearGradient>
               </defs>
-              <path
-                class="stats-gauge-track"
-                d="M5 50 A45 45 0 0 1 95 50"
-              />
-              <path
-                class="stats-gauge-fill"
-                d="M5 50 A45 45 0 0 1 95 50"
-                :style="{
-                  'stroke-dasharray': semicircleStrokeLength,
-                  'stroke-dashoffset': progressDashOffset
-                }"
-              />
+              <path class="stats-gauge-track" d="M5 50 A45 45 0 0 1 95 50" />
+              <path class="stats-gauge-fill" d="M5 50 A45 45 0 0 1 95 50" :style="{
+                'stroke-dasharray': semicircleStrokeLength,
+                'stroke-dashoffset': progressDashOffset
+              }" />
             </svg>
             <span class="progress-value">{{ correctPercentText }}</span>
           </div>
@@ -68,21 +45,10 @@
 
       <div class="stage-module">
         <div class="quick-grid">
-          <button
-            v-for="action in quickPrimaryActions"
-            :key="action.id"
-            class="quick-action"
-            type="button"
-            :style="getActionStyle(action)"
-            @click="handleQuickAction(action)"
-          >
+          <button v-for="action in quickPrimaryActions" :key="action.id" class="quick-action" type="button"
+            :style="getActionStyle(action)" @click="handleQuickAction(action)">
             <span class="action-icon">
-              <img
-                v-if="isImageSource(action.short)"
-                :src="action.short"
-                alt=""
-                class="action-icon-image"
-              />
+              <img v-if="isImageSource(action.short)" :src="action.short" alt="" class="action-icon-image" />
               <span v-else>{{ action.short }}</span>
             </span>
             <span class="action-label">{{ action.label }}</span>
@@ -93,25 +59,14 @@
 
     <main class="home-content">
       <div class="div_application">
-          <button
-            v-for="action in quickSecondaryActions"
-            :key="action.id"
-            class="quick-action"
-            type="button"
-            :style="getActionStyle(action)"
-            @click="handleQuickAction(action)"
-          >
-            <span class="action-icon">
-              <img
-                v-if="isImageSource(action.short)"
-                :src="action.short"
-                alt=""
-                class="action-icon-image"
-              />
-              <span v-else>{{ action.short }}</span>
-            </span>
-            <span class="action-label">{{ action.label }}</span>
-          </button>
+        <button v-for="action in quickSecondaryActions" :key="action.id" class="quick-action" type="button"
+          :style="getActionStyle(action)" @click="handleQuickAction(action)">
+          <span class="action-icon">
+            <img v-if="isImageSource(action.short)" :src="action.short" alt="" class="action-icon-image" />
+            <span v-else>{{ action.short }}</span>
+          </span>
+          <span class="action-label">{{ action.label }}</span>
+        </button>
       </div>
 
       <div class="chapter_modlue">
@@ -123,63 +78,41 @@
           <button class="section-more" type="button">更多</button>
         </div>
         <div class="chapter-list">
-          <article
-            v-for="(chapter, index) in chapterExercises"
-            :key="chapter.id"
-            class="chapter-card-item"
-          >
-            <div
-              class="chapter-node-row chapter-node-row--root chapter-node-row--depth-0"
-              :class="{
-                'is-collapsible': hasChildren(chapter),
-                'has-children': hasChildren(chapter),
+          <article v-for="(chapter, index) in chapterExercises" :key="chapter.id" class="chapter-card-item">
+            <div class="chapter-node-row chapter-node-row--root chapter-node-row--depth-0" :class="{
+              'is-collapsible': hasChildren(chapter),
+              'has-children': hasChildren(chapter),
+              'is-expanded': hasChildren(chapter) && isNodeExpanded(chapter.id),
+            }" @click="onNodeRowClick(chapter)">
+              <div class="chapter-node-leading chapter-node-leading--root" :class="{
                 'is-expanded': hasChildren(chapter) && isNodeExpanded(chapter.id),
-              }"
-              @click="onNodeRowClick(chapter)"
-            >
-              <div
-                class="chapter-node-leading chapter-node-leading--root"
-                :class="{
-                  'is-expanded': hasChildren(chapter) && isNodeExpanded(chapter.id),
-                  'has-children': hasChildren(chapter),
-                  'is-last': index === chapterExercises.length - 1,
-                }"
-              >
-                <button
-                  v-if="hasChildren(chapter)"
-                  :class="[
-                    'chapter-toggle',
-                    { 'is-expanded': isNodeExpanded(chapter.id) },
-                  ]"
-                  type="button"
-                  :aria-expanded="isNodeExpanded(chapter.id)"
-                  :aria-label="isNodeExpanded(chapter.id) ? '收起章节' : '展开章节'"
-                  @click.stop="toggleChapter(chapter.id)"
-                />
+                'has-children': hasChildren(chapter),
+                'is-last': index === chapterExercises.length - 1,
+                'is-first': index === 0
+              }">
+                <button v-if="hasChildren(chapter)" :class="[
+                  'chapter-toggle',
+                  { 'is-expanded': isNodeExpanded(chapter.id) },
+                ]" type="button" :aria-expanded="isNodeExpanded(chapter.id)"
+                  :aria-label="isNodeExpanded(chapter.id) ? '收起章节' : '展开章节'" @click.stop="toggleChapter(chapter.id)" />
                 <span v-else class="chapter-leaf" />
               </div>
-              <div
-                class="chapter-node-info"
-                :class="[
-                  'chapter-node-info--level-0',
-                  { 'with-divider': hasChildren(chapter) },
-                ]"
-              >
+              <div class="chapter-node-info" :class="[
+                'chapter-node-info--level-0',
+                { 'with-divider': hasChildren(chapter) },
+              ]">
                 <div class="chapter-module">
                   <div class="chapter-node-title">{{ chapter.title }}</div>
                   <div class="chapter-node-count">共{{ chapter.count }}题</div>
                 </div>
                 <button class="chapter-action" type="button" @click.stop="goChapter">去做题</button>
               </div>
-    
-               
+
+
             </div>
             <transition name="chapter-collapse">
-              <ChapterTreeBranch
-                v-if="hasChildren(chapter) && isNodeExpanded(chapter.id)"
-                :nodes="chapter.children || []"
-                :depth="1"
-              />
+              <ChapterTreeBranch v-if="hasChildren(chapter) && isNodeExpanded(chapter.id)"
+                :nodes="chapter.children || []" :depth="1" />
             </transition>
           </article>
         </div>
@@ -187,20 +120,10 @@
     </main>
 
     <nav class="home-tabbar">
-      <button
-        v-for="item in tabbarItems"
-        :key="item.id"
-        class="tabbar-button"
-        :class="{ active: item.id === activeTabbarId }"
-        type="button"
-      >
+      <button v-for="item in tabbarItems" :key="item.id" class="tabbar-button"
+        :class="{ active: item.id === activeTabbarId }" type="button">
         <span class="tab-icon">
-          <img
-            v-if="item.isImage"
-            :src="item.icon"
-            :alt="item.label"
-            class="tab-icon-image"
-          />
+          <img v-if="item.isImage" :src="item.icon" :alt="item.label" class="tab-icon-image" />
           <template v-else>
             {{ item.icon }}
           </template>
@@ -494,17 +417,17 @@ const ChapterTreeBranch: Component = defineComponent({
                     },
                     hasChild
                       ? [
-                          h("button", {
-                            class: ["chapter-toggle", { "is-expanded": expanded }],
-                            type: "button",
-                            "aria-expanded": expanded,
-                            "aria-label": expanded ? "收起章节" : "展开章节",
-                            onClick: (event: MouseEvent) => {
-                              event.stopPropagation();
-                              toggleChapter(node.id);
-                            },
-                          }),
-                        ]
+                        h("button", {
+                          class: ["chapter-toggle", { "is-expanded": expanded }],
+                          type: "button",
+                          "aria-expanded": expanded,
+                          "aria-label": expanded ? "收起章节" : "展开章节",
+                          onClick: (event: MouseEvent) => {
+                            event.stopPropagation();
+                            toggleChapter(node.id);
+                          },
+                        }),
+                      ]
                       : [h("span", { class: "chapter-leaf" })]
                   ),
                   h(
@@ -539,9 +462,9 @@ const ChapterTreeBranch: Component = defineComponent({
               ),
               expanded
                 ? h(ChapterTreeBranch, {
-                    nodes: nested,
-                    depth: props.depth + 1,
-                  })
+                  nodes: nested,
+                  depth: props.depth + 1,
+                })
                 : null,
             ]
           );
@@ -554,7 +477,7 @@ const tabbarItems = [
   { id: "tab-live", label: "直播", icon: iconLive, isImage: true },
   { id: "tab-study", label: "学习", icon: iconStudy, isImage: true },
   { id: "tab-answer", label: "题库", icon: iconQuestion, isImage: true },
-  { id: "tab-me", label: "我的", icon: iconMine, isImage: true  },
+  { id: "tab-me", label: "我的", icon: iconMine, isImage: true },
 ];
 
 const activeTabbarId = ref(tabbarItems[2].id);
@@ -623,9 +546,10 @@ function goRecord() {
 </script>
 
 <style>
-body{
+body {
   background: rgba(250, 250, 250, 1);
 }
+
 .home-page {
   min-height: 100vh;
   display: flex;
@@ -725,7 +649,7 @@ body{
   padding: 24px 32px;
   border-radius: 24px;
   background: #ffffff;
-  box-shadow: 0 10px 30px rgba(31, 35, 53, 0.08);
+  box-shadow: 0px 0px 10px  rgba(0, 0, 0, 0.1);
 }
 
 .stat-block {
@@ -806,14 +730,14 @@ body{
   gap: 16px;
 }
 
-.div_application{
+.div_application {
   display: flex;
-  justify-content:space-around;
+  justify-content: space-around;
   background: #fff;
   padding: 10px 0;
 }
 
-.chapter_modlue{
+.chapter_modlue {
   padding: 10px 15px 6px;
 }
 
@@ -918,6 +842,9 @@ body{
   background: rgba(255, 255, 255, 0.98);
   padding: 16px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --tree-line-color: #dfe3ea;
+  --tree-stem-gap: 35px;
+  overflow: visible;
 }
 
 .chapter-node-row {
@@ -925,7 +852,6 @@ body{
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 6px 0;
   cursor: default;
   user-select: none;
   --tree-icon-offset: 0px;
@@ -933,16 +859,14 @@ body{
 
 .chapter-node-row.is-collapsible {
   cursor: pointer;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
 }
 
 .chapter-node-row--root {
   align-items: center;
   padding-bottom: 8px;
-}
-
-.chapter-node-row--nested {
-  --tree-row-height: 46px;
-  padding: 8px 0;
 }
 
 /* Precomputed offsets keep toggle icons sharing a single vertical column */
@@ -961,11 +885,13 @@ body{
 .chapter-node-row--root.has-children .chapter-node-info.with-divider {
   padding-bottom: 12px;
   margin-bottom: 6px;
+  border-bottom: 0.5px solid rgba(229, 229, 229, 1);
 }
 
 .chapter-node-row--nested.has-children .chapter-node-info.with-divider {
   padding-bottom: 10px;
   margin-bottom: 6px;
+  border-bottom: 0.5px solid rgba(229, 229, 229, 1);
 }
 
 .chapter-node-info {
@@ -977,7 +903,7 @@ body{
   gap: 4px;
 }
 
-.chapter-module{
+.chapter-module {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -1048,9 +974,19 @@ body{
   bottom: 50%;
 }
 
+.chapter-node-row--depth-0 .chapter-node-leading::before {
+  top: 0 !important;
+  bottom: 50% !important;
+}
+
 .chapter-node-leading::after {
   top: 50%;
   bottom: calc(-1 * var(--tree-stem-gap));
+}
+
+.chapter-node-row--depth-0 .chapter-node-leading::after {
+  top: 50% !important;
+  bottom: 0 !important;
 }
 
 .chapter-node-leading--root::before {
@@ -1058,24 +994,37 @@ body{
 }
 
 .chapter-node-leading.is-last::after {
-  opacity: 0;
+  opacity: 0 !important;
 }
 
 .chapter-node-leading.has-children.is-expanded::after {
   opacity: 1;
 }
 
+.chapter-node-row--depth-0 .chapter-node-leading::before,
 .chapter-node-row--depth-0 .chapter-node-leading::after {
-  opacity: 0;
+  opacity: 1 !important;
 }
 
-.chapter-node-row--depth-0 .chapter-node-leading.has-children.is-expanded::after {
-  opacity: 1;
+.chapter-node-leading--root.is-first::before {
+  opacity: 0 !important;
 }
 
 .chapter-node-leading--root {
   margin-left: 0;
   --tree-connector-center: 16px;
+}
+
+.chapter-node-leading--root::before {
+  opacity: 1 !important;
+}
+
+.chapter-node-leading--root.is-first::before {
+  opacity: 0 !important;
+}
+
+.chapter-node-leading.is-last::after {
+  opacity: 0 !important;
 }
 
 .chapter-node-leading--nested {
@@ -1144,6 +1093,7 @@ body{
   position: absolute;
   border-radius: 1px;
   transition: opacity 0.2s ease;
+  background-color: #a8b0bf;
 }
 
 .chapter-toggle::before {
@@ -1169,6 +1119,11 @@ body{
 .chapter-toggle:hover {
   border-color: #ff6b63;
   background: rgba(255, 107, 99, 0.08);
+}
+
+.chapter-toggle:hover::before,
+.chapter-toggle:hover::after {
+  background-color: #ff6b63;
 }
 
 .chapter-leaf {
@@ -1201,9 +1156,6 @@ body{
 }
 
 .chapter-children {
-  position: relative;
-  margin: 6px 0 0 24px;
-  padding: 14px 0 0 40px;
   display: flex;
   flex-direction: column;
   gap: var(--tree-branch-gap);
@@ -1308,5 +1260,3 @@ body{
   }
 }
 </style>
-
-
