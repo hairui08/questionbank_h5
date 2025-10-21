@@ -1,1051 +1,1313 @@
 ﻿<template>
-  <div class="collect-page">
-    <header class="collect-header">
-      <button class="icon-button" type="button" @click="handleBack" aria-label="返回">
-        <svg class="header-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <div class="wrong-page">
+    <header class="wrong-header">
+      <button class="icon-button back" type="button" aria-label="返回" @click="goBack">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </button>
-      <h1 class="header-title">试题收藏</h1>
-      <template v-if="!selectionMode">
-        <button
-          class="icon-button danger"
-          type="button"
-          @click="enterSelectionMode"
-          :disabled="favorites.length === 0"
-        >
-          <svg class="header-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 7h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M6 7l1 13a2 2 0 0 0 2 1.8h6a2 2 0 0 0 2-1.8l1-13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M9 7V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
-      </template>
-      <template v-else>
-        <button class="text-link" type="button" @click="exitSelectionMode">
-          取消
-        </button>
-      </template>
+      <h1 class="header-title">收藏夹</h1>
+      <div class="header-actions">
+        <template v-if="!selectionMode">
+          <button class="icon-button" type="button" aria-label="多选删除" @click="enterSelectionMode">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2h5v2h-1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8H4V6h5Zm2-1v1h2V5Z" fill="currentColor" />
+            </svg>
+          </button>
+        </template>
+        <template v-else>
+          <button class="text-link" type="button" @click="exitSelectionMode">取消</button>
+        </template>
+      </div>
     </header>
 
-    <section class="filters">
-      <label class="filter">
-        <select v-model="selectedPaper" class="filter-select">
-          <option value="__all__">全部试卷</option>
-          <option v-for="option in paperOptions" :key="option.value" :value="option.value">
-            {{ option.label }}
-          </option>
-        </select>
-      </label>
-
-      <label class="filter">
-        <select v-model="selectedSection" class="filter-select">
-          <option value="__all__">全部章节</option>
-          <option :value="CHAPTER_CLASSIFICATION_VALUE">章节归类</option>
-          <option v-for="option in sectionOptions" :key="option.value" :value="option.value">
-            {{ option.label }}
-          </option>
-        </select>
-      </label>
-    </section>
-
-    <section v-if="loading" class="state loading">正在加载收藏…</section>
-    <section v-else-if="groupedFavorites.length === 0" class="state empty">暂无收藏试题</section>
-    <section v-else class="favorite-list">
-      <article
-        v-for="paperGroup in groupedFavorites"
-        :key="paperGroup.key"
-        class="paper-group"
-        :class="{ chapter: isChapterGrouping }"
-      >
-        <header class="paper-header" :class="{ clickable: isChapterGrouping }">
-          <button
-            v-if="isChapterGrouping"
-            class="chapter-toggle"
-            type="button"
-            :aria-label="isChapterExpanded(paperGroup.key) ? '收起章节' : '展开章节'"
-            @click="toggleChapterExpansion(paperGroup.key)"
-          >
-            <span class="toggle-icon" :class="{ collapsed: !isChapterExpanded(paperGroup.key) }" />
-          </button>
-          <div class="paper-leading">
-            <span class="paper-title">{{ paperGroup.paperTitle }}</span>
-            <span v-if="paperGroup.subtitle" class="paper-subtitle">{{ paperGroup.subtitle }}</span>
-            <span class="paper-count">共 {{ paperGroup.totalCount }} 题</span>
-          </div>
-        </header>
-
-        <div
-          v-for="sectionGroup in paperGroup.sections"
-          :key="sectionGroup.key"
-          class="section-group"
-          :class="{ 'chapter-section': isChapterGrouping }"
-          v-show="!isChapterGrouping || isChapterExpanded(paperGroup.key)"
-        >
-          <ul class="favorite-items">
-            <li
-              v-for="item in sectionGroup.items"
-              :key="item.answerKey"
-              class="favorite-item"
-              :class="{ selectable: selectionMode }"
-              @click="selectionMode ? toggleItemSelection(item.answerKey) : undefined"
-            >
-              <div v-if="selectionMode" class="favorite-selector" @click.stop="toggleItemSelection(item.answerKey)">
-                <span class="selector-circle" :class="{ checked: selectedKeysSet.has(item.answerKey) }" />
-              </div>
-              <div class="favorite-content">
-                <div class="favorite-meta">
-                  <span
-                    v-if="!isChapterGrouping"
-                    class="favorite-chip"
-                  >
-                    {{ resolvePaperTag(paperGroup.subtitle || paperGroup.paperTitle) }}
-                  </span>
-                  <span class="favorite-section" v-if="sectionGroup.sectionName">{{ sectionGroup.sectionName }}</span>
-                </div>
-                <div class="favorite-title">{{ item.title || "未命名试题" }}</div>
-                <div class="favorite-actions">
-                  <button
-                    class="action-button outline"
-                    type="button"
-                    @click.stop="handleReview(item)"
-                    :disabled="selectionMode"
-                  >
-                    查看
-                  </button>
-                  <button
-                    class="action-button solid"
-                    type="button"
-                    @click.stop="handleRetry(item)"
-                    :disabled="selectionMode"
-                  >
-                    重做
-                  </button>
-                </div>
-              </div>
-            </li>
-          </ul>
+    <section class="summary-card">
+      <div class="ring-wrapper">
+       <div class="ring">
+        <div class="ring-inner">
+          <span class="ring-value">{{ overview.wrongCount }}</span>
+          <span class="ring-label">收藏数</span>
         </div>
-      </article>
-    </section>
-    <transition name="selection-bar">
-      <div v-if="selectionMode" class="selection-bar">
-        <button class="select-toggle" type="button" @click="toggleSelectAll">
-          <span class="selector-circle" :class="{ checked: isAllSelected }" />
-          <span class="select-label">全选</span>
-        </button>
-        <button class="selection-delete" type="button" :disabled="selectedCount === 0" @click="handleDeleteSelected">
-          删除
-        </button>
       </div>
-    </transition>
+        <div class="overview-meta">
+        </div>
+      </div>
+      <!-- <button class="print-button" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 3a2 2 0 0 0-2 2v3H4a2 2 0 0 0-2 2v6h3v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3h3v-6a2 2 0 0 0-2-2h-1V5a2 2 0 0 0-2-2H7Zm0 2h10v4H7V5Zm0 9h10v5H7v-5Zm12-1h2v4h-2v-4Zm-16 0h2v4H3v-4Z" fill="currentColor" />
+        </svg>
+        错题打印
+      </button> -->
+    </section>
+
+    <section class="filter-chips">
+      <button
+        v-for="filter in filters"
+        :key="filter.id"
+        type="button"
+        class="chip"
+        :class="{ active: filter.id === activeFilterId }"
+        @click="selectFilter(filter.id)"
+      >
+        {{ filter.label }}
+      </button>
+    </section>
+
+    <template v-if="isChapterFilter">
+      <section
+        v-for="chapter in chapters"
+        :key="chapter.id"
+        class="chapter-card"
+      >
+        <div class="chapter-main">
+          <button
+            type="button"
+            class="chapter-toggle"
+            :aria-label="isChapterExpanded(chapter.id) ? '收起章节' : '展开章节'"
+            @click="toggleChapter(chapter.id)"
+          >
+            <span class="chapter-toggle-icon" :class="{ expanded: isChapterExpanded(chapter.id) }" />
+          </button>
+          <div class="chapter-title">
+            <span class="chapter-order">{{ chapter.order }}</span>
+            <span class="chapter-name">{{ chapter.title }}</span>
+          </div>
+        </div>
+        <transition name="chapter-slide">
+          <div
+            v-if="isChapterExpanded(chapter.id) && chapter.sections?.length"
+            class="chapter-sections"
+            role="region"
+            :aria-label="`${chapter.title}小节列表`"
+          >
+            <ul class="chapter-section-list">
+              <li
+                v-for="section in chapter.sections"
+                :key="section.id"
+                class="chapter-section-item"
+                :class="{ selectable: selectionMode }"
+                @click="selectionMode ? toggleItemSelection(section.id) : undefined"
+              >
+                <div v-if="selectionMode" class="chapter-section-selector" @click.stop="toggleItemSelection(section.id)">
+                  <span class="selector-circle" :class="{ checked: selectedIdsSet.has(section.id) }" />
+                </div>
+                <div class="chapter-section-bullet" />
+                <div class="chapter-section-content">
+                  <div class="chapter-section-title">{{ section.title }}</div>
+                  <div class="chapter-section-meta">收藏 {{ section.wrongCount }}</div>
+                </div>
+                <div class="chapter-section-actions">
+                  <button type="button" class="mini-button" @click="handlePeriodAction('analysis', section.id)" :disabled="selectionMode">查看</button>
+                  <button type="button" class="mini-button primary" @click="handlePeriodAction('redo', section.id)" :disabled="selectionMode">重做</button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </transition>
+        <div class="chapter-footer">
+          <div class="chapter-meta">
+            <span class="meta-label">收藏：</span>
+            <span class="meta-value">{{ chapter.wrongCount }}</span>
+          </div>
+          <div class="chapter-actions">
+            <button type="button" class="outline-button" @click="handlePeriodAction('redo', chapter.id)">重做</button>
+            <button type="button" class="outline-button" @click="handlePeriodAction('continue', chapter.id)">继续</button>
+            <button type="button" class="primary-button" @click="handlePeriodAction('analysis', chapter.id)">查看解析</button>
+          </div>
+        </div>
+      </section>
+    </template>
+    <template v-else>
+      <section
+        v-for="period in displayPeriods"
+        :key="period.id"
+        :class="['period-card', { 'type-card': isTypeFilter, 'selectable': selectionMode }]"
+        @click="selectionMode ? toggleItemSelection(period.id) : undefined"
+      >
+        <div class="period-info">
+          <div class="period-title">{{ period.label }}</div>
+          <div class="period-meta">
+            <span class="meta-label">收藏：</span>
+            <span class="meta-value">{{ period.wrongCount }}</span>
+          </div>
+        </div>
+        <div class="period-actions">
+          <button type="button" class="outline-button" @click="handlePeriodAction('redo', period.id)" :disabled="selectionMode">重做</button>
+          <button type="button" class="outline-button" @click="handlePeriodAction('continue', period.id)" :disabled="selectionMode">继续</button>
+          <button type="button" class="primary-button" @click="handlePeriodAction('analysis', period.id)" :disabled="selectionMode">查看解析</button>
+        </div>
+        <div v-if="selectionMode" class="period-selector" @click.stop="toggleItemSelection(period.id)">
+          <span class="selector-circle" :class="{ checked: selectedIdsSet.has(period.id) }" />
+        </div>
+      </section>
+    </template>
+    <transition name="dialog-fade">
+      <div v-if="showAutoRemoveDialog" class="dialog-backdrop" @click.self="closeAutoRemoveDialog">
+        <div class="dialog-panel">
+          <header class="dialog-header">
+            <div class="dialog-title">设置自动移除错题</div>
+            <button class="dialog-close" type="button" aria-label="关闭" @click="closeAutoRemoveDialog">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+          </header>
+          <div class="dialog-subtitle">请选择做对几次，自动移除错题</div>
+          <div class="dialog-options">
+            <button
+              v-for="option in autoRemoveOptions"
+              :key="option.id"
+              type="button"
+              class="dialog-option"
+              :class="{ active: option.id === selectedAutoRemoveId }"
+              @click="selectAutoRemove(option.id)"
+            >
+              <span>{{ option.label }}</span>
+              <svg v-if="option.id === selectedAutoRemoveId" viewBox="0 0 24 24" aria-hidden="true" class="option-check">
+                <path d="m8 12 3 3 5-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+          <label class="dialog-checkbox">
+            <input type="checkbox" v-model="dontRemindNext" />
+            <span>下次不再提醒</span>
+          </label>
+        </div>
+      </div>
+  </transition>
   </div>
+  <transition name="selection-bar">
+    <div v-if="selectionMode" class="selection-bar">
+      <button class="select-toggle" type="button" @click="toggleSelectAll">
+        <span class="selector-circle" :class="{ checked: isAllSelected }" />
+        <span class="select-label">全选</span>
+      </button>
+      <button class="selection-delete" type="button" :disabled="selectedCount === 0" @click="handleDeleteSelected">
+        删除
+      </button>
+    </div>
+  </transition>
 </template>
 
 <script setup lang="ts">
-import { computed, onActivated, onMounted, ref, watch } from "vue";
-import { flattenQuestions, normalizeExamPaper, normalizedPaper, type NormalizedQuestion } from "../composables/useExamPaper";
-import { deleteFavorite, getFavoriteRecords, initFavoritesDb, type FavoriteRecord } from "../services/sqliteFavorites";
+import { reactive, ref, computed, watch } from "vue";
+import { useRouter } from "vue-router";
 
-interface OptionItem {
+interface Category {
+  id: string;
   label: string;
-  value: string;
 }
 
-interface SectionGroup {
-  key: string;
-  sectionName: string;
-  items: FavoriteRecord[];
+interface FilterChip {
+  id: string;
+  label: string;
 }
 
-interface PaperGroup {
-  key: string;
-  paperTitle: string;
-  totalCount: number;
-  sections: SectionGroup[];
-  subtitle?: string;
+interface ChapterSection {
+  id: string;
+  title: string;
+  wrongCount: number;
 }
 
-const CHAPTER_CLASSIFICATION_VALUE = "__group_chapter__";
-const DEFAULT_CHAPTER_LABEL = "未归类章节";
-const DEFAULT_SECTION_LABEL = "未归类小节";
+interface Chapter {
+  id: string;
+  order: string;
+  title: string;
+  wrongCount: number;
+  sections?: ChapterSection[];
+}
 
-const normalizedPaperSource = normalizedPaper ?? normalizeExamPaper();
-const questionCategoryIndex = new Map<string, string[]>();
-flattenQuestions(normalizedPaperSource.questions).forEach((question) => {
-  if (!question?.answerKey) return;
-  const path = Array.isArray(question.categoryPath)
-    ? question.categoryPath.filter((label) => typeof label === "string" && label.trim().length > 0)
-    : [];
-  if (path.length > 0) {
-    questionCategoryIndex.set(question.answerKey, path);
-  }
+interface Period {
+  id: string;
+  label: string;
+  wrongCount: number;
+}
+
+type PeriodAction = "redo" | "continue" | "analysis";
+
+interface AutoRemoveOption {
+  id: string;
+  label: string;
+}
+
+const router = useRouter();
+
+const categories: Category[] = [
+  { id: "ability", label: "初级社会工作综合能力" },
+  { id: "practice", label: "初级社会工作实务" },
+  { id: "comprehensive", label: "题型综合训练" },
+];
+
+const filters: FilterChip[] = [
+    { id: "recent", label: "最近收藏" },
+    { id: "type", label: "题型分类" },
+    { id: "chapter", label: "章节分类" },
+    { id: "real", label: "真题分类" },
+  ];
+
+const periods: Period[] = [
+    { id: "7d", label: "最近7天", wrongCount: 4 },
+    { id: "30d", label: "最近30天", wrongCount: 4 },
+  ];
+
+const typePeriods: Period[] = [
+    { id: "single", label: "单选题", wrongCount: 5 },
+    { id: "multi", label: "多选题", wrongCount: 4 },
+    { id: "judge", label: "判断题", wrongCount: 3 },
+  ];
+
+const chapters: Chapter[] = [
+  {
+    id: "ch1",
+    order: "第一章",
+    title: "社会工作的内涵、原则及主要领域",
+    wrongCount: 4,
+    sections: [
+      { id: "ch1-sec1", title: "第一节 社会工作的内涵", wrongCount: 2 },
+      { id: "ch1-sec2", title: "第二节 社会工作的基本原则", wrongCount: 1 },
+      { id: "ch1-sec3", title: "第三节 社会工作的主要领域", wrongCount: 1 },
+    ],
+  },
+  {
+    id: "ch2",
+    order: "第二章",
+    title: "社会工作价值观与专业伦理",
+    wrongCount: 1,
+    sections: [
+      { id: "ch2-sec1", title: "第一节 社会工作价值观", wrongCount: 1 },
+      { id: "ch2-sec2", title: "第二节 社会工作伦理原则", wrongCount: 0 },
+    ],
+  },
+  {
+    id: "ch3",
+    order: "第三章",
+    title: "人类行为与社会环境",
+    wrongCount: 5,
+    sections: [
+      { id: "ch3-sec1", title: "第一节 人类行为基础", wrongCount: 3 },
+      { id: "ch3-sec2", title: "第二节 社会环境概述", wrongCount: 2 },
+    ],
+  },
+  {
+    id: "ch4",
+    order: "第四章",
+    title: "个案工作方法",
+    wrongCount: 1,
+    sections: [
+      { id: "ch4-sec1", title: "第一节 个案工作的过程", wrongCount: 1 },
+      { id: "ch4-sec2", title: "第二节 个案工作技巧", wrongCount: 0 },
+    ],
+  },
+];
+
+const autoRemoveOptions: AutoRemoveOption[] = [
+    { id: "never", label: "不移除" },
+    { id: "1", label: "1次" },
+    { id: "2", label: "2次" },
+    { id: "3", label: "3次" },
+    { id: "4", label: "4次" },
+    { id: "5", label: "5次" },
+  ];
+
+const overview = reactive({
+  wrongCount: 24,
+  removedCount: 6,
 });
 
-const favorites = ref<FavoriteRecord[]>([]);
-const loading = ref(true);
-const selectedPaper = ref<string>("__all__");
-const selectedSection = ref<string>("__all__");
+const activeCategoryId = ref(categories[0]?.id ?? "");
+const activeFilterId = ref("recent");
+const showAutoRemoveDialog = ref(false);
+const selectedAutoRemoveId = ref(autoRemoveOptions[0]?.id ?? "never");
+const dontRemindNext = ref(false);
+const pendingContinuePeriodId = ref<string | null>(null);
+const expandedChapterIds = ref<Set<string>>(new Set());
+
+// 选择模式状态与集合
 const selectionMode = ref(false);
-const selectedKeys = ref<Set<string>>(new Set());
-const expandedChapterKeys = ref<Set<string>>(new Set());
-
-const isChapterGrouping = computed(() => selectedSection.value === CHAPTER_CLASSIFICATION_VALUE);
-
-const paperOptions = computed<OptionItem[]>(() => {
-  const map = new Map<string, number>();
-  favorites.value.forEach((item) => {
-    const key = normalizeLabel(item.paperTitle);
-    map.set(key, (map.get(key) ?? 0) + 1);
-  });
-  return Array.from(map.entries()).map(([value, count]) => ({
-    value,
-    label: `${value} (${count})`,
-  }));
-});
-
-const sectionOptions = computed<OptionItem[]>(() => {
-  const scoped = favorites.value.filter((item) => filterByPaper(item, selectedPaper.value));
-  const map = new Map<string, number>();
-  scoped.forEach((item) => {
-    const key = normalizeLabel(item.typeName);
-    map.set(key, (map.get(key) ?? 0) + 1);
-  });
-  return Array.from(map.entries()).map(([value, count]) => ({
-    value,
-    label: `${value} (${count})`,
-  }));
-});
-
-const filteredFavorites = computed(() =>
-  favorites.value.filter(
-    (item) =>
-      filterByPaper(item, selectedPaper.value) &&
-      filterBySection(item, selectedSection.value),
-  ),
-);
-
-const groupedFavorites = computed<PaperGroup[]>(() => {
-  const items = filteredFavorites.value;
-  return isChapterGrouping.value ? buildChapterGroups(items) : buildDefaultGroups(items);
-});
-
-onMounted(async () => {
-  await refreshFavorites();
-});
-
-onActivated(async () => {
-  await refreshFavorites();
-});
-
-watch(selectedPaper, () => {
-  if (selectedSection.value !== CHAPTER_CLASSIFICATION_VALUE) {
-    selectedSection.value = "__all__";
-  }
-});
-
-watch(paperOptions, (options) => {
-  if (selectedPaper.value === "__all__") return;
-  const values = new Set(options.map((option) => option.value));
-  if (!values.has(selectedPaper.value)) {
-    selectedPaper.value = "__all__";
-  }
-});
-
-watch(sectionOptions, (options) => {
-  if (selectedSection.value === "__all__" || selectedSection.value === CHAPTER_CLASSIFICATION_VALUE) return;
-  const values = new Set(options.map((option) => option.value));
-  if (!values.has(selectedSection.value)) {
-    selectedSection.value = "__all__";
-  }
-});
-
-watch(isChapterGrouping, (isChapter) => {
-  if (isChapter) {
-    expandedChapterKeys.value = new Set(groupedFavorites.value.map((group) => group.key));
-  } else if (expandedChapterKeys.value.size > 0) {
-    expandedChapterKeys.value = new Set();
-  }
-});
-
-watch(groupedFavorites, (groups) => {
-  if (!isChapterGrouping.value) return;
-  const next = new Set(expandedChapterKeys.value);
-  const keys = new Set(groups.map((group) => group.key));
-  let mutated = false;
-  next.forEach((key) => {
-    if (!keys.has(key)) {
-      next.delete(key);
-      mutated = true;
-    }
-  });
-  keys.forEach((key) => {
-    if (!next.has(key)) {
-      next.add(key);
-      mutated = true;
-    }
-  });
-  if (mutated) {
-    expandedChapterKeys.value = next;
-  }
-});
-
-function buildDefaultGroups(items: FavoriteRecord[]): PaperGroup[] {
-  const groups = new Map<string, { sections: Map<string, FavoriteRecord[]>; total: number }>();
-  items.forEach((item) => {
-    const paper = normalizeLabel(item.paperTitle);
-    const section = normalizeLabel(item.typeName, "Uncategorized Section");
-    const entry = groups.get(paper) ?? { sections: new Map(), total: 0 };
-    const sectionList = entry.sections.get(section) ?? [];
-    sectionList.push(item);
-    entry.sections.set(section, sectionList);
-    entry.total += 1;
-    groups.set(paper, entry);
-  });
-
-  return Array.from(groups.entries())
-    .map(([paperTitle, value]) => ({
-      key: `paper::${paperTitle}`,
-      paperTitle,
-      totalCount: value.total,
-      sections: Array.from(value.sections.entries())
-        .map(([sectionName, sectionItems]) => ({
-          key: `paper::${paperTitle}::section::${sectionName}`,
-          sectionName,
-          items: sortFavoriteItems(sectionItems),
-        }))
-        .sort((a, b) => a.sectionName.localeCompare(b.sectionName, "zh-CN")),
-    }))
-    .sort((a, b) => a.paperTitle.localeCompare(b.paperTitle, "zh-CN"));
-}
-
-function buildChapterGroups(items: FavoriteRecord[]): PaperGroup[] {
-  const groups = new Map<
-    string,
-    {
-      chapterName: string;
-      paperTitle: string;
-      sections: Map<string, FavoriteRecord[]>;
-      total: number;
-    }
-  >();
-
-  items.forEach((item) => {
-    const { chapterName, sectionName } = resolveChapterSection(item);
-    const paperTitle = normalizeLabel(item.paperTitle);
-    const key = `${paperTitle}::${chapterName}`;
-    const entry =
-      groups.get(key) ?? {
-        chapterName,
-        paperTitle,
-        sections: new Map<string, FavoriteRecord[]>(),
-        total: 0,
-      };
-    const sectionKey = sectionName;
-    const sectionItems = entry.sections.get(sectionKey) ?? [];
-    sectionItems.push(item);
-    entry.sections.set(sectionKey, sectionItems);
-    entry.total += 1;
-    groups.set(key, entry);
-  });
-
-  return Array.from(groups.entries())
-    .map(([key, value]) => {
-      const sections = Array.from(value.sections.entries())
-        .map(([sectionName, sectionItems]) => ({
-          key: `${key}::section::${sectionName}`,
-          sectionName,
-          items: sortFavoriteItems(sectionItems),
-        }))
-        .sort((a, b) => a.sectionName.localeCompare(b.sectionName, "zh-CN"));
-
-      const subtitle =
-        value.paperTitle && value.paperTitle !== value.chapterName ? value.paperTitle : undefined;
-
-      return {
-        key,
-        paperTitle: value.chapterName,
-        subtitle,
-        totalCount: value.total,
-        sections,
-      };
-    })
-    .sort((a, b) => a.paperTitle.localeCompare(b.paperTitle, "zh-CN"));
-}
-
-function sortFavoriteItems(items: FavoriteRecord[]): FavoriteRecord[] {
-  return items
-    .slice()
-    .sort((a, b) => {
-      const left = normalizeNumber(a.number);
-      const right = normalizeNumber(b.number);
-      if (left === right) return 0;
-      if (left === null) return 1;
-      if (right === null) return -1;
-      return left - right;
-    });
-}
-
-function resolveChapterSection(item: FavoriteRecord) {
-  const question = item.question as Partial<NormalizedQuestion> | undefined;
-  const sectionName = resolveSectionName(item, question);
-  const chapterName = resolveChapterName(item, question, sectionName);
-  return { chapterName, sectionName };
-}
-
-function resolveSectionName(item: FavoriteRecord, question: Partial<NormalizedQuestion> | undefined) {
-  if (question && typeof question.testTypeName === "string" && question.testTypeName.trim().length > 0) {
-    return normalizeLabel(question.testTypeName, DEFAULT_SECTION_LABEL);
-  }
-  return normalizeLabel(item.typeName, DEFAULT_SECTION_LABEL);
-}
-
-function resolveChapterName(
-  item: FavoriteRecord,
-  question: Partial<NormalizedQuestion> | undefined,
-  sectionName: string,
-) {
-  const candidates: Array<string | null | undefined> = [];
-
-  if (question) {
-    if (Array.isArray(question.categoryPath)) {
-      const [first] = question.categoryPath.filter(
-        (label): label is string => typeof label === "string" && label.trim().length > 0,
-      );
-      if (first) {
-        candidates.push(first);
-      }
-    }
-    const potentialChapter = (question as Record<string, unknown>).chapterTitle;
-    if (typeof potentialChapter === "string" && potentialChapter.trim().length > 0) {
-      candidates.push(potentialChapter);
-    }
-  }
-
-  const indexPath = questionCategoryIndex.get(item.answerKey);
-  if (indexPath && indexPath.length > 0) {
-    candidates.unshift(indexPath[0]);
-  }
-
-  const resolved = candidates.find((value) => typeof value === "string" && value.trim().length > 0);
-  if (resolved) {
-    return normalizeLabel(resolved, DEFAULT_CHAPTER_LABEL);
-  }
-
-  const guessed = guessChapterFromSection(sectionName);
-  if (guessed) {
-    return guessed;
-  }
-
-  const paperTitle = normalizeLabel(item.paperTitle, DEFAULT_CHAPTER_LABEL);
-  if (paperTitle && paperTitle !== DEFAULT_CHAPTER_LABEL) {
-    return paperTitle;
-  }
-
-  return DEFAULT_CHAPTER_LABEL;
-}
-
-function guessChapterFromSection(sectionName: string): string | null {
-  if (!sectionName || sectionName === DEFAULT_SECTION_LABEL) return null;
-  if (/章|篇|部分/.test(sectionName)) {
-    return sectionName;
-  }
-  const match = sectionName.match(/第([一二三四五六七八九十百千万]+)节/);
-  if (match && match[1]) {
-    return sectionName.replace(/第([一二三四五六七八九十百千万]+)节/, "第$1章");
-  }
-  return null;
-}
-
-function isChapterExpanded(groupKey: string): boolean {
-  return expandedChapterKeys.value.has(groupKey);
-}
-
-function toggleChapterExpansion(groupKey: string) {
-  if (!isChapterGrouping.value) return;
-  const next = new Set(expandedChapterKeys.value);
-  if (next.has(groupKey)) {
-    next.delete(groupKey);
-  } else {
-    next.add(groupKey);
-  }
-  expandedChapterKeys.value = next;
-}
-
-async function refreshFavorites() {
-  loading.value = true;
-  try {
-    await initFavoritesDb();
-    favorites.value = await getFavoriteRecords();
-    selectedPaper.value = "__all__";
-    if (selectedSection.value !== CHAPTER_CLASSIFICATION_VALUE) {
-      selectedSection.value = "__all__";
-    }
-    reconcileSelection();
-  } catch (error) {
-    console.warn("[favorites] collect list load failure", error);
-    favorites.value = [];
-    exitSelectionMode();
-  } finally {
-    loading.value = false;
-  }
-}
-
-function filterByPaper(item: FavoriteRecord, paperValue: string) {
-  if (paperValue === "__all__") return true;
-  return normalizeLabel(item.paperTitle) === paperValue;
-}
-
-function filterBySection(item: FavoriteRecord, sectionValue: string) {
-  if (sectionValue === "__all__") return true;
-  if (sectionValue === CHAPTER_CLASSIFICATION_VALUE) return true;
-  return normalizeLabel(item.typeName, "Uncategorized Section") === sectionValue;
-}
-
-function normalizeLabel(value: string | null | undefined, fallback = "Uncategorized Paper") {
-  const text = typeof value === "string" && value.trim().length > 0 ? value.trim() : fallback;
-  return text;
-}
-
-function normalizeNumber(value: number | null | undefined): number | null {
-  if (typeof value === "number" && Number.isFinite(value)) return value;
-  return null;
-}
-
-function resolvePaperTag(title: string | null | undefined) {
-  const text = normalizeLabel(title, "未命名试卷");
-  const compact = text.replace(/\s+/g, "");
-  if (/入学|开学|摸底/.test(compact)) {
-    return "入学测试";
-  }
-  if (/阶段|月考|专题|闯关/.test(compact)) {
-    return "阶段测试";
-  }
-  if (/历年|真题|押题|卷/.test(compact)) {
-    return "历年真题";
-  }
-  if (/章节|练习|专项|强化/.test(compact)) {
-    return "章节练习";
-  }
-  return "综合训练";
-}
-
-function handleBack() {
-  if (window.history.length > 1) {
-    window.history.back();
-  }
-}
-
-function handleReview(item: FavoriteRecord) {
-  console.log("查看收藏题目", item.answerKey);
-}
-
-function handleRetry(item: FavoriteRecord) {
-  console.log("重做收藏题目", item.answerKey);
-}
+const selectedIds = ref<Set<string>>(new Set());
 
 function enterSelectionMode() {
   selectionMode.value = true;
-  selectedKeys.value = new Set();
+  selectedIds.value = new Set();
 }
 
 function exitSelectionMode() {
   selectionMode.value = false;
-  selectedKeys.value = new Set();
+  selectedIds.value = new Set();
 }
 
-const visibleItems = computed(() => filteredFavorites.value);
+const selectedIdsSet = computed(() => selectedIds.value);
 
-const selectedKeysSet = computed(() => selectedKeys.value);
-
-const selectedCount = computed(() => selectedKeys.value.size);
-
-const isAllSelected = computed(() => {
-  const items = visibleItems.value;
-  if (!items.length) return false;
-  return items.every((item) => selectedKeys.value.has(item.answerKey));
+const visibleItems = computed<string[]>(() => {
+  if (isChapterFilter.value) {
+    const ids: string[] = [];
+    chapters.forEach((ch) => {
+      if (isChapterExpanded(ch.id)) {
+        ch.sections?.forEach((sec) => ids.push(sec.id));
+      }
+    });
+    return ids;
+  }
+  return displayPeriods.value.map((p) => p.id);
 });
 
-function toggleItemSelection(answerKey: string) {
-  const next = new Set(selectedKeys.value);
-  if (next.has(answerKey)) {
-    next.delete(answerKey);
+const selectedCount = computed(() => selectedIds.value.size);
+
+const isAllSelected = computed(() => {
+  const ids = visibleItems.value;
+  if (ids.length === 0) return false;
+  return ids.every((id) => selectedIds.value.has(id));
+});
+
+function toggleItemSelection(id: string) {
+  const next = new Set(selectedIds.value);
+  if (next.has(id)) {
+    next.delete(id);
   } else {
-    next.add(answerKey);
+    next.add(id);
   }
-  selectedKeys.value = next;
+  selectedIds.value = next;
 }
 
 function toggleSelectAll() {
   if (isAllSelected.value) {
-    selectedKeys.value = new Set();
+    selectedIds.value = new Set();
   } else {
-    selectedKeys.value = new Set(visibleItems.value.map((item) => item.answerKey));
+    selectedIds.value = new Set(visibleItems.value);
   }
 }
 
-async function handleDeleteSelected() {
-  if (selectedKeys.value.size === 0) return;
-  const confirmed = window.confirm(`确定删除选中的 ${selectedKeys.value.size} 条收藏吗？`);
+function handleDeleteSelected() {
+  if (selectedIds.value.size === 0) return;
+  const confirmed = window.confirm(`确定删除选中的 ${selectedIds.value.size} 项错题吗？`);
   if (!confirmed) return;
-  const keys = Array.from(selectedKeys.value);
-  await Promise.all(keys.map((key) => deleteFavorite(key)));
-  await refreshFavorites();
+  console.log("[wronglist] 删除选中错题项：", Array.from(selectedIds.value));
   exitSelectionMode();
 }
 
+// 根据过滤或章节展开变化，矫正选择集合
 function reconcileSelection() {
   if (!selectionMode.value) return;
-  const availableKeys = new Set(visibleItems.value.map((item) => item.answerKey));
+  const available = new Set(visibleItems.value);
   const next = new Set<string>();
-  selectedKeys.value.forEach((key) => {
-    if (availableKeys.has(key)) {
-      next.add(key);
-    }
+  selectedIds.value.forEach((id) => {
+    if (available.has(id)) next.add(id);
   });
-  selectedKeys.value = next;
+  selectedIds.value = next;
   if (next.size === 0 && visibleItems.value.length === 0) {
     exitSelectionMode();
   }
 }
 
-watch(filteredFavorites, () => {
+watch([activeFilterId, expandedChapterIds], () => {
   reconcileSelection();
 });
+
+const isTypeFilter = computed(() => activeFilterId.value === "type" || activeFilterId.value === "real");
+const isChapterFilter = computed(() => activeFilterId.value === "chapter");
+const displayPeriods = computed(() => (isTypeFilter.value ? typePeriods : periods));
+const isChapterExpanded = (id: string) => expandedChapterIds.value.has(id);
+
+function goBack() {
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.push({ name: "home" });
+  }
+}
+
+function selectCategory(id: string) {
+  activeCategoryId.value = id;
+}
+
+function selectFilter(id: string) {
+  activeFilterId.value = id;
+  if (id !== "chapter") {
+    expandedChapterIds.value = new Set();
+  }
+}
+
+function toggleChapter(id: string) {
+  const next = new Set(expandedChapterIds.value);
+  if (next.has(id)) {
+    next.delete(id);
+  } else {
+    next.add(id);
+  }
+  expandedChapterIds.value = next;
+}
+
+function closeAutoRemoveDialog() {
+  pendingContinuePeriodId.value = null;
+  showAutoRemoveDialog.value = false;
+}
+
+function selectAutoRemove(id: string) {
+  selectedAutoRemoveId.value = id;
+  const pendingId = pendingContinuePeriodId.value;
+  if (pendingId) {
+    pendingContinuePeriodId.value = null;
+    showAutoRemoveDialog.value = false;
+    router
+      .push({
+        name: "chapter",
+        query: { action: "continue", periodId: pendingId, autoRemove: id, ts: Date.now().toString() },
+      })
+      .catch(() => {});
+  } else {
+    showAutoRemoveDialog.value = false;
+  }
+}
+
+function handlePeriodAction(action: PeriodAction, periodId: string) {
+  if (action === "redo") {
+    router
+    .push({
+      name: "chapter",
+      query: { action, periodId, ts: Date.now().toString() },
+    })
+    .catch(() => {});
+  } else if (action === "continue") {
+    pendingContinuePeriodId.value = periodId;
+    showAutoRemoveDialog.value = true;
+  } else if (action === "analysis") {
+    router
+    .push({
+      name: "analysis",
+      query: { action, periodId, ts: Date.now().toString() },
+    })
+    .catch(() => {});
+  }
+}
 </script>
 
 <style scoped>
-.collect-page {
+.wrong-page {
   min-height: 100vh;
-  background: #f7f8fa;
-  display: flex;
-  flex-direction: column;
+  padding-bottom: 72px;
+  background: linear-gradient(180deg, rgba(255, 239, 234, 0.35) 0%, #ffffff 28%);
+  font-family: "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  color: #262626;
+  position: relative;
 }
 
-.collect-header {
+.wrong-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 16px 20px 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .header-title {
-  flex: 1;
-  text-align: center;
   font-size: 18px;
   font-weight: 600;
-  color: #1f1f1f;
-  margin: 0 12px;
 }
 
 .icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 36px;
   height: 36px;
-  display: grid;
-  place-items: center;
-  border-radius: 18px;
-  border: 1px solid #e4e7ed;
-  background: #fff;
-  color: #4a4a4a;
-}
-
-.icon-button:disabled {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-.text-link {
+  border-radius: 12px;
   border: none;
-  background: none;
-  color: #ff4d4f;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 6px 8px;
+  background: #f5f6fa;
+  color: #8c8c8c;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 
-.icon-button.danger {
-  color: #ff4d4f;
-  border-color: #ffe2e3;
-  background: #fff5f5;
-}
-
-.header-icon {
+.icon-button svg {
   width: 20px;
   height: 20px;
 }
 
-.filters {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  padding: 16px;
-  background: #fff;
+.icon-button.back {
+  color: #262626;
+  background: #f5f6fa;
 }
 
-.filter {
+.icon-button:hover {
+  background: #ffe8e1;
+  color: #ff6d5c;
+}
+
+.header-actions {
+  display: inline-flex;
+  gap: 12px;
+}
+
+.category-tabs {
+  display: flex;
+  overflow-x: hidden;
+  padding: 16px 20px 12px;
+  gap: 16px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.category-tab {
+  position: relative;
+  border: none;
+  background: none;
+  font-size: 15px;
+  color: #8c8c8c;
+  padding: 4px 0;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.category-tab.active {
+  color: #ff6d5c;
+  font-weight: 600;
+}
+
+.category-tab.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 100%;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff6d5c 0%, #ff855c 100%);
+}
+
+.summary-card {
+  position: relative;
+  margin: 15px 20px 15px;
+  padding: 32px 24px 10px;
+  border-radius: 24px;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 109, 92, 0.16), rgba(255, 109, 92, 0.06));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.ring {
+  width: 148px;
+  height: 148px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff795c 0%, #ff5b4d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(255, 91, 77, 0.26);
+  position: relative;
+}
+
+.ring::before,
+.ring::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.32;
+}
+
+.ring::before {
+  width: 172px;
+  height: 172px;
+  background: rgba(255, 112, 90, 0.28);
+}
+
+.ring::after {
+  width: 194px;
+  height: 194px;
+  background: rgba(255, 112, 90, 0.18);
+}
+
+.ring-inner {
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  color: #ff5b4d;
+}
+
+.ring-value {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ring-label {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.overview-meta {
+  font-size: 14px;
+  color: #595959;
+}
+
+.overview-meta .meta-value {
+  font-weight: 600;
+  color: #ff6d5c;
+}
+
+.print-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border: 1px solid rgba(255, 109, 92, 0.5);
+  background: rgba(255, 109, 92, 0.1);
+  color: #ff6d5c;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.print-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.print-button:hover {
+  background: rgba(255, 109, 92, 0.2);
+  transform: translateY(-1px);
+}
+
+.filter-chips {
+  display: flex;
+  gap: 12px;
+  padding: 0 20px 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filter-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  border: none;
+  background: #f2f3f7;
+  color: #666;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.chip.active {
+  background: #ff6d5c;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.period-card {
+  margin: 20px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(31, 35, 53, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.period-card.type-card {
+  margin: 0 20px;
+  padding: 18px 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.period-card.type-card:first-of-type {
+  margin-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.period-info {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 14px;
-  color: #555;
 }
 
-.filter-label {
-  font-weight: 600;
-  color: #1f1f1f;
-}
-
-.filter-select {
-  height: 38px;
-  border-radius: 10px;
-  border: 1px solid #e3e7ee;
-  padding: 0 12px;
-  background: #f9fafb;
-  color: #333;
-}
-
-.state {
-  padding: 80px 16px;
-  text-align: center;
-  color: #9aa5b5;
-  font-size: 15px;
-}
-
-.favorite-list {
-  padding: 12px 16px 24px;
+.chapter-card {
+  margin: 20px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 109, 92, 0.22);
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(255, 109, 92, 0.14);
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.paper-group {
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 6px 20px rgba(31, 42, 68, 0.08);
-  overflow: hidden;
-}
-
-.paper-group.chapter {
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.paper-header {
-  padding: 16px;
+.chapter-main {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #f0f2f5;
-}
-
-.paper-header.clickable {
-  cursor: pointer;
-}
-
-.paper-header.clickable:hover {
-  background: #fff7f5;
+  gap: 12px;
 }
 
 .chapter-toggle {
-  border: none;
-  margin-right: 12px;
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: #ff4d4f;
-  display: flex;
+  border: 1px solid #ff6d5c;
+  background: #fff5f3;
+  color: #ff6d5c;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 14px rgba(255, 77, 79, 0.28);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.chapter-toggle:focus-visible {
-  outline: 2px solid rgba(255, 77, 79, 0.35);
-  outline-offset: 2px;
+.chapter-toggle:active {
+  background: #ff6d5c;
+  color: #fff;
 }
 
-.toggle-icon {
+.chapter-toggle::before,
+.chapter-toggle::after {
+  content: none !important;
+}
+
+.chapter-toggle-icon {
   position: relative;
-  display: block;
-  width: 12px;
+  width: 16px;
   height: 2px;
-  background: #fff;
+  background: currentColor;
   border-radius: 999px;
+  transition: transform 0.2s ease;
 }
 
-.toggle-icon::after {
+.chapter-toggle-icon::after {
   content: "";
   position: absolute;
-  top: -5px;
-  left: 5px;
+  left: 50%;
+  top: 50%;
   width: 2px;
-  height: 12px;
-  background: #fff;
+  height: 16px;
+  background: currentColor;
   border-radius: 999px;
-  opacity: 0;
+  transform: translate(-50%, -50%);
   transition: opacity 0.2s ease;
 }
 
-.toggle-icon.collapsed::after {
-  opacity: 1;
+.chapter-toggle-icon.expanded::after {
+  opacity: 0;
 }
 
-.paper-leading {
+.chapter-title {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: #262626;
 }
 
-.paper-subtitle {
-  font-size: 12px;
-  color: #b3bac7;
-  font-weight: 500;
-}
-
-.paper-group.chapter .paper-count {
-  font-size: 12px;
-  color: #d46a6a;
-}
-
-.paper-title {
-  font-size: 16px;
+.chapter-order {
+  font-size: 15px;
   font-weight: 600;
-  color: #1f1f1f;
+  color: #ff6d5c;
 }
 
-.paper-count {
-  font-size: 12px;
-  color: #9aa5b5;
+.chapter-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #262626;
 }
 
-.section-group {
-  padding: 16px;
-  border-bottom: 1px solid #f0f2f5;
-  background: #fff;
-}
 
-.paper-group.chapter .section-group {
-  background: rgba(255, 245, 245, 0.72);
-  border: none;
-  padding-left: 28px;
-  position: relative;
-}
-
-.paper-group.chapter .section-group::before {
-  content: "";
-  position: absolute;
-  left: 14px;
-  top: 20px;
-  bottom: 20px;
-  width: 1px;
-  background: rgba(255, 77, 79, 0.2);
-}
-
-.paper-group.chapter .section-group:last-of-type::before {
-  bottom: 36px;
-}
-
-.section-group:last-of-type {
-  border-bottom: none;
-}
-
-.favorite-items {
+.chapter-sections {
+  margin: 8px 0 0 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.chapter-section-list {
+  list-style: none;
   margin: 0;
   padding: 0;
-  list-style: none;
-}
-
-.paper-group.chapter .favorite-items {
-  padding-left: 4px;
-}
-
-.favorite-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(255, 245, 245, 0.7), rgba(255, 255, 255, 0.9));
-  border: 1px solid #ffe2e4;
-  position: relative;
-}
-
-.favorite-item.selectable {
-  cursor: pointer;
-}
-
-.paper-group.chapter .favorite-item {
-  background: #fff;
-  border: 1px solid rgba(255, 192, 196, 0.7);
-  padding-left: 18px;
-}
-
-.paper-group.chapter .favorite-item::before {
-  content: "";
-  position: absolute;
-  left: -22px;
-  top: 22px;
-  width: 10px;
-  height: 10px;
-  background: #ff4d4f;
-  border-radius: 50%;
-  box-shadow: 0 0 0 4px rgba(255, 77, 79, 0.2);
-}
-
-.favorite-selector {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 6px;
-}
-
-.selector-circle {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #d9d9d9;
-  background: #fff;
-  transition: all 0.2s ease;
-}
-
-.selector-circle.checked {
-  border-color: #ff4d4f;
-  background: #ff4d4f;
-  box-shadow: inset 0 0 0 4px #fff;
-}
-
-.favorite-content {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  flex: 1;
-  color: #1f1f1f;
 }
 
-.favorite-meta {
+.chapter-section-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap;
-  font-size: 12px;
-  color: #9aa5b5;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 245, 243, 0.85);
+  border: 1px solid rgba(255, 109, 92, 0.2);
 }
 
-.favorite-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 12px;
-  border-radius: 999px;
-  background: rgba(255, 77, 79, 0.12);
-  color: #ff4d4f;
-  font-size: 12px;
-  font-weight: 600;
+.chapter-section-bullet {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff6d5c;
+  box-shadow: 0 0 0 4px rgba(255, 109, 92, 0.2);
 }
 
-.favorite-section {
-  font-weight: 600;
-  color: #ff7a45;
+.chapter-section-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.favorite-title {
+.chapter-section-title {
   font-size: 14px;
   font-weight: 600;
-  line-height: 1.6;
+  color: #262626;
 }
 
-.favorite-actions {
+.chapter-section-meta {
+  font-size: 12px;
+  color: #ff6d5c;
+  font-weight: 500;
+}
+
+.chapter-section-actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 16px;
-  margin-top: 4px;
+  gap: 8px;
 }
 
-.action-button {
-  min-width: 84px;
-  padding: 6px 16px;
-  border-radius: 18px;
-  font-size: 13px;
-  font-weight: 600;
-  border: 1px solid transparent;
+.mini-button {
+  min-width: 60px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid #ff6d5c;
+  background: #fff;
+  color: #ff6d5c;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.mini-button.primary {
+  background: #ff6d5c;
+  color: #fff;
+}
+
+.chapter-slide-enter-active,
+.chapter-slide-leave-active {
   transition: all 0.2s ease;
 }
 
-.action-button.outline {
-  background: #fff;
-  color: #3569f6;
-  border-color: rgba(53, 105, 246, 0.4);
+.chapter-slide-enter-from,
+.chapter-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
 }
 
-.action-button.outline:not(:disabled):hover {
-  background: rgba(53, 105, 246, 0.08);
-  border-color: #3569f6;
+.chapter-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-left: 4px;
 }
 
-.action-button.solid {
-  background: #ff4d4f;
-  color: #fff;
-  border-color: #ff4d4f;
-}
-
-.action-button.solid:not(:disabled):hover {
-  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
-}
-
-.action-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-.selection-bar {
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.chapter-meta {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: #fff;
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+  gap: 6px;
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.chapter-meta .meta-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ff6d5c;
+}
+
+.chapter-actions {
+  display: flex;
+  align-items: center;
   gap: 12px;
 }
 
-.select-toggle {
+.period-card.type-card .period-info {
+  gap: 4px;
+}
+
+.period-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.period-card.type-card .period-title {
+  font-size: 15px;
+}
+
+.period-meta {
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.period-meta .meta-value {
+  color: #ff6d5c;
+  font-weight: 600;
+}
+
+.period-actions {
+  display: inline-flex;
+  gap: 10px;
+}
+
+.period-card.type-card .period-actions {
+  gap: 8px;
+}
+
+.outline-button,
+.primary-button {
+  flex: none;
+  min-width: 70px;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.outline-button {
+  border: 1px solid rgba(255, 109, 92, 0.6);
+  background: rgba(255, 109, 92, 0.08);
+  color: #ff6d5c;
+}
+
+.outline-button:hover {
+  background: rgba(255, 109, 92, 0.16);
+  transform: translateY(-1px);
+}
+
+.primary-button {
+  border: none;
+  background: linear-gradient(90deg, #ff6d5c 0%, #ff845c 100%);
+  color: #ffffff;
+  padding: 0 14px;
+}
+
+.primary-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
   display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 0 24px;
+}
+
+.dialog-panel {
+  width: 100%;
+  max-width: 360px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 12px;
+}
+
+.dialog-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.dialog-close {
+  border: none;
+  background: none;
+  color: #8c8c8c;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.dialog-close:hover {
+  color: #ff6d5c;
+}
+
+.dialog-close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.dialog-subtitle {
+  padding: 0 20px 12px;
+  font-size: 14px;
+  color: #a6a6a6;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.dialog-options {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+}
+
+.dialog-option {
+  border: none;
+  background: none;
+  padding: 14px 20px;
+  font-size: 15px;
+  color: #262626;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.dialog-option + .dialog-option {
+  border-top: 1px solid #f5f5f5;
+}
+
+.dialog-option.active {
+  color: #ff6d5c;
+  font-weight: 600;
+}
+
+.option-check {
+  width: 20px;
+  height: 20px;
+  color: #ff6d5c;
+}
+
+.dialog-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px 18px;
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.dialog-checkbox input {
+  width: 18px;
+  height: 18px;
+}
+
+.dialog-fade-enter-active,
+.dialog-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.dialog-fade-enter-from,
+.dialog-fade-leave-to {
+  opacity: 0;
+}
+
+@media (max-width: 420px) {
+  .summary-card {
+    margin: 20px 16px;
+  }
+
+  .ring {
+    width: 160px;
+    height: 160px;
+  }
+
+  .ring::before {
+    width: 190px;
+    height: 190px;
+  }
+
+  .ring::after {
+    width: 218px;
+    height: 218px;
+  }
+
+  .ring-inner {
+    width: 128px;
+    height: 128px;
+  }
+
+  .period-card {
+    margin: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .period-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .chapter-card {
+    margin: 16px;
+  }
+
+  .chapter-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 0;
+    gap: 10px;
+  }
+
+  .chapter-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .outline-button,
+  .primary-button {
+    min-width: 0;
+    flex: 1 1 30%;
+  }
+
+}
+/* 选择模式通用样式 */
+.text-link {
+  border: none;
+  background: none;
+  color: #ff6d5c;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.selector-circle {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.8px solid #ff6d5c;
+  background: #fff;
+  box-shadow: inset 0 0 0 2px rgba(255, 109, 92, 0.15);
+}
+
+.selector-circle.checked {
+  background: #ff6d5c;
+  border-color: #ff6d5c;
+  box-shadow: none;
+}
+
+.period-card {
+  position: relative;
+}
+
+.period-card.selectable {
+  cursor: pointer;
+  padding-left: 48px; /* 选择模式下为选择圆点预留空间 */
+}
+
+/* 题型列表（type-card）在选择模式下同样预留空间 */
+.period-card.type-card.selectable {
+  padding-left: 48px;
+}
+
+.period-selector {
+  position: absolute;
+  left: 18px; /* 与预留的左边距配合，避免覆盖标题 */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.chapter-section-item {
+  position: relative;
+}
+
+.chapter-section-item.selectable {
+  cursor: pointer;
+}
+
+.chapter-section-selector {
+  position: absolute;
+  left: 8px;
+}
+
+/* 底部选择操作条 */
+.selection-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  background: #ffffff;
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.08);
+  z-index: 20;
+}
+
+.select-toggle {
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   border: none;
   background: none;
-  font-size: 15px;
-  color: #1f1f1f;
-  padding: 6px 0;
+  color: #262626;
+  cursor: pointer;
 }
 
 .select-label {
-  font-weight: 500;
+  font-size: 15px;
 }
 
 .selection-delete {
-  min-width: 96px;
-  height: 40px;
-  border-radius: 20px;
   border: none;
-  background: #ff4d4f;
-  color: #fff;
-  font-size: 16px;
+  background: #ff6d5c;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 15px;
   font-weight: 600;
+  cursor: pointer;
 }
 
-.selection-delete:disabled {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
+/* 进入/退出动画（可选） */
 .selection-bar-enter-active,
 .selection-bar-leave-active {
   transition: transform 0.2s ease, opacity 0.2s ease;
@@ -1057,19 +1319,5 @@ watch(filteredFavorites, () => {
   opacity: 0;
 }
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

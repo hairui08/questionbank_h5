@@ -26,19 +26,6 @@
       </div>
     </header>
 
-    <nav class="category-tabs">
-      <button
-        v-for="category in categories"
-        :key="category.id"
-        type="button"
-        class="category-tab"
-        :class="{ active: category.id === activeCategoryId }"
-        @click="selectCategory(category.id)"
-      >
-        {{ category.label }}
-      </button>
-    </nav>
-
     <section class="summary-card">
       <div class="ring-wrapper">
        <div class="ring">
@@ -605,7 +592,7 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 
 .summary-card {
   position: relative;
-  margin: 20px 24px 20px;
+  margin: 15px 20px 15px;
   padding: 32px 24px 10px;
   border-radius: 24px;
   background: radial-gradient(circle at 30% 20%, rgba(255, 109, 92, 0.16), rgba(255, 109, 92, 0.06));
@@ -869,9 +856,7 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 
 
 .chapter-sections {
-  margin: 8px 0 0 48px;
-  padding: 12px 0 0 12px;
-  border-left: 2px solid rgba(255, 109, 92, 0.18);
+  margin: 8px 0 0 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
