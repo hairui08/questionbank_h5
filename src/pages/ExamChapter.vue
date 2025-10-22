@@ -518,7 +518,7 @@ flatQuestions.forEach((question) => {
     userAnswers[question.answerKey] = getInitialAnswer(question);
   }
   if (question.depth === 0 && !(question.answerKey in collectedState)) {
-    const initialCollect = Boolean((question as Record<string, unknown>).isCollect);
+    const initialCollect = Boolean((question as unknown as Record<string, unknown>).isCollect);
     collectedState[question.answerKey] = initialCollect;
     if (initialCollect) {
       serverFavoriteKeys.add(question.answerKey);
