@@ -595,8 +595,8 @@ body {
 }
 
 .home-header {
-  position: fixed;
-  top: 0px;
+  position: sticky;
+  top: 0;
   width: 100%;
   z-index: 800;
   background: #ffffff;
@@ -765,7 +765,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-top: 100px;
+  margin-top: 0;
 }
 
 .moudle-contain{

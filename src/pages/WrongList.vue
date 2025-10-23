@@ -507,7 +507,7 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px 8px;
+  padding: 0 20px;
   background: #ffffff;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   position: sticky;
@@ -1038,7 +1038,7 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 }
 
 .dialog-backdrop {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.35);
   display: flex;
@@ -1280,7 +1280,7 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 
 /* 底部选择操作条 */
 .selection-bar {
-  position: fixed;
+  position: sticky;
   left: 0;
   right: 0;
   bottom: 0;

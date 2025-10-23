@@ -1,5 +1,9 @@
 <template>
-  <div v-if="paperReady" class="exam-page" :style="pageStyle">
+  <div
+    v-if="paperReady"
+    class="exam-page"
+    :style="pageStyle"
+  >
     <div class="exam-header">
       <div class="header-row">
         <div class="header-left">
@@ -33,6 +37,8 @@
       class="question-wrapper"
       @touchstart.passive="onTouchStart"
       @touchend.passive="onTouchEnd"
+      @pointerdown="onPointerDown"
+      @pointerup="onPointerUp"
     >
       <div class="question-content">
         <div class="question-text" v-if="hasRichText(currentQuestion.content)" v-html="currentQuestion.content" />
@@ -462,7 +468,6 @@ if (firstUnlockedIndex > 0) {
 
 const pageStyle = computed(() => ({
   "--font-scale": String(fontScale.value),
-  "--bottom-actions-height": "112px",
 }));
 
 const currentQuestion = computed<NormalizedQuestion | null>(() => topLevelQuestions[currentIndex.value] ?? null);
@@ -752,6 +757,21 @@ function onTouchEnd(event: TouchEvent) {
   }
 }
 
+function onPointerDown(event: PointerEvent) {
+  if (event.pointerType !== "mouse" || event.button !== 0) return;
+  swipeMeta.startX = event.clientX;
+  swipeMeta.startTime = Date.now();
+}
+
+function onPointerUp(event: PointerEvent) {
+  if (event.pointerType !== "mouse") return;
+  const deltaX = event.clientX - swipeMeta.startX;
+  const deltaTime = Date.now() - swipeMeta.startTime;
+  if (Math.abs(deltaX) > 50 && deltaTime < 600) {
+    deltaX < 0 ? goNext() : goPrev();
+  }
+}
+
 function handleOptionClick(question: NormalizedQuestion, option: NormalizedOption) {
   if (!isChoiceQuestion(question)) return;
   const key = question.answerKey;
@@ -946,6 +966,7 @@ function toSerializableAnswers() {
 </script>
 <style scoped>
 .exam-page {
+  position: relative;
   --font-scale: 1;
   font-size: calc(16px * var(--font-scale, 1));
   min-height: 100vh;
@@ -953,7 +974,6 @@ function toSerializableAnswers() {
   color: #1f1f1f;
   display: flex;
   flex-direction: column;
-  padding-bottom: calc(var(--bottom-actions-height, 0px) + 24px);
 }
 
 .exam-header {
@@ -1035,10 +1055,11 @@ function toSerializableAnswers() {
 .question-wrapper {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: calc(16px + var(--bottom-actions-height, 0px));
   display: flex;
   flex-direction: column;
-  gap: 16px;
+   -webkit-overflow-scrolling: touch; /* iOS/移动端顺滑滚动 */
+  scrollbar-width: none; /* Firefox 隐藏滚动条 */
+  -ms-overflow-style: none; /* IE/Edge 旧版隐藏滚动条 */
 }
 
 .question-content {
@@ -1389,8 +1410,10 @@ function toSerializableAnswers() {
 }
 
 .bottom-actions {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
+  width: 420px;
+  max-width: 100%;
+  position: sticky;
+  bottom: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -1443,7 +1466,7 @@ function toSerializableAnswers() {
 
   /* 字体大小设置面板 */
   .settings-panel {
-    position: fixed;
+    position: absolute;
     top: 54px;
     left: 0;
     right: 0;
@@ -1451,7 +1474,7 @@ function toSerializableAnswers() {
     border-bottom: 1px solid #eee;
     box-shadow: 0 2px 10px rgba(0,0,0,0.06);
     padding: 12px 16px;
-    z-index: 1000;
+    z-index: 30;
   }
   .settings-row {
     display: flex;
@@ -1484,32 +1507,33 @@ function toSerializableAnswers() {
 }
 
 .settings-mask {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.18);
-  z-index: 999;
+  z-index: 10;
   top: 54px;
 }
 
 .sheet-mask {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.35);
-  z-index: 10;
+  z-index: 30;
 }
 
 /* 交卷弹框 */
 .dialog-mask {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.35);
-  display: grid;
-  place-items: center;
-  z-index: 1100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 30;
 }
 
 .answer-card-sheet {
-  position: fixed;
+  position: sticky;
   left: 0;
   right: 0;
   bottom: 0;
@@ -1517,7 +1541,7 @@ function toSerializableAnswers() {
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   padding: 18px 16px 24px;
-  z-index: 20;
+  z-index: 40;
   box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.12);
   display: flex;
   flex-direction: column;
@@ -1603,7 +1627,9 @@ function toSerializableAnswers() {
 }
 
 .dialog {
-  width: 72vw;
+  position: absolute;
+  top: 320px;
+  width: 300px;
   max-width: 480px;
   background: #fff;
   border-radius: 12px;
