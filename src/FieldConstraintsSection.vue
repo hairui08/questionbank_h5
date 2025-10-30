@@ -167,7 +167,6 @@
 .fields-table td:first-child {
   width: 20%;
   font-weight: 600;
-  color: #273070;
 }
 
 .fields-table th:nth-child(2),

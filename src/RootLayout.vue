@@ -76,11 +76,17 @@ function navigate(name: string) {
 
 /* 左侧导航 */
 .left-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 240px;
+  height: 100vh;
   flex: none;
   border-right: 1px solid #e5e7eb;
   background: #fff;
   padding: 16px 12px;
+  overflow-y: auto;
+  z-index: 100;
 }
 
 .nav-title {
@@ -123,14 +129,20 @@ function navigate(name: string) {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  margin-left: 240px;
 }
 
 .right-tabs {
+  position: fixed;
+  top: 0;
+  left: 240px;
+  right: 0;
   display: flex;
   gap: 8px;
   padding: 12px;
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
+  z-index: 90;
 }
 .tab-btn {
   border: none;
@@ -150,6 +162,7 @@ function navigate(name: string) {
 .pane-content {
   flex: 1;
   padding: 16px;
+  padding-top: 72px; /* 为固定的标签栏留出空间 */
   overflow: auto;
 }
 
