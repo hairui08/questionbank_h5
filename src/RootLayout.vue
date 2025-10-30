@@ -44,7 +44,7 @@
         </div>
 
         <div v-else class="doc-pane">
-          <RequirementsDoc />
+          <RequirementsDoc :docKey="String(route.name || '')" />
         </div>
       </div>
     </section>
@@ -63,7 +63,6 @@ const activePane = ref<"feature" | "doc">("feature");
 
 function navigate(name: string) {
   router.push({ name });
-  activePane.value = "feature";
 }
 </script>
 

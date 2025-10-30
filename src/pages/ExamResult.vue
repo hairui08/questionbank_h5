@@ -277,6 +277,7 @@ function handleAction(actionId: string, recordId: string) {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 54px;
   background: #ffffff;
   padding: 16px 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
