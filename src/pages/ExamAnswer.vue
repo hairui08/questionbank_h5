@@ -260,6 +260,20 @@
 
     <div class="bottom-actions">
 
+      <button
+            class="bottom-action"
+            type="button"
+            :class="{ active: analysisVisible }"
+            @click="toggleAnalysis"
+          >
+            <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <!-- 文档 + 对勾 -->
+              <path d="M7 3h8l5 5v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M15 3v5h5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M8 14l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="action-label">查看解析</span>
+          </button>
       <button class="bottom-action" type="button" @click="answerCardOpen = true">
             <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
               <!-- 答题卡（2×3圆点） -->

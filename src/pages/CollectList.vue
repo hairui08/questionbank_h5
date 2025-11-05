@@ -111,7 +111,6 @@
           </div>
           <div class="chapter-actions">
             <button type="button" class="outline-button" @click="handlePeriodAction('redo', chapter.id)">重做</button>
-            <button type="button" class="outline-button" @click="handlePeriodAction('continue', chapter.id)">继续</button>
             <button type="button" class="primary-button" @click="handlePeriodAction('analysis', chapter.id)">查看解析</button>
           </div>
         </div>
@@ -133,7 +132,6 @@
         </div>
         <div class="period-actions">
           <button type="button" class="outline-button" @click="handlePeriodAction('redo', period.id)" :disabled="selectionMode">重做</button>
-          <button type="button" class="outline-button" @click="handlePeriodAction('continue', period.id)" :disabled="selectionMode">继续</button>
           <button type="button" class="primary-button" @click="handlePeriodAction('analysis', period.id)" :disabled="selectionMode">查看解析</button>
         </div>
         <div v-if="selectionMode" class="period-selector" @click.stop="toggleItemSelection(period.id)">
@@ -141,40 +139,7 @@
         </div>
       </section>
     </template>
-    <transition name="dialog-fade">
-      <div v-if="showAutoRemoveDialog" class="dialog-backdrop" @click.self="closeAutoRemoveDialog">
-        <div class="dialog-panel">
-          <header class="dialog-header">
-            <div class="dialog-title">设置自动移除错题</div>
-            <button class="dialog-close" type="button" aria-label="关闭" @click="closeAutoRemoveDialog">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              </svg>
-            </button>
-          </header>
-          <div class="dialog-subtitle">请选择做对几次，自动移除错题</div>
-          <div class="dialog-options">
-            <button
-              v-for="option in autoRemoveOptions"
-              :key="option.id"
-              type="button"
-              class="dialog-option"
-              :class="{ active: option.id === selectedAutoRemoveId }"
-              @click="selectAutoRemove(option.id)"
-            >
-              <span>{{ option.label }}</span>
-              <svg v-if="option.id === selectedAutoRemoveId" viewBox="0 0 24 24" aria-hidden="true" class="option-check">
-                <path d="m8 12 3 3 5-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
-          </div>
-          <label class="dialog-checkbox">
-            <input type="checkbox" v-model="dontRemindNext" />
-            <span>下次不再提醒</span>
-          </label>
-        </div>
-      </div>
-  </transition>
+
   </div>
   <transition name="selection-bar">
     <div v-if="selectionMode" class="selection-bar">
@@ -192,6 +157,24 @@
 <script setup lang="ts">
 import { reactive, ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
+import { initFavoritesDb, getFavoriteRecords, deleteFavorite } from "../services/sqliteFavorites";
+
+async function deleteFavoritesWithinDays(days: number): Promise<number> {
+  try {
+    await initFavoritesDb();
+    const records = await getFavoriteRecords();
+    const threshold = Date.now() - days * 24 * 60 * 60 * 1000; // 最近 N 天
+    const targets = records.filter((r) => {
+      const ts = r.createdAt ? Date.parse(r.createdAt) : NaN;
+      return Number.isFinite(ts) && ts >= threshold;
+    });
+    await Promise.all(targets.map((r) => deleteFavorite(r.answerKey)));
+    return targets.length;
+  } catch (error) {
+    console.warn("[favorites] batch delete failure", error);
+    return 0;
+  }
+}
 
 interface Category {
   id: string;
@@ -223,12 +206,8 @@ interface Period {
   wrongCount: number;
 }
 
-type PeriodAction = "redo" | "continue" | "analysis";
+type PeriodAction = "redo" | "analysis";
 
-interface AutoRemoveOption {
-  id: string;
-  label: string;
-}
 
 const router = useRouter();
 
@@ -239,10 +218,9 @@ const categories: Category[] = [
 ];
 
 const filters: FilterChip[] = [
-    { id: "recent", label: "最近收藏" },
-    { id: "type", label: "题型分类" },
     { id: "chapter", label: "章节分类" },
-    { id: "real", label: "真题分类" },
+    { id: "type", label: "题型分类" },
+    // { id: "recent", label: "最近收藏" },
   ];
 
 const periods: Period[] = [
@@ -300,14 +278,6 @@ const chapters: Chapter[] = [
   },
 ];
 
-const autoRemoveOptions: AutoRemoveOption[] = [
-    { id: "never", label: "不移除" },
-    { id: "1", label: "1次" },
-    { id: "2", label: "2次" },
-    { id: "3", label: "3次" },
-    { id: "4", label: "4次" },
-    { id: "5", label: "5次" },
-  ];
 
 const overview = reactive({
   wrongCount: 24,
@@ -315,11 +285,8 @@ const overview = reactive({
 });
 
 const activeCategoryId = ref(categories[0]?.id ?? "");
-const activeFilterId = ref("recent");
-const showAutoRemoveDialog = ref(false);
-const selectedAutoRemoveId = ref(autoRemoveOptions[0]?.id ?? "never");
-const dontRemindNext = ref(false);
-const pendingContinuePeriodId = ref<string | null>(null);
+// 默认展示“章节分类”
+const activeFilterId = ref("chapter");
 const expandedChapterIds = ref<Set<string>>(new Set());
 
 // 选择模式状态与集合
@@ -377,11 +344,26 @@ function toggleSelectAll() {
   }
 }
 
-function handleDeleteSelected() {
+async function handleDeleteSelected() {
   if (selectedIds.value.size === 0) return;
-  const confirmed = window.confirm(`确定删除选中的 ${selectedIds.value.size} 项错题吗？`);
+  const confirmed = window.confirm(`确定删除选中的 ${selectedIds.value.size} 项收藏吗？`);
   if (!confirmed) return;
-  console.log("[wronglist] 删除选中错题项：", Array.from(selectedIds.value));
+
+  if (activeFilterId.value === "recent") {
+    let totalDeleted = 0;
+    const idToDays: Record<string, number> = { "7d": 7, "30d": 30 };
+    for (const id of Array.from(selectedIds.value)) {
+      const days = idToDays[id];
+      if (typeof days === "number") {
+        const count = await deleteFavoritesWithinDays(days);
+        totalDeleted += count;
+      }
+    }
+    window.alert(`已删除最近收藏，共 ${totalDeleted} 条。`);
+  } else {
+    console.log("[favorites] 当前筛选不支持删除操作：", activeFilterId.value);
+  }
+
   exitSelectionMode();
 }
 
@@ -403,7 +385,7 @@ watch([activeFilterId, expandedChapterIds], () => {
   reconcileSelection();
 });
 
-const isTypeFilter = computed(() => activeFilterId.value === "type" || activeFilterId.value === "real");
+const isTypeFilter = computed(() => activeFilterId.value === "type");
 const isChapterFilter = computed(() => activeFilterId.value === "chapter");
 const displayPeriods = computed(() => (isTypeFilter.value ? typePeriods : periods));
 const isChapterExpanded = (id: string) => expandedChapterIds.value.has(id);
@@ -437,27 +419,6 @@ function toggleChapter(id: string) {
   expandedChapterIds.value = next;
 }
 
-function closeAutoRemoveDialog() {
-  pendingContinuePeriodId.value = null;
-  showAutoRemoveDialog.value = false;
-}
-
-function selectAutoRemove(id: string) {
-  selectedAutoRemoveId.value = id;
-  const pendingId = pendingContinuePeriodId.value;
-  if (pendingId) {
-    pendingContinuePeriodId.value = null;
-    showAutoRemoveDialog.value = false;
-    router
-      .push({
-        name: "chapter",
-        query: { action: "continue", periodId: pendingId, autoRemove: id, ts: Date.now().toString() },
-      })
-      .catch(() => {});
-  } else {
-    showAutoRemoveDialog.value = false;
-  }
-}
 
 function handlePeriodAction(action: PeriodAction, periodId: string) {
   if (action === "redo") {
@@ -467,9 +428,6 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
       query: { action, periodId, ts: Date.now().toString() },
     })
     .catch(() => {});
-  } else if (action === "continue") {
-    pendingContinuePeriodId.value = periodId;
-    showAutoRemoveDialog.value = true;
   } else if (action === "analysis") {
     router
     .push({
@@ -581,7 +539,7 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 .summary-card {
   position: relative;
   margin: 15px 20px 15px;
-  padding: 32px 24px 10px;
+  padding: 34px 24px 20px;
   border-radius: 24px;
   background: radial-gradient(circle at 30% 20%, rgba(255, 109, 92, 0.16), rgba(255, 109, 92, 0.06));
   display: flex;
@@ -597,8 +555,8 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 }
 
 .ring {
-  width: 148px;
-  height: 148px;
+  width: 118px;
+  height: 118px;
   border-radius: 50%;
   background: radial-gradient(circle, #ff795c 0%, #ff5b4d 100%);
   display: flex;
@@ -617,20 +575,20 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 }
 
 .ring::before {
-  width: 172px;
-  height: 172px;
+  width: 140px;
+  height: 140px;
   background: rgba(255, 112, 90, 0.28);
 }
 
 .ring::after {
-  width: 194px;
-  height: 194px;
+  width: 170px;
+  height: 170px;
   background: rgba(255, 112, 90, 0.18);
 }
 
 .ring-inner {
-  width: 116px;
-  height: 116px;
+  width: 94px;
+  height: 94px;
   border-radius: 50%;
   background: #ffffff;
   display: flex;
@@ -694,9 +652,10 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 .filter-chips {
   display: flex;
   gap: 12px;
-  padding: 0 20px 12px;
+  padding: 8px 20px 8px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  background: #f2f3f7;
 }
 
 .filter-chips::-webkit-scrollbar {
@@ -705,8 +664,8 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 
 .chip {
   border: none;
-  background: #f2f3f7;
-  color: #666;
+  background: #a19e9e;
+  color: #fff;
   border-radius: 999px;
   padding: 6px 14px;
   font-size: 14px;
@@ -773,8 +732,8 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 }
 
 .chapter-toggle {
-  width: 36px;
-  height: 36px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   border: 1px solid #ff6d5c;
   background: #fff5f3;
@@ -826,25 +785,31 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
   display: flex;
   align-items: baseline;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   color: #262626;
+  width: 100%;
 }
 
 .chapter-order {
   font-size: 15px;
   font-weight: 600;
   color: #ff6d5c;
+  flex-shrink: 0;
 }
 
 .chapter-name {
   font-size: 16px;
   font-weight: 500;
   color: #262626;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+  white-space: normal;
 }
 
 
 .chapter-sections {
-  margin: 8px 0 0 20px;
+  margin: 8px 0 0 10px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -1025,125 +990,6 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
   filter: brightness(1.05);
 }
 
-.dialog-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  padding: 0 24px;
-}
-
-.dialog-panel {
-  width: 100%;
-  max-width: 360px;
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.dialog-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 20px 12px;
-}
-
-.dialog-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #262626;
-}
-
-.dialog-close {
-  border: none;
-  background: none;
-  color: #8c8c8c;
-  width: 32px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.dialog-close:hover {
-  color: #ff6d5c;
-}
-
-.dialog-close svg {
-  width: 18px;
-  height: 18px;
-}
-
-.dialog-subtitle {
-  padding: 0 20px 12px;
-  font-size: 14px;
-  color: #a6a6a6;
-  border-bottom: 1px solid #f1f1f1;
-}
-
-.dialog-options {
-  display: flex;
-  flex-direction: column;
-  padding: 4px 0;
-}
-
-.dialog-option {
-  border: none;
-  background: none;
-  padding: 14px 20px;
-  font-size: 15px;
-  color: #262626;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-}
-
-.dialog-option + .dialog-option {
-  border-top: 1px solid #f5f5f5;
-}
-
-.dialog-option.active {
-  color: #ff6d5c;
-  font-weight: 600;
-}
-
-.option-check {
-  width: 20px;
-  height: 20px;
-  color: #ff6d5c;
-}
-
-.dialog-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 20px 18px;
-  font-size: 14px;
-  color: #8c8c8c;
-}
-
-.dialog-checkbox input {
-  width: 18px;
-  height: 18px;
-}
-
-.dialog-fade-enter-active,
-.dialog-fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.dialog-fade-enter-from,
-.dialog-fade-leave-to {
-  opacity: 0;
-}
 
 @media (max-width: 420px) {
   .summary-card {

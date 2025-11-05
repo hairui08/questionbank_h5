@@ -246,10 +246,9 @@ const categories: Category[] = [
 ];
 
 const filters: FilterChip[] = [
-    { id: "recent", label: "最近错题" },
-    { id: "type", label: "题型分类" },
     { id: "chapter", label: "章节分类" },
-    { id: "real", label: "真题分类" },
+    { id: "type", label: "题型分类" },
+    // { id: "recent", label: "最近错题" }
   ];
 
 const periods: Period[] = [
@@ -322,7 +321,7 @@ const overview = reactive({
 });
 
 const activeCategoryId = ref(categories[0]?.id ?? "");
-const activeFilterId = ref("recent");
+const activeFilterId = ref("chapter");
 const showAutoRemoveDialog = ref(false);
 const selectedAutoRemoveId = ref(autoRemoveOptions[0]?.id ?? "never");
 const dontRemindNext = ref(false);
@@ -593,7 +592,7 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 .summary-card {
   position: relative;
   margin: 15px 20px 15px;
-  padding: 32px 24px 10px;
+  padding: 36px 24px 10px;
   border-radius: 24px;
   background: radial-gradient(circle at 30% 20%, rgba(255, 109, 92, 0.16), rgba(255, 109, 92, 0.06));
   display: flex;
@@ -605,12 +604,12 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 38px;
 }
 
 .ring {
-  width: 148px;
-  height: 148px;
+  width: 118px;
+  height: 118px;
   border-radius: 50%;
   background: radial-gradient(circle, #ff795c 0%, #ff5b4d 100%);
   display: flex;
@@ -629,20 +628,20 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 }
 
 .ring::before {
-  width: 172px;
-  height: 172px;
+  width: 140px;
+  height: 140px;
   background: rgba(255, 112, 90, 0.28);
 }
 
 .ring::after {
-  width: 194px;
-  height: 194px;
+  width: 170px;
+  height: 170px;
   background: rgba(255, 112, 90, 0.18);
 }
 
 .ring-inner {
-  width: 116px;
-  height: 116px;
+  width: 94px;
+  height: 94px;
   border-radius: 50%;
   background: #ffffff;
   display: flex;
@@ -706,9 +705,10 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 .filter-chips {
   display: flex;
   gap: 12px;
-  padding: 0 20px 12px;
+  padding: 8px 20px 8px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  background: #f2f3f7;
 }
 
 .filter-chips::-webkit-scrollbar {
@@ -717,8 +717,8 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 
 .chip {
   border: none;
-  background: #f2f3f7;
-  color: #666;
+  background: #d1d1d1;
+  color: #fff;
   border-radius: 999px;
   padding: 6px 14px;
   font-size: 14px;
