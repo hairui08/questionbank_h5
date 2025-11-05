@@ -664,7 +664,7 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 
 .chip {
   border: none;
-  background: #a19e9e;
+  background: #adaaaa;
   color: #fff;
   border-radius: 999px;
   padding: 6px 14px;
