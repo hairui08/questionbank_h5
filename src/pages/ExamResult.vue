@@ -7,13 +7,7 @@
         </svg>
       </button>
       <h1 class="header-title">做题记录</h1>
-      <div class="header-actions">
-        <button class="icon-button" type="button" aria-label="一键清空">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2h5v2h-1v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8H4V6h5Zm2-1v1h2V5Z" fill="currentColor" />
-          </svg>
-        </button>
-      </div>
+      <div class="header-actions"></div>
     </header>
 
     <section class="filter-bar">
@@ -40,27 +34,33 @@
       >
         <header class="record-header">
           <span class="record-badge" :data-type="record.badge.type">{{ record.badge.label }}</span>
-          <div class="record-title">
-            <div class="record-name">{{ record.title }}</div>
-            <div class="record-subtitle">{{ record.subtitle }}</div>
-          </div>
+          <div class="record-name">{{ record.title }}</div>
         </header>
-        <div class="record-meta">
-          <span>{{ record.meta.time }}</span>
-          <span>共{{ record.meta.total }}题</span>
-          <span>做对：{{ record.meta.correct }}题</span>
-        </div>
-        <footer class="record-actions">
+
+        <!-- 将按钮排列在 record-meta 右侧，且只显示一个 -->
+        <div class="record-meta-row">
+          <div class="record-meta">
+            <span>{{ record.meta.time }}</span>
+            <span>共{{ record.meta.total }}题</span>
+            <span>做对：{{ record.meta.correct }}题</span>
+          </div>
           <button
-            v-for="action in record.actions"
-            :key="action.id"
+            v-if="hasContinue(record)"
             type="button"
-            :class="['action-button', `is-${action.variant}`]"
-            @click="handleAction(action.id, record.id)"
+            class="action-button btn-continue"
+            @click="handleAction('continue', record.id)"
           >
-            {{ action.label }}
+            继续
           </button>
-        </footer>
+          <button
+            v-else-if="hasAnalysis(record)"
+            type="button"
+            class="action-button btn-report"
+            @click="handleAction('analysis', record.id)"
+          >
+            查看解析
+          </button>
+        </div>
       </article>
     </main>
   </div>
@@ -102,7 +102,6 @@ interface RecordAction {
 interface PracticeRecord {
   id: string;
   title: string;
-  subtitle: string;
   badge: RecordBadge;
   meta: RecordMeta;
   actions: RecordAction[];
@@ -127,61 +126,51 @@ const records = reactive<PracticeRecord[]>([
   {
     id: "r-1",
     title: "第一章 社会工作的内涵、原则及主要领域错题重做",
-    subtitle: "领域错题重做",
     badge: { label: "错", type: "wrong" },
     meta: { time: "9 分钟前", total: 4, correct: 0 },
     actions: [
       { id: "continue", label: "继续", variant: "outline" },
-      { id: "analysis", label: "查看解析", variant: "primary" },
-      { id: "report", label: "报告", variant: "ghost" },
+      { id: "analysis", label: "查看解析", variant: "primary" }
     ],
   },
   {
     id: "r-2",
     title: "2025年10月20日《初级社会工作综合能力》每日一练",
-    subtitle: "每日一练",
     badge: { label: "每", type: "daily" },
     meta: { time: "12 分钟前", total: 10, correct: 2 },
     actions: [
       { id: "redo", label: "重做", variant: "outline" },
-      { id: "analysis", label: "查看解析", variant: "primary" },
-      { id: "report", label: "报告", variant: "ghost" },
+      { id: "analysis", label: "查看解析", variant: "primary" }
     ],
   },
   {
     id: "r-3",
     title: "人类需要的层次和类型",
-    subtitle: "章节练习",
     badge: { label: "章", type: "chapter" },
     meta: { time: "16 分钟前", total: 21, correct: 0 },
     actions: [
       { id: "continue", label: "继续", variant: "outline" },
-      { id: "analysis", label: "查看解析", variant: "primary" },
-      { id: "report", label: "报告", variant: "ghost" },
+      { id: "analysis", label: "查看解析", variant: "primary" }
     ],
   },
   {
     id: "r-4",
     title: "社会工作的特点",
-    subtitle: "章节练习",
     badge: { label: "章", type: "chapter" },
     meta: { time: "32 分钟前", total: 10, correct: 1 },
     actions: [
       { id: "continue", label: "继续", variant: "outline" },
-      { id: "analysis", label: "查看解析", variant: "primary" },
-      { id: "report", label: "报告", variant: "ghost" },
+      { id: "analysis", label: "查看解析", variant: "primary" }
     ],
   },
   {
     id: "r-5",
     title: "最近7天错题重做",
-    subtitle: "错题汇总",
     badge: { label: "错", type: "wrong" },
     meta: { time: "2 小时前", total: 8, correct: 0 },
     actions: [
       { id: "redo", label: "重做", variant: "outline" },
-      { id: "analysis", label: "查看解析", variant: "primary" },
-      { id: "report", label: "报告", variant: "ghost" },
+      { id: "analysis", label: "查看解析", variant: "primary" }
     ],
   },
 ]);
@@ -220,10 +209,7 @@ const filteredRecords = computed(() => {
   if (searchQuery.value.trim()) {
     const q = searchQuery.value.trim().toLowerCase();
     filtered = filtered.filter((record) => {
-      return (
-        record.title.toLowerCase().includes(q) ||
-        record.subtitle.toLowerCase().includes(q)
-      );
+      return record.title.toLowerCase().includes(q);
     });
   }
 
@@ -258,6 +244,14 @@ function handleAction(actionId: string, recordId: string) {
       .catch(() => {});
     return;
   }
+}
+
+// 只允许显示一个按钮：优先显示“继续”，否则显示“查看解析”
+function hasContinue(record: PracticeRecord) {
+  return record.actions.some((a) => a.id === "continue");
+}
+function hasAnalysis(record: PracticeRecord) {
+  return record.actions.some((a) => a.id === "analysis");
 }
 </script>
 
@@ -359,6 +353,7 @@ function handleAction(actionId: string, recordId: string) {
 
 .record-header {
   display: flex;
+  align-items: center;
   gap: 12px;
 }
 
@@ -394,22 +389,13 @@ function handleAction(actionId: string, recordId: string) {
   background: linear-gradient(90deg, #ff9800 0%, #ffb74d 100%);
 }
 
-.record-title {
+.record-name {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.record-name {
   font-size: 15px;
   font-weight: 600;
   color: #262626;
   line-height: 1.4;
-}
-
-.record-subtitle {
-  font-size: 13px;
-  color: #8c8c8c;
 }
 
 .record-meta {
@@ -419,33 +405,57 @@ function handleAction(actionId: string, recordId: string) {
   gap: 10px;
 }
 
-.record-actions {
-  padding-top: 14px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
-  gap: 10px;
+/* 新增：让 meta 和按钮同排、按钮停靠右侧 */
+.record-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 统一右侧按钮的宽度与居中，避免被压缩 */
+.record-meta-row .action-button {
+  width: 96px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .action-button {
   border-radius: 999px;
-  padding: 6px 0;
+  padding: 6px 12px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.15s ease, background-color 0.15s ease, filter 0.15s ease;
 }
 
+.action-button.btn-continue {
+  border: none;
+  font-size: 14px;
+  background: linear-gradient(90deg, rgba(254, 104, 93, 1) 0%, rgba(233, 81, 71, 1) 100%);
+  color: rgba(255, 255, 255, 1);
+}
+
+.action-button.btn-continue:hover {
+  filter: brightness(1.05);
+}
+
+.action-button.btn-report {
+  border: none;
+  font-size: 14px;
+  background: rgba(255, 236, 232, 1);
+  color: rgba(233, 81, 71, 1);
+}
+
+.action-button.btn-report:hover {
+  filter: brightness(1.05);
+}
+
 .action-button.is-outline {
   border: 1px solid rgba(255, 109, 92, 0.6);
   background: rgba(255, 109, 92, 0.08);
   color: #ff6d5c;
-}
-
-.action-button.is-primary {
-  border: none;
-  background: linear-gradient(90deg, #ff6d5c 0%, #ff845c 100%);
-  color: #ffffff;
 }
 
 .action-button.is-ghost {
@@ -460,10 +470,6 @@ function handleAction(actionId: string, recordId: string) {
 
 .action-button.is-outline:hover {
   background: rgba(255, 109, 92, 0.16);
-}
-
-.action-button.is-primary:hover {
-  filter: brightness(1.05);
 }
 
 .action-button.is-ghost:hover {
