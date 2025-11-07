@@ -652,7 +652,7 @@ function handlePeriodAction(action: PeriodAction, periodId: string) {
 .filter-chips {
   display: flex;
   gap: 12px;
-  padding: 8px 20px 8px;
+  padding: 8px 12px 8px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   background: #f2f3f7;
