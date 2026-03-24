@@ -5,8 +5,13 @@ import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const baseUrl: Record<string, string> = {
+  development: "/",
+  production: "./",
+};
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  base: baseUrl[mode] ?? "/",
   plugins: [vue()],
   resolve: {
     alias: {
@@ -16,4 +21,4 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
   },
-});
+}));

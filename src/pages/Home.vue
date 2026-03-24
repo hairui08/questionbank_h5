@@ -16,7 +16,7 @@
         >
           {{ subject.label }}
         </button>
-        <img class="subject-select-icon" src="@/assets/bool/select-subject.png" alt="选择科目" />
+        <img class="subject-select-icon" :src="subjectSelectIcon" alt="选择科目" />
       </div>
     </header>
 
@@ -182,6 +182,7 @@ import iconLive from "@/assets/icon_live.png";
 import iconStudy from "@/assets/icon_study.png";
 import iconQuestion from "@/assets/icon_question.png";
 import iconMine from "@/assets/icon_mine.png";
+import subjectSelectIcon from "@/assets/bool/select-subject.png";
 import stageRuXueIcon from "@/assets/stage/ruxue.png";
 import stageZhangJieIcon from "@/assets/stage/zhangjie.png";
 import stageLiNianIcon from "@/assets/stage/linian.png";
@@ -241,6 +242,8 @@ function selectSubject(subjectId: string) {
 }
 
 const isImageSource = (value: string) =>
+  /^data:image\//i.test(value) ||
+  /^blob:/i.test(value) ||
   /\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(value);
 
 const quickPrimaryActions: QuickAction[] = [

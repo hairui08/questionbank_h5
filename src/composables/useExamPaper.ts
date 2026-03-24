@@ -178,8 +178,9 @@ function createNormalizedQuestion(raw: RawQuestion | null | undefined, ctx: Norm
     isCollect: Boolean(raw?.IsCollect),
   };
 
-  const childList: RawQuestion[] = Array.isArray(raw?.ChildrenTestList)
-    ? raw.ChildrenTestList.filter((item): item is RawQuestion => Boolean(item))
+  const childrenTestList = raw?.ChildrenTestList;
+  const childList: RawQuestion[] = Array.isArray(childrenTestList)
+    ? childrenTestList.filter((item): item is RawQuestion => Boolean(item))
     : [];
   if (childList.length > 0) {
     question.children = childList
